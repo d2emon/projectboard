@@ -1,0 +1,435 @@
+class Project(models.Model):
+    """Model for project.
+    shortname: Shortname, can not contain spaces , special chars. Used in url
+    name: Name of the project
+    owner: The user who has all the rights for the project.
+    start_date: When does this project start?
+    end_date: When does this project end?
+    is_active: Is this project active?
+    """
+    shortname = models.CharField(max_length = 20, unique = True)
+    name = models.CharField(max_length = 200)
+    owner = models.ForeignKey(User)
+    start_date = models.DateField()
+    end_date = models.DateField(null = True)
+    is_active = models.BooleanField(default = True)
+    created_on = models.DateTimeField(auto_now_add = 1)
+
+    def validate(self):
+    def save(self):
+    @classmethod
+    def as_csv_header(self):
+    def as_csv(self):
+    def __unicode__(self):
+    def get_absolute_url(self):
+    def tasks_url(self):
+    def quicktasks_url(self):
+    def quicktaskitems_url(self):
+    def noticeboard_url(self):
+    def wiki_url(self):
+    def new_wikipage_url(self):
+    def files_url(self):
+    def todo_url(self):
+    def calendar_url(self):
+    def metrics_url(self):
+    def logs_url(self):
+    def feed_url(self):
+    def settings_url(self):
+    def get_last_date(self):
+    def get_interesting_months(self):
+    def new_tasks(self):
+    def overdue_tasks(self):
+    def invited_users(self):
+    def num_deadline_miss(self):
+    def extra_hours(self):
+    def num_taskitems(self):
+    def sum_time(self):
+    def sum_time_complete(self):
+    def start_month(self):
+    def end_month(self):
+    def user_tasks_sp(self, user):
+    def user_timeload(self):
+    def user_timeload_sp(self, user):
+    def start_task_dates(self):
+    def task_start_dates_month(self, year, month):
+    def task_end_dates_month(self, year, month):
+    def get_task_hierachy(self):
+    class Admin:
+
+options = (
+        ('Owner', 'Owner'),
+        ('Participant', 'Participant'),
+        ('Viewer', 'Viewer'),
+    )
+
+class SubscribedUser(models.Model):
+    """Users who have access to a given project
+    user: the user
+    project: the project
+    group: access rights"""
+    user = models.ForeignKey(User)
+    project = models.ForeignKey(Project)
+    group = models.CharField(max_length = 20, choices = options)
+
+    def save(self):
+    def get_absolute_url(self):
+    class Admin:
+
+class InvitedUser(models.Model):
+    """Users who have invited to a given project
+    user: the user
+    project: the project
+    group: access rights
+    rejected: has the user rejected the invitation"""
+    user = models.ForeignKey(User)
+    project = models.ForeignKey(Project)
+    group = models.CharField(max_length = 20, choices = options)
+    rejected = models.BooleanField(default = False)
+
+    def save(self):
+    class Admin:
+
+class TaskManager(models.Manager):
+    """Manager for model Task. It get only those rows which are current."""
+    def get_query_set(self):
+    def all_include_old(self):
+
+class SubtaskManager(models.Manager):
+    """Manager for model Task. Used to get the subtasks for a task. Only gets the current subtasks."""
+    def __init__(self, task, *args, **kwargs):
+    def get_query_set(self):
+
+class ChildTaskItemManager(models.Manager):
+    """Manager for model Task. Used to get the task items for a task. Only gets the current task items."""
+    def __init__(self, task, *args, **kwargs):
+    def get_query_set(self):
+
+class Task(models.Model):
+    """Model for task.
+    number: of the task under the current project.
+    name: name for this task.
+    project: the project under hwich this task was created.
+    parent_task: For which task is this a subtask. If this is null, this is a task directly under project.
+    user_responsible: who is the person who is responsible for completing this task.
+    dates: excpected, and actual dates for this task.
+    is_complete: has this task been completed? Defaults to false.
+
+    created_on: when was this task created. Auto filled.
+    is_delted: On deletion the task is not deleted, rather it is marked as deleted.
+    created_by: The user who created this task.
+    last_updated_by: The user who last updated this task item.
+
+    effective_start_date: Since when is this version of the task in effect.
+    effective_end_date: Till when was this version of the task in effect.
+    version_number: What is the version number of the task. Starts at 1. Increments at each new version there after.
+    is_current: Is this the current version of the task?
+
+    objects: Modify to use a custom manager, so that we can get only the current task, and not the old versioned ones.
+    all_objects: But have the old manager, when we want access to the old tasks as well, fo eg on history page.
+    """
+
+    number = models.IntegerField()
+    name = models.CharField(max_length = 200)
+    project = models.ForeignKey(Project)
+    parent_task_num = models.IntegerField(null = True, blank = True)
+    user_responsible = models.ForeignKey(User, null = True, blank = True)
+    expected_start_date = models.DateField()
+    expected_end_date = models.DateField(null = True, blank = True)
+    actual_start_date = models.DateField(null = True,  blank = True)
+    actual_end_date = models.DateField(null = True,  blank = True)
+    is_complete = models.BooleanField(default = False)
+    created_on = models.DateTimeField(auto_now_add = 1)
+    is_deleted = models.BooleanField(default = False)
+    created_by = models.ForeignKey(User, related_name = 'created_tasks')
+    last_updated_by = models.ForeignKey(User, related_name = 'updated_tasks')
+    #Versioning
+    effective_start_date = models.DateTimeField(auto_now_add = True)
+    effective_end_date = models.DateTimeField(null = True, auto_now = True)
+    version_number = models.IntegerField()
+    is_current = models.BooleanField(default = True)
+
+    objects = TaskManager()
+    all_objects = models.Manager()
+
+    def __unicode__(self):
+    def __str__(self):
+    def delete(self):
+    @classmethod
+    def as_csv_header(self):
+    def as_csv(self):
+    def get_sub_tasks(self):
+    def __init__(self, *args, **kwargs):
+    def save(self):
+    def save_without_versioning(self):
+    def update_field(self, field, value):
+    def as_text(self):
+    def set_is_complete(self, value):
+    def get_is_complete(self):
+
+    """Expose this as a property."""
+    is_complete_prop = property(get_is_complete, set_is_complete)
+    def get_old_versions(self):
+    def num_child_tasks(self):
+    def num_items(self):
+    def get_absolute_url(self):
+    def version_url(self):
+    def revision_url(self):
+    def edit_url(self):
+    def add_note_url(self):
+    def add_note(self, text, user):
+    def get_notes(self):
+    class Meta:
+    class Admin:
+
+
+class TaskItemManager(models.Manager):
+    def get_query_set(self):
+
+
+unit_choices = (
+    ('Hours', 'Hours'),
+    ('Days', 'Days'),
+    ('Months', 'Months'),
+    )
+
+
+class TaskItem(models.Model):
+    """A task item for a task.
+    number: Number of the taskitem. This remains same across versions, (But the ids change).
+    project: Project which this task item is created for.
+    task_num: number of the task for which this is a taskitem.
+    name: name of the taskitem.
+    user: user who needs to do this taskitem.
+    expected time: How much time this todo should take.
+    actual_time: How much time this todo actually took.
+    unit: the unit in which you want to measure the time. Can be hours, days or months.
+    is_complete: Has this todo item been completed.
+
+    created_on: When was this todo created. AUto filled.
+    created_by: Who was the user who created this task.
+    last_updated_by: Who was the user who last updated this taskitem.
+    is_delted: When a taskitem is marked as deleted, it is not acually deleted but rather the flag is set, to mark its delted status.
+
+    effective_start_date: Since when is this version of the task in effect.
+    effective_end_date: Till when was this version of the task in effect.
+    version_number: What is the version number of the task. Starts at 1. Increments at each new version there after.
+    is_current: Is this the current version of the task?
+
+    objects: Modify to use a custom manager, so that we can get only the current taskitem, and not the old versioned ones.
+    all_objects: But have the old manager, when we want access to the old taskitems as well, for eg on history page.
+    """
+    number = models.IntegerField()
+    project = models.ForeignKey(Project)
+    task_num = models.IntegerField()
+    name = models.CharField(max_length = 200)
+    user = models.ForeignKey(User, null = True)
+    expected_time = models.DecimalField(decimal_places = 2, max_digits = 10)
+    actual_time = models.DecimalField(decimal_places = 2, max_digits = 10, null = True)
+    unit = models.CharField(max_length = 20, choices = unit_choices)
+    is_complete = models.BooleanField(default = False)
+
+    created_on = models.DateTimeField(auto_now_add = 1)
+    created_by = models.ForeignKey(User, related_name = 'created_taskitems')
+    last_updated_by = models.ForeignKey(User,  related_name = 'updated_taskitems')
+    is_deleted = models.BooleanField(default = False)
+    #Versioning
+    effective_start_date = models.DateTimeField(auto_now_add = 1)
+    effective_end_date = models.DateTimeField(null = True)
+    version_number = models.IntegerField()
+    is_current = models.BooleanField(default = True)
+
+    objects = TaskItemManager()
+    all_objects = models.Manager()
+
+    def save(self):
+    def save_without_versioning(self):
+    def as_text(self):
+    @classmethod
+    def as_csv_header(self):
+    def as_csv(self):
+    def get_task(self):
+    task = property(get_task, None, None)
+    def version_url(self):
+    def edit_url(self):
+    def revision_url(self):
+    def old_versions(self):
+    def time_worked(self):
+    class Admin:
+
+class TodoList(models.Model):
+    """A todo list of a user of the project.
+    name: name of the todo list.
+    user: User for which this todo list is created.
+    project: Project under which this list is created.
+    is_complete_attr: Is this list complete?
+    created_on: When was this list created?
+    """
+    name = models.CharField(max_length = 200)
+    user = models.ForeignKey(User)
+    project = models.ForeignKey(Project)
+    is_complete_attr = models.BooleanField(default = False)
+    created_on = models.DateTimeField(auto_now_add = 1)
+
+    def get_is_complete(self):
+    @classmethod
+    def as_csv_header(self):
+    def as_csv(self):
+    def set_is_complete(self, is_complete_attr):
+
+    """Expose the previous two method as a property."""
+    is_complete = property(get_is_complete, set_is_complete, None)
+
+    def get_item_form(self):
+
+    """And expose it as a property."""
+    item_form = property(get_item_form, None, None)
+
+    class Admin:
+
+class TodoItem(models.Model):
+    """A todo item of the project."""
+    list = models.ForeignKey(TodoList)
+    text = models.CharField(max_length = 200)
+    is_complete = models.BooleanField(default = False)
+    created_on = models.DateTimeField(auto_now_add = 1)
+
+    @classmethod
+    def as_csv_header(self):
+    def as_csv(self):
+    class Admin:
+
+class Log(models.Model):
+    """Log of the project.
+    project: Project for which this log is written.
+    text: Text of the log.
+    created_on: When was this log created."""
+    project = models.ForeignKey(Project)
+    text = models.CharField(max_length = 200)
+    description = models.CharField(max_length = 200, null = True)
+    created_on = models.DateTimeField(auto_now_add = 1)
+
+    def get_absolute_url(self):
+    def __unicode__(self):
+    @classmethod
+    def as_csv_header(self):
+    def as_csv(self):
+    class Meta:
+    class Admin:
+
+class Notice(models.Model):
+    """
+    number: of the notice under the current project.
+    user: User who wrote this notice.
+    text: text of the notice.
+    created_on: When was this notice created. Auto filled."""
+
+    user = models.ForeignKey(User)
+    project = models.ForeignKey(Project)
+    text = models.TextField()
+    created_on = models.DateTimeField(auto_now_add = 1)
+
+    @classmethod
+    def as_csv_header(self):
+    def as_csv(self):
+    class Admin:
+    class Meta:
+
+class WikiPage(models.Model):
+    """Model of the wiki page.
+    name: name of the page, should be alphanumeric. Shown in url.
+    Title: title for the page. Can contain spaces.
+    current_revion: the wiki_page which is the current revision for this page.
+    created_on: When was this page created. Auto filled.
+    is_deleted: Set this flat when the page needs to be delted.
+    """
+    name = models.CharField(max_length = 20)
+    title = models.CharField(max_length = 200)
+    project = models.ForeignKey(Project)
+    current_revision = models.ForeignKey('WikiPageRevision', null = True)
+    created_on = models.DateTimeField(auto_now_add = 1)
+    is_deleted = models.BooleanField(default = True)
+
+    def edit_url(self):
+    def get_absolute_url(self):
+    def version_url(self):
+    def save(self):
+    def delete(self):
+    class Admin:
+
+class WikiPageRevision(models.Model):
+    """user: The user who wrote this page revision.
+    wiki_page: The page for which this revision is created.
+    wiki_text: The text entered for this revion.
+    html_text: The text converted to html.
+    created_on: When was this revision created. Auto filled.
+
+    Version_number: Version number for this revision. Starts from 1 and increemnst there after.
+    """
+    user = models.ForeignKey(User)
+    wiki_page = models.ForeignKey(WikiPage)
+    wiki_text = models.TextField()
+    html_text = models.TextField()
+    created_on = models.DateTimeField(auto_now_add = 1)
+    version_number = models.IntegerField(default = 0)
+
+    def save(self):
+    def get_absolute_url(self):
+    class Admin:
+    class Meta:
+
+
+class TaskNote(models.Model):
+    """
+    Task_num: The task for which this note is created.
+    We cant just use a foreign key coz, the note is for a specific task number, not a revision of it.
+    text: Text of the noe.
+    user: User who wrote this note.
+    created_on: When wa sthis note created.
+    """
+    task_num = models.IntegerField()
+    text = models.TextField()
+    user = models.ForeignKey(User)
+    created_on = models.DateTimeField(auto_now_add = 1)
+
+
+class ProjectFile(models.Model):
+    """project: The project for which this file is attached.
+    filename: name of the file.
+    """
+    project = models.ForeignKey(Project)
+    filename = models.CharField(max_length = 200)
+    #user = models.ForeignKey(User)
+    created_on = models.DateTimeField(auto_now_add = 1)
+    current_revision = models.ForeignKey('ProjectFileVersion', related_name = 'this_file', null = True)
+    total_size = models.IntegerField()
+
+    def size_str(self):
+    def save(self):
+    def get_s3_url(self):
+    def __unicode__(self):
+    class Meta:
+    class Admin:
+
+class ProjectFileVersion(models.Model):
+    """A specific version of the file uploaded.
+    file: file for which this revision was created.
+    revision_name: Name under which this revision is saved.
+    version_number = version number of the file uploaded. Starts at 1. Increments thereafter.
+    user: The user who created this file.
+    size: size of this file revision.
+    """
+    file = models.ForeignKey(ProjectFile)
+    revision_name = models.CharField(max_length = 200)
+    version_number = models.IntegerField()
+    user = models.ForeignKey(User)
+    size = models.IntegerField()
+    created_on = models.DateTimeField(auto_now_add = 1)
+
+    def get_name(self):
+    def get_real_name(self):
+    def get_s3_url(self):
+    def save(self):
+    class Admin:
+    class Meta:
+
+def get_tree(task):

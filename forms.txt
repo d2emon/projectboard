@@ -1,0 +1,14 @@
+class AddTodoItemForm(forms.Form):
+    """A form to add a todo item to a todo list."""
+    text = DojoCharField()
+
+    def __init__(self, list = None, *args, **kwargs):
+    def save(self):
+
+class MarkDoneForm(forms.Form):
+    """A form to mark the task as done."""
+    is_complete = forms.BooleanField()
+
+    def __init__(self, task, *args, **kwargs):
+    def save(self):
+
