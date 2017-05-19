@@ -14,6 +14,7 @@ def index(request):
     register_form = UserCreationForm(prefix='register')
     login_form = LoginForm()
     request.session.set_test_cookie()
+
     context = {
         'register_form': register_form,
         'login_form': login_form

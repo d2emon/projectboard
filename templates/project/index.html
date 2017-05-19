@@ -1,4 +1,5 @@
 {% extends 'project/base.html' %}
+{% load static %}
 
 {% block title %}Index{% endblock %}
 
@@ -13,9 +14,7 @@
 
 {% block topheader %}
 <div class="signout"></div>
-<div id="logo">
-  <img src="/static/images/logo.gif" alt="" />
-</div>
+<div id="logo"><img src="{% static 'images/logo.gif' %}" alt="" /></div>
 <div class="icon"></div>
 {% endblock %}
 
@@ -35,25 +34,25 @@
 		</ul>
 
     <h2>Oh look. Some screenshots!</h2>
-	  <div class="m-img"><img src="/static/screenshots/tn_calendar_1.png" alt="" /><br />Calendar</div>
-	  <div class="m-img"><img src="/static/screenshots/tn_dashboard_1.png" alt="" /><br />Metrics</div>
-	  <div class="m-img"><img src="/static/screenshots/tn_metrics_1.png" alt="" /><br />Dashboard</div>
+    <div class="m-img"><img src="{% static 'screenshots/tn_calendar_1.png' %}" alt="" /><br />Calendar</div>
+    <div class="m-img"><img src="{% static 'screenshots/tn_dashboard_1.png' %}" alt="" /><br />Metrics</div>
+    <div class="m-img"><img src="{% static 'screenshots/tn_metrics_1.png' %}" alt="" /><br />Dashboard</div>
 	</div>
 
   <div id="rightcontent">
     <div id="sigin">
 			<h3>Signin into DashBoard</h3>
 			<div class="createcontent">
-				<form action="/accounts/login/" method="post">
-					{% csrf_token %}
+        <form action="{% url 'users:login' %}" method="post">
+          {% csrf_token %}
 					{{login_form}}
 					<input type="submit" value="login" />
 				</form>
 			</div>
 			<div class="forgatpass">
-			  <p style="color:#4D7CA7; padding-left:95px;"><a href="/accounts/reset/">Forgot your password?</a> | <a href="#">Help</a></p>
+        <p style="color:#4D7CA7; padding-left:95px;"><a href="{% url 'users:auth_password_reset' %}">Forgot your password?</a> | <a href="#">Help</a></p>
         <p style="padding-left:110px; margin-top:30px;"><span style="font-size:15px;">Don't have a Account yet ?</span><br />Signing up is easy.</p>
-        <p style="padding-left:140px; margin-top:20px;"><a href="/accounts/register/" class="join"></a></p>
+        <p style="padding-left:140px; margin-top:20px;"><a href="{%url 'users:registration_register' %}" class="join"></a></p>
 			</div>
     </div>
   </div>
