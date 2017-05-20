@@ -5,6 +5,8 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 
 from .forms import UserCreationForm, LoginForm, CreateProjectForm
+from .models import Project
+
 import users.views
 
 
@@ -38,7 +40,8 @@ def dashboard(request):
     Shows very critical information about available projects.
     """
     user = request.user
-    subs = []
+    subs = Project.objects.all()
+    print(subs)
     invites = []
     # if request.GET.get('includeinactive', 0):
     #     subs = user.subscribeduser_set.all()
@@ -47,28 +50,26 @@ def dashboard(request):
     # invites = user.inviteduser_set.filter(rejected = False)
     createform = CreateProjectForm()
     if request.method == 'POST':
-        if request.POST.has_key('createproject'):
+        if 'createproject' in request.POST:
             createform = CreateProjectForm(user, request.POST)
             if createform.is_valid():
                 createform.save()
                 return HttpResponseRedirect('.')
-        elif request.POST.has_key('acceptinv'):
-            # project = Project.objects.get(id = request.POST['projid'])
+        elif 'acceptinv' in request.POST:
+            project = Project.objects.get(id = request.POST['projid'])
             # invite = InvitedUser.objects.get(id = request.POST['invid'])
             # subscribe = SubscribedUser(project = project, user = user, group = invite.group)
             # subscribe.save()
             # invite.delete()
             return HttpResponseRedirect('.')
-        elif request.POST.has_key('activestatus'):
+        elif 'activestatus' in request.POST.has_key:
             projid = request.POST['projectid']
-            # project = Project.objects.get(id = projid)
+            project = Project.objects.get(id = projid)
             if request.POST['activestatus'] == 'true':
-                # project.is_active = False
-                pass
+                project.is_active = False
             elif request.POST['activestatus'] == 'false':
-                # project.is_active = True
-                pass
-            # project.save()
+                project.is_active = True
+            project.save()
             return HttpResponseRedirect('.')
         elif request.POST.has_key('markdone'):
             print(request.POST)

@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 
 
+from .models import Project
+
 import re
 import datetime
 
@@ -54,10 +56,10 @@ class UserCreationForm(forms.Form):
         return self.cleaned_data['project_name']
 
     def is_valid_shortname(self):
-        # try:
-        #     Project.objects.get(shortname = self.cleaned_data['project_name'])
-        # except Project.DoesNotExist:
-        #     return
+        try:
+            Project.objects.get(shortname = self.cleaned_data['project_name'])
+        except Project.DoesNotExist:
+            return
         raise forms.ValidationError('This project name is already taken. Please ' +
                                     'try another.')
 
@@ -127,10 +129,10 @@ class CreateProjectForm(forms.Form):
         self.fields['start_date'].initial = datetime.date.today()
 
     def save(self):
-        # project = Project(name = self.cleaned_data['name'], shortname=self.cleaned_data['shortname'])
-        # project.owner = self.user
-        # project.start_date = self.cleaned_data['start_date']
-        # project.save()
+        project = Project(name = self.cleaned_data['name'], shortname=self.cleaned_data['shortname'])
+        project.owner = self.user
+        project.start_date = self.cleaned_data['start_date']
+        project.save()
         # subscribe = SubscribedUser(user = self.user, project = project, group = 'Owner')
         # subscribe.save()
         project = True
@@ -144,8 +146,8 @@ class CreateProjectForm(forms.Form):
         return self.cleaned_data['shortname']
 
     def is_valid_shortname(self):
-        # try:
-        #     Project.objects.get(shortname = self.cleaned_data['shortname'])
-        # except Project.DoesNotExist:
-        #     return
+        try:
+            Project.objects.get(shortname = self.cleaned_data['shortname'])
+        except Project.DoesNotExist:
+            return
         raise forms.ValidationError('This project name is already taken. Please try another.')
