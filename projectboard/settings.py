@@ -126,3 +126,12 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static1")
+
+
+ACCOUNT_ACTIVATION_DAYS = 7
+
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 1025
+
+PERSISTENT_SESSION_KEY = 'persistant'
+LOGIN_REDIRECT_URL = '/dashboard/'

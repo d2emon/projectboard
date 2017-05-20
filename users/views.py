@@ -1,22 +1,65 @@
 from django.shortcuts import render
-from projects.forms import UserCreationForm, LoginForm
+from django.http import HttpResponseRedirect
+from django.conf import settings
+from django.contrib import auth
+from django.contrib.auth import REDIRECT_FIELD_NAME
+
+from projects.forms import LoginForm
 
 
 def login(request):
     """
-    If the user is not logged in, show him the login/register forms, with some
-    blurb about the services. Else redirect to /dashboard/
-    """
-    # if request.user.is_authenticated():
-    #     return HttpResponseRedirect('/dashboard/')
-    # if request.method == 'POST':
-    #     return login(request)
-    register_form = UserCreationForm(prefix='register')
-    login_form = LoginForm()
-    request.session.set_test_cookie()
+    Login a user.
+    Actions avialable:
+    Login: Anyone
 
+    Display and processs the login form.
+    """
+
+    no_cookies = False
+    account_disabled = False
+    invalid_login = False
+    redirect_to = request.GET.get(REDIRECT_FIELD_NAME, '')
+
+    if not redirect_to or '//' in redirect_to or ' ' in redirect_to:
+        redirect_to = settings.LOGIN_REDIRECT_URL
+
+    if request.method == 'POST':
+        if request.session.test_cookie_worked():
+            request.session.delete_test_cookie()
+            form = LoginForm(request.POST)
+            if form.is_valid():
+                user = auth.authenticate(
+                    username = form.cleaned_data['username'],
+                    password = form.cleaned_data['password'],
+                )
+                if user:
+                    if user.is_active:
+                        request.session[settings.PERSISTENT_SESSION_KEY] = form.cleaned_data['remember_user']
+                        auth.login(request, user)
+                        # login successful, redirect
+                        return HttpResponseRedirect(redirect_to)
+                    else:
+                        account_disabled = True
+                else:
+                    invalid_login = True
+        else:
+            no_cookies = True
+            form = None
+    else:
+        form = LoginForm()
+
+    # cookie must be successfully set/retrieved for the form to be processed
+    request.session.set_test_cookie()
     context = {
-        'register_form': register_form,
-        'login_form': login_form
+        'no_cookies': no_cookies,
+        'account_disabled': account_disabled,
+        'invalid_login': invalid_login,
+        'form': form,
+        REDIRECT_FIELD_NAME: redirect_to
     }
-    return render(request, 'project/index.html', context)
+    return render(
+        request,
+        'registration/login.html',
+        context,
+    )

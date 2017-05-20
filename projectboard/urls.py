@@ -20,4 +20,5 @@ urlpatterns = [
     url(r'^users/', include('users.urls', namespace='users')),
     url(r'^projects/', include('projects.urls', namespace='projects')),
     url(r'^admin/', admin.site.urls),
+    url(r'^accounts/', include('registration.backends.default.urls')),
 ]
