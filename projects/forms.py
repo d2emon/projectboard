@@ -4,6 +4,7 @@ from django.utils.translation import ugettext as _
 
 
 import re
+import datetime
 
 
 class UserCreationForm(forms.Form):
@@ -104,3 +105,47 @@ class LoginForm(forms.Form):
             raise forms.ValidationError('Invalid password, please try again.')
 
         return self.cleaned_data
+
+
+class CreateProjectForm(forms.Form):
+    """
+    Create a new project.
+    Writes to model project
+    Short name: Only alphanumeric chars allowed. Length = 20
+    Name: Name of project. Length = 200
+    Start_date: Start date for project. Defaults to today.
+    End_date: End date ofr the project.
+    """
+    shortname = forms.CharField(max_length = 20, help_text = 'Shortname for your project. Determines URL. Can not contain spaces/sepcial chars.')
+    name = forms.CharField(max_length = 200, help_text='Name of the project.')
+    start_date = forms.DateField()
+    end_date = forms.DateField(required = False)
+
+    def __init__(self, user = None, *args, **kwargs):
+        super(CreateProjectForm, self).__init__(*args, **kwargs)
+        self.user = user
+        self.fields['start_date'].initial = datetime.date.today()
+
+    def save(self):
+        # project = Project(name = self.cleaned_data['name'], shortname=self.cleaned_data['shortname'])
+        # project.owner = self.user
+        # project.start_date = self.cleaned_data['start_date']
+        # project.save()
+        # subscribe = SubscribedUser(user = self.user, project = project, group = 'Owner')
+        # subscribe.save()
+        project = True
+        return project
+
+    def clean_shortname(self):
+        alnum_re = re.compile(r'^\w+$')
+        if not alnum_re.search(self.cleaned_data['shortname']):
+            raise forms.ValidationError("This value must contain only letters, numbers and underscores.")
+        self.is_valid_shortname()
+        return self.cleaned_data['shortname']
+
+    def is_valid_shortname(self):
+        # try:
+        #     Project.objects.get(shortname = self.cleaned_data['shortname'])
+        # except Project.DoesNotExist:
+        #     return
+        raise forms.ValidationError('This project name is already taken. Please try another.')

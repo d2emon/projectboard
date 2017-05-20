@@ -134,4 +134,4 @@ EMAIL_HOST = 'localhost'
 EMAIL_PORT = 1025
 
 PERSISTENT_SESSION_KEY = 'persistant'
-LOGIN_REDIRECT_URL = '/dashboard/'
+LOGIN_REDIRECT_URL = '/projects/dashboard/'
