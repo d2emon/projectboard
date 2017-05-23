@@ -14,10 +14,14 @@ class Project(models.Model):
     end_date: When does this project end?
     is_active: Is this project active?
     """
-    shortname = models.CharField(max_length = 20, unique = True)
-    name = models.CharField(max_length = 200)
+    slug = models.SlugField(max_length=20, unique=True)
+    name = models.CharField(max_length=200)
+    description = models.TextField(blank=True, null=True)
     owner = models.ForeignKey(User)
     start_date = models.DateField()
     end_date = models.DateField(null = True)
     is_active = models.BooleanField(default = True)
     created_on = models.DateTimeField(auto_now_add = 1)
+
+    def __str__(self):
+        return self.name
