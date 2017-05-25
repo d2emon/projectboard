@@ -22,4 +22,5 @@ urlpatterns = [
     url(r'^profile$', views.login, name='profile'),
     url(r'^lock$', views.login, name='lock'),
     url(r'^logout$', views.login, name='logout'),
+    url(r'^chat$', views.login, name='chat'),
 ]
