@@ -1,0 +1,30 @@
+{
+  "name": "projectboard",
+  "version": "0.1.0",
+  "description": "My project management app",
+  "main": "manage.py",
+  "scripts": {
+    "preinstall": "git pull && pip install -r requirements.txt",
+    "install": "bower install",
+    "start": "./manage.py runserver",
+    "test": "./manage.py test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/d2emon/projectboard.git"
+  },
+  "keywords": [
+    "django",
+    "project",
+    "management"
+  ],
+  "author": "Dmitry Kutsenko <d2emonium@gmail.com>",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/d2emon/projectboard/issues"
+  },
+  "homepage": "https://github.com/d2emon/projectboard#readme",
+  "dependencies": {
+    "coreui.io": "^1.0.0-alpha.5"
+  }
+}
