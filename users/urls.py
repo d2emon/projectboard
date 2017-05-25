@@ -15,4 +15,11 @@ urlpatterns = [
     # Dummy views
     url(r'^list$', views.login, name='list'),
     url(r'^settings$', views.login, name='settings'),
+    url(r'^notifications(?:/(?P<filter>\w+))?$', views.notify, name='notify'),
+    url(r'^payments$', views.login, name='payments'),
+    url(r'^projects$', views.login, name='projects'),
+    url(r'^pins$', views.login, name='pins'),
+    url(r'^profile$', views.login, name='profile'),
+    url(r'^lock$', views.login, name='lock'),
+    url(r'^logout$', views.login, name='logout'),
 ]

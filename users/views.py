@@ -63,3 +63,7 @@ def login(request):
         'registration/login.html',
         context,
     )
+
+
+def notify(request, filter=""):
+    return HttpResponseRedirect("/")
