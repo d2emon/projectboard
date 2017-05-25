@@ -1,0 +1,31 @@
+{
+  "name": "projectboard",
+  "homepage": "https://github.com/d2emon/projectboard",
+  "authors": [
+    "Dmitry Kutsenko <d2emonium@gmail.com>"
+  ],
+  "description": "My project management app",
+  "main": "manage.py",
+  "keywords": [
+    "django",
+    "project",
+    "management"
+  ],
+  "license": "GPL-3",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "CoreUI-Free-Bootstrap-Admin-Template": "git://github.com/mrholek/CoreUI-Free-Bootstrap-Admin-Template.git",
+    "jquery": "^3.2.1",
+    "bootstrap": "^3.3.7",
+    "tether": "^1.4.0",
+    "PACE": "pace#^1.0.2",
+    "chart.js": "^2.5.0"
+  }
+}
