@@ -104,3 +104,5 @@ ENV/
 
 db/
 temp/
+static/bower/
+node_modules/
