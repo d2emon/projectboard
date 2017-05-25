@@ -102,12 +102,40 @@ def dashboard(request):
         'username': "d2emon",
         'email': "d2emonium@gmail.com",
     }
+    graphs = [
+        {
+            'style': 'card-primary',
+            'total': random.randrange(0, 10000),
+            'chart': 'card-chart1',
+            'settings': True,
+        },
+        {
+            'style': 'card-info',
+            'total': random.randrange(0, 10000),
+            'chart': 'card-chart2',
+            'location': True,
+        },
+        {
+            'style': 'card-warning',
+            'total': random.randrange(0, 10000),
+            'chart': 'card-chart3',
+            'settings': True,
+            'location': True,
+        },
+        {
+            'style': 'card-danger',
+            'total': random.randrange(0, 10000),
+            'chart': 'card-chart4',
+            'settings': True,
+        },
+    ]
     context = {
         'subs': subs,
         'createform': createform,
         'invites': invites,
 
         'userdata': userdata,
+        'graphs': graphs,
     }
     if request.GET.get('csv', ''):
         # response, writer = reponse_for_cvs()

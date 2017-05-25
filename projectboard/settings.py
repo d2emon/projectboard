@@ -116,6 +116,10 @@ USE_L10N = True
 
 USE_TZ = True
 
+USE_THOUSAND_SEPARATOR = True
+
+import locale
+locale.setlocale(locale.LC_ALL, 'ru_RU.utf8')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
