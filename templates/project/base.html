@@ -1,147 +1,130 @@
 {% load static %}
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!--
+ * CoreUI - Open Source Bootstrap Admin Template
+ * @version v1.0.0-alpha.5
+ * @link http://coreui.io
+ * Copyright (c) 2017 creativeLabs Łukasz Holeczek
+ * @license MIT
+ -->
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-  <title>
-    {% block title %}Dash Bard{% endblock %}
-  </title>
-  <script language="JavaScript" type="text/javascript" src="/static/js/jquery.js">
-  </script>
-  <script language="JavaScript" type="text/javascript" src="/static/js/jquery.validate.js">
-  </script>
-  <script language="JavaScript" type="text/javascript" src="/static/js/jquery.validate.js">
-  </script>
-  <script language="JavaScript" type="text/javascript" src="/static/js/ui.datepicker.js">
-  </script>
-  <script language="JavaScript" type="text/javascript" src="/static/js/jquery.dimensions.js">
-  </script>
-  <script language="JavaScript" type="text/javascript" src="/static/js/ui.accordion.js">
-  </script>
-  <script language="JavaScript" type="text/javascript" src="/static/js/prajact.js">
-  </script>
-{% block jqueryarea %}
-{% endblock %}
 
-{% block feeds %}
-  <link rel="alternate" type="application/rss+xml" title="{{project.name}} logs RSS feeds" href="/feeds/project/{{project.shortname}}/" />
-{% endblock %}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="{{ description }}">
+    <meta name="author" content="{{ author }}">
+    <meta name="keyword" content="{{ keywords }}">
+    <link rel="shortcut icon" href="{% static 'images/favicon.png' %}">
 
-  <link href="{% static 'style.css' %}" type="text/css" rel="stylesheet" />
-  <link href="/static/css/flora.datepicker.css" type="text/css" rel="stylesheet" />
+    <title>{% block title %}{{ title }}{% endblock %}</title>
+
+    <!-- Icons -->
+    <link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/simple-line-icons.css' %}" rel="stylesheet">
+
+    <!-- Main styles for this application -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
 </head>
 
-<body>
-  <div id="container">
-	  <div id="header">
-      {% block topheader %}
-		  <div class="signout"><a href="/accounts/logout/">Sign Out</a></div>
-		  <div id="logo">
-        <a href="/"><img src="/static/images/logo.gif" alt="" /></a>
-      </div>
-      <div class="icon"></div>
-      <div class="topicon">
-        <a href="{{pdfpath}}"><img src="/static/images/pdf-icon.gif" alt="" /></a>
-        <a href="./?csv=1"><img src="/static/images/excel-icon.gif" alt="" /></a>
-        <a href="#"><img src="/static/images/question_icon.gif" alt="" /></a>
-      </div>
-      {% endblock %}
-	  </div> <!-- end header -->
+<!-- BODY options, add following classes to body to change options
 
-	  <div id="subheader">
-      {% block subheader %}
-		  <div class="sub_header">
-			  <div class="welcome">
-          <p>
-            Howdy {{user.username}}<br />
-            {% block breadcrumbs %}
-			      <span class="breadcrumbs">
-              <a href="/dashboard/">Dashboard</a> &gt; 
-              <a href="{{project.get_absolute_url}}">{{project.name}}</a> 
-			      </span>
-			      {% endblock %}
-			    </p>
+// Header options
+1. '.header-fixed'					- Fixed Header
+
+// Sidebar options
+1. '.sidebar-fixed'					- Fixed Sidebar
+2. '.sidebar-hidden'				- Hidden Sidebar
+3. '.sidebar-off-canvas'		- Off Canvas Sidebar
+4. '.sidebar-minimized'			- Minimized Sidebar (Only icons)
+
+// Aside options
+1. '.aside-menu-fixed'			- Fixed Aside Menu
+2. '.aside-menu-hidden'			- Hidden Aside Menu
+3. '.aside-menu-off-canvas'	- Off Canvas Aside Menu
+
+// Footer options
+1. '.footer-fixed'						- Fixed footer
+
+-->
+
+<body class="app header-fixed sidebar-fixed aside-menu-fixed aside-menu-hidden">
+    <header class="app-header navbar">
+        <button class="navbar-toggler mobile-sidebar-toggler d-lg-none" type="button">☰</button>
+        <a class="navbar-brand" href="#"></a>
+        {% block topmenu %}
+        <ul class="nav navbar-nav d-md-down-none">
+            <li class="nav-item">
+                <a class="nav-link navbar-toggler sidebar-toggler" href="#">☰</a>
+            </li>
+        </ul>
+        {% endblock %}  
+        {% block usermenu %}
+        {% endblock %}  
+    </header>
+
+    <div class="app-body">
+        <div class="sidebar">
+            <nav class="sidebar-nav">
+              {% block navmenu %}
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html"><i class="icon-speedometer"></i> Dashboard <span class="badge badge-info">NEW</span></a>
+                    </li>
+
+                </ul>
+              {% endblock %}  
+            </nav>
         </div>
-			  <div class="nav">
-			    <ul>
-			      <li><a href="/dashboard/" class="nav-selected">Dashboard</a></li>
-			      <li><a href="/accounts/settings/">Settings</a></li>
-			    </ul>
-		    </div><!--End nav -->
-	    </div> <!--end sub_header -->
-	    {% endblock %}
-	
-		  <div class="subnav">
-				{% block subnav %}
-				<div class="subnav">	
-		      <a href="/dashboard/" class="dp-icon">Dashboard</a> |  
-          <a href="{{project.get_absolute_url}}">Project Details</a>  |  
-          <a href="{{project.tasks_url}}">Tasks</a>  |  
-          <a href="{{project.todo_url}}">Todo</a>  |
-          <a href="{{project.noticeboard_url}}">Noticeboard</a>  |
-          <a href="{{project.calendar_url}}">Calendar</a>  |
-          <a href="{{project.wiki_url}}" >Wiki</a> |
-          <a href="{{project.files_url}}">Files</a>  |
-          <a href="{{project.metrics_url}}">Metrics</a>  | 
-          <a href="{{project.logs_url}}">Logs</a>
-		    </div>
-				{% endblock %}
-		  </div> <!-- End subnav -->
-	  </div><!-- end subheader -->
-	  {% block outercontent %}
-	  <div id="content">
-	
-      {% block contenttitle %}
-	    {% endblock %}
 
-	    <div id="contentwrap">
-		    <div id="leftcolumn">
-			    {% block contents %}
-			    <div class="contenttext">
-				    <div class="curve"><p></p></div>
-				    <div class="tblpad">
-					    <div class="textcontent">
-					      {%  block innercontent %}
-					      {% endblock %}
-					    </div><!-- end  textcontent -->
-				    </div> <!-- end tblpad -->
-          </div><!-- end contenttext -->
-			    {% block formsarea %}
-			    {% endblock %}
-		
-		      {% endblock contents %}	
-		    </div><!-- end leftcolumn -->
-		  </div><!-- end contentwrap -->
-		
-		  <div id="rightcolumn">
-		    {% block sidebar %}
-		    <h3>Meta</h3>
-		    <p class="totalproject">This project has 8 tasks</p>
-		    <p>
-          You are viewing logs for :<br />
-          Project name<br />
-          These are also available<br />
-          as <a href="#">RSS feeds</a>
-        </p>
-		    {% endblock sidebar %}
-		  </div><!-- End rightcolumn -->
-		  <br style="clear:both" />
-	  </div><!-- end content -->
-	  {% endblock outercontent %}
-    
-    <div id="footer">
-      {% block footer %}
-      <p class="footerlink">
-        <a href="#">Home</a> |
-        <a href="#">Contact</a> |
-        <a href="#">Terms</a> |
-        <a href="#">Links</a> |
-        <a href="#">Privacy</a> |
-        <a href="#">Site Map</a>
-      </p>
-      <p style="margin:0px;">Powered By webfactional .Copyright 2007. webfactional.com</p>
-      {% endblock footer %}
-    </div><!-- end footer -->
-  </div><!-- end container -->
+        <!-- Main content -->
+        <main class="main">
+
+            {% block breadcrumbs %}
+            {% endblock %}
+
+            <div class="container-fluid">
+
+                {% block content %}
+                {% endblock %}
+
+            </div>
+            <!-- /.conainer-fluid -->
+        </main>
+
+        {% block aside %}
+        {% endblock %}
+
+    </div>
+
+    <footer class="app-footer">
+        <a href="http://coreui.io">CoreUI</a> © 2017 creativeLabs.
+        <span class="float-right">Powered by <a href="http://coreui.io">CoreUI</a>
+        </span>
+    </footer>
+
+    <!-- Bootstrap and necessary plugins -->
+    <script src="{% static 'bower/jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'bower/tether/dist/js/tether.min.js' %}"></script>
+    <script src="{% static 'bower/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'bower/PACE/pace.min.js' %}"></script>
+
+    <!-- Plugins and scripts required by all views -->
+    <script src="{% static 'bower/chart.js/dist/Chart.min.js' %}"></script>
+
+    <!-- GenesisUI main scripts -->
+    <script src="{% static 'js/app.js' %}"></script>
+
+    {% block jsblock %}
+    <!-- Plugins and scripts required by this views -->
+
+    <!-- Custom scripts required by this view -->
+    <script src="{% static 'js/views/main.js' %}"></script>
+    {% endblock %}
+
 </body>
+
 </html>
