@@ -1,4 +1,4 @@
-from django.conf.urls import url, include
+from django.conf.urls import url
 
 from . import views
 
@@ -11,4 +11,8 @@ urlpatterns = [
     # url(r'^auth/', include('django.contrib.auth')),
     # (r'^accounts/', include('registration.backends.default.urls')),
     # (r'^(?P<project_name>\w+)/user/(?P<username>\w+)/$', 'user_details'),
+
+    # Dummy views
+    url(r'^list$', views.login, name='list'),
+    url(r'^settings$', views.login, name='settings'),
 ]
