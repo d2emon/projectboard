@@ -904,10 +904,15 @@
                         <!--/.col-->
                     </div>
                     <!--/.row-->
-	 <div class="contenttext">
-				<div class="curve"><p></p></div>
-				<div class="tblpad">
-				<table width="100%" border="0" cellspacing="0" cellpadding="0" class="tbltitle">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          Projects
+        </div>
+        <div class="card-block">
+          <div class="tablepad">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tbltitle">
   <tr>
     <td width="27%" style="text-align:center">Project Name</td>
     <td width="27%" style="text-align:left" >Task</td>
@@ -961,12 +966,20 @@
  {% endfor %}
  </tr> 
 </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-</div>
-</div>
-    
-    {% if invites %}
-        <h2>Pending Invites</h2>
+  {% if invites %}
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+			    Pending Invites
+        </div>
+        <div class="card-block">
         <ul>
         {% for invite in invites %}
             <li>
@@ -980,20 +993,31 @@
             </li>
         {% endfor %}
         </ul>
-    {% endif %}
-				
-		<div id="create">
-			<h3>Create a new project</h3>
-			<div class="createcontent">
-				<form action="." method="post">
-                    {% csrf_token %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+			    Create a new project
+        </div>
+        <div class="card-block">
+				  <form action="/" method="post">
+            {% csrf_token %}
             {{createform.as_p}}				
-					<input name="createproject" type="submit" value="Submit" class="submitbutton" />
-				</form>
-			</div>
-			
-			
-			</div>		
+					  <input name="createproject" type="submit" value="Submit" class="submitbutton" />
+				  </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+				
 {% endblock %}
 
 
