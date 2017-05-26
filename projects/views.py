@@ -129,6 +129,100 @@ def dashboard(request):
             'settings': True,
         },
     ]
+    total = random.randrange(0, 100000)
+    counts = [random.randrange(0, total) for i in range(5)]
+    bars = [
+        {
+            'title': "Visits",
+            'total': total,
+            'count': counts[0],
+            'rate': counts[0] * 100 / total,
+            'style': "bg-success",
+            'show_count': True,
+        },
+        {
+            'title': "Unique",
+            'total': total,
+            'count': counts[1],
+            'style': "bg-info",
+            'show_count': True,
+        },
+        {
+            'title': "Pageviews",
+            'total': total,
+            'count': counts[2],
+            'style': "bg-warning",
+            'show_count': True,
+        },
+        {
+            'title': "New Users",
+            'total': total,
+            'count': counts[3],
+            'style': "bg-danger",
+            'show_count': True,
+        },
+        {
+            'title': "Bounce Rate",
+            'total': total,
+            'count': counts[4],
+            'rate': counts[4] * 100 / total,
+            'style': "",
+            'show_count': False,
+        },
+    ]
+    social_friends = []
+    social_friends_raw = [random.randint(0, 1000) for i in range(4)]
+    for id, friends in enumerate(social_friends_raw):
+        if random.randint(0, 2) < 1:
+            social_friends.append("%dk" % friends)
+            continue
+        if friends < 100:
+            social_friends.append(friends)
+            continue
+        for d in range(1000, 0, -100):
+            if friends > d:
+                social_friends.append("%d+" % d)
+                break
+        pass
+    social_feeds = [random.randint(0, 2000) for i in range(4)]
+    socials = [
+        {
+            'style': "facebook",
+            'icon': "fa-facebook",
+            'friends': social_friends[0],
+            'feeds': social_feeds[0],
+            'chart': "social-box-chart-1",
+            'friends_label': 'Friends',
+            'feeds_label': 'Feeds',
+        },
+        {
+            'style': "twitter",
+            'icon': "fa-twitter",
+            'friends': social_friends[1],
+            'feeds': social_feeds[1],
+            'chart': "social-box-chart-2",
+            'friends_label': 'Followers',
+            'feeds_label': 'Tweets',
+        },
+        {
+            'style': "linkedin",
+            'icon': "fa-linkedin",
+            'friends': social_friends[2],
+            'feeds': social_feeds[2],
+            'chart': "social-box-chart-3",
+            'friends_label': 'Contacts',
+            'feeds_label': 'Feeds',
+        },
+        {
+            'style': "google-plus",
+            'icon': "fa-google-plus",
+            'friends': social_friends[3],
+            'feeds': social_feeds[3],
+            'chart': "social-box-chart-4",
+            'friends_label': 'Followers',
+            'feeds_label': 'Circles',
+        },
+    ]
     context = {
         'subs': subs,
         'createform': createform,
@@ -136,6 +230,8 @@ def dashboard(request):
 
         'userdata': userdata,
         'graphs': graphs,
+        'bars': bars,
+        'socials': socials,
     }
     if request.GET.get('csv', ''):
         # response, writer = reponse_for_cvs()
