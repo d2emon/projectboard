@@ -4,10 +4,41 @@ from django.http import HttpResponseRedirect
 
 from django.contrib.auth.decorators import login_required
 
-from .forms import UserCreationForm, LoginForm, CreateProjectForm
+from .forms import CreateProjectForm
 from .models import Project
 
+from users.forms import UserCreationForm, LoginForm
+
 import users.views
+
+
+def get_userdata():
+    import random
+    notifications = {
+        'updates': 0,
+        'messages': 0,
+        'tasks': 0,
+        'comments': 0,
+        'payments': 0,
+        'projects': 0,
+    }
+    for k in notifications:
+        n = random.randint(-50, 100)
+        if n < 0:
+            notifications[k] = 0
+            continue
+        for d in range(100, 0, -10):
+            if n > d:
+                n = str(d) + "+"
+                break
+        notifications[k] = n
+    userdata = {
+        'notifications': notifications,
+        'avatar': str(random.randint(1, 8)) + ".jpg",
+        'username': "d2emon",
+        'email': "d2emonium@gmail.com",
+    }
+    return userdata
 
 
 def index(request):
@@ -62,7 +93,7 @@ def dashboard(request):
             # subscribe.save()
             # invite.delete()
             return HttpResponseRedirect('.')
-        elif 'activestatus' in request.POST.has_key:
+        elif 'activestatus' in request.POST:
             projid = request.POST['projectid']
             project = Project.objects.get(id = projid)
             if request.POST['activestatus'] == 'true':
@@ -71,167 +102,18 @@ def dashboard(request):
                 project.is_active = True
             project.save()
             return HttpResponseRedirect('.')
-        elif request.POST.has_key('markdone'):
+        elif 'markdone' in request.POST:
             print(request.POST)
             # handle_task_status(request)
     elif request.method == 'GET':
         createform = CreateProjectForm()
 
-    import random
-    notifications = {
-        'updates': 0,
-        'messages': 0,
-        'tasks': 0,
-        'comments': 0,
-        'payments': 0,
-        'projects': 0,
-    }
-    for k in notifications:
-        n = random.randint(-50, 100)
-        if n < 0:
-            notifications[k] = 0
-            continue
-        for d in range(100, 0, -10):
-            if n > d:
-                n = str(d) + "+"
-                break
-        notifications[k] = n
-    userdata = {
-        'notifications': notifications,
-        'avatar': str(random.randint(1, 8)) + ".jpg",
-        'username': "d2emon",
-        'email': "d2emonium@gmail.com",
-    }
-    graphs = [
-        {
-            'style': 'card-primary',
-            'total': random.randrange(0, 10000),
-            'chart': 'card-chart1',
-            'settings': True,
-        },
-        {
-            'style': 'card-info',
-            'total': random.randrange(0, 10000),
-            'chart': 'card-chart2',
-            'location': True,
-        },
-        {
-            'style': 'card-warning',
-            'total': random.randrange(0, 10000),
-            'chart': 'card-chart3',
-            'settings': True,
-            'location': True,
-        },
-        {
-            'style': 'card-danger',
-            'total': random.randrange(0, 10000),
-            'chart': 'card-chart4',
-            'settings': True,
-        },
-    ]
-    total = random.randrange(0, 100000)
-    counts = [random.randrange(0, total) for i in range(5)]
-    bars = [
-        {
-            'title': "Visits",
-            'total': total,
-            'count': counts[0],
-            'rate': counts[0] * 100 / total,
-            'style': "bg-success",
-            'show_count': True,
-        },
-        {
-            'title': "Unique",
-            'total': total,
-            'count': counts[1],
-            'style': "bg-info",
-            'show_count': True,
-        },
-        {
-            'title': "Pageviews",
-            'total': total,
-            'count': counts[2],
-            'style': "bg-warning",
-            'show_count': True,
-        },
-        {
-            'title': "New Users",
-            'total': total,
-            'count': counts[3],
-            'style': "bg-danger",
-            'show_count': True,
-        },
-        {
-            'title': "Bounce Rate",
-            'total': total,
-            'count': counts[4],
-            'rate': counts[4] * 100 / total,
-            'style': "",
-            'show_count': False,
-        },
-    ]
-    social_friends = []
-    social_friends_raw = [random.randint(0, 1000) for i in range(4)]
-    for id, friends in enumerate(social_friends_raw):
-        if random.randint(0, 2) < 1:
-            social_friends.append("%dk" % friends)
-            continue
-        if friends < 100:
-            social_friends.append(friends)
-            continue
-        for d in range(1000, 0, -100):
-            if friends > d:
-                social_friends.append("%d+" % d)
-                break
-        pass
-    social_feeds = [random.randint(0, 2000) for i in range(4)]
-    socials = [
-        {
-            'style': "facebook",
-            'icon': "fa-facebook",
-            'friends': social_friends[0],
-            'feeds': social_feeds[0],
-            'chart': "social-box-chart-1",
-            'friends_label': 'Friends',
-            'feeds_label': 'Feeds',
-        },
-        {
-            'style': "twitter",
-            'icon': "fa-twitter",
-            'friends': social_friends[1],
-            'feeds': social_feeds[1],
-            'chart': "social-box-chart-2",
-            'friends_label': 'Followers',
-            'feeds_label': 'Tweets',
-        },
-        {
-            'style': "linkedin",
-            'icon': "fa-linkedin",
-            'friends': social_friends[2],
-            'feeds': social_feeds[2],
-            'chart': "social-box-chart-3",
-            'friends_label': 'Contacts',
-            'feeds_label': 'Feeds',
-        },
-        {
-            'style': "google-plus",
-            'icon': "fa-google-plus",
-            'friends': social_friends[3],
-            'feeds': social_feeds[3],
-            'chart': "social-box-chart-4",
-            'friends_label': 'Followers',
-            'feeds_label': 'Circles',
-        },
-    ]
     context = {
         'subs': subs,
         'createform': createform,
         'invites': invites,
 
-        'userdata': userdata,
-        'graphs': graphs,
-        'bars': bars,
-        'socials': socials,
+        'userdata': get_userdata(),
     }
     if request.GET.get('csv', ''):
         # response, writer = reponse_for_cvs()

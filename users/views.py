@@ -4,7 +4,7 @@ from django.conf import settings
 from django.contrib import auth
 from django.contrib.auth import REDIRECT_FIELD_NAME
 
-from projects.forms import LoginForm
+from .forms import LoginForm
 
 
 def login(request):
