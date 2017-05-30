@@ -1,6 +1,11 @@
 from django.db import models
+from django.urls import reverse
+
 
 from django.contrib.auth.models import User
+
+
+from datetime import datetime
 
 
 class Project(models.Model):
@@ -19,9 +24,40 @@ class Project(models.Model):
     description = models.TextField(blank=True, null=True)
     owner = models.ForeignKey(User)
     start_date = models.DateField()
-    end_date = models.DateField(null = True)
+    end_date = models.DateField(blank=True, null = True)
     is_active = models.BooleanField(default = True)
     created_on = models.DateTimeField(auto_now_add = 1)
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('projects:project', kwargs={'project_name': self.slug})
+
+    def get_overdue(self):
+        return [
+            {
+                'id': 1,
+                'get_absolute_url': '/',
+                'name': "Task Name",
+                'expected_end_date': datetime.today(),
+                'user_responsible': self.owner,
+                'is_complete': True,
+            },
+            {
+                'id': 1,
+                'get_absolute_url': '/',
+                'name': "Task Name",
+                'expected_end_date': datetime.today(),
+                'user_responsible': self.owner,
+                'is_complete': True,
+            },
+            {
+                'id': 1,
+                'get_absolute_url': '/',
+                'name': "Task Name",
+                'expected_end_date': datetime.today(),
+                'user_responsible': self.owner,
+                'is_complete': True,
+            },
+        ]

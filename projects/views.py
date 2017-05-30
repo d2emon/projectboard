@@ -88,6 +88,11 @@ def createproject(request):
     return redirect('projects:dashboard')
 
 
+@login_required
+def project(request):
+    return redirect('projects:dashboard')
+
+
 @require_POST
 @login_required
 def acceptinv(request):

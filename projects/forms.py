@@ -1,14 +1,15 @@
 from django import forms
+from django.forms import ModelForm
 from django.utils.translation import ugettext as _
 
 
 from .models import Project
 
-import re
+
 import datetime
 
 
-class CreateProjectForm(forms.Form):
+class CreateProjectForm(ModelForm):
     """
     Create a new project.
     Writes to model project
@@ -17,23 +18,30 @@ class CreateProjectForm(forms.Form):
     Start_date: Start date for project. Defaults to today.
     End_date: End date ofr the project.
     """
-    name = forms.CharField(
-        max_length = 200,
-        help_text='Name of the project.'
-    )
-    slug = forms.SlugField(
-        max_length = 20,
-        help_text = 'Shortname for your project. Determines URL. ' +
-        'Can not contain spaces/sepcial chars.'
-    )
-    start_date = forms.DateField(
-        widget=forms.DateInput(attrs={'type': "date"}),
-    )
-    end_date = forms.DateField(
-        label = _("End Date"),
-        widget=forms.DateInput(attrs={'type': "date"}),
-        required=False,
-    )
+
+    class Meta:
+        model = Project
+        fields = ['name', 'slug', 'start_date', 'end_date']
+        help_texts = {
+            'name': "Name of the project.",
+            'slug': "Shortname for your project. Determines URL. " +
+            "Can not contain spaces/sepcial chars.",
+        }
+        widgets = {
+            'start_date': forms.DateInput(attrs={'type': "date"}),
+            'end_date': forms.DateInput(attrs={'type': "date"}),
+        }
+        labels = {
+            'end_date': _("End Date"),
+        }
+        error_messages = {
+            'slug': {
+                'unique': _("This project name is already taken. " +
+                            "Please try another."),
+                'slug': _("This value must contain only letters, numbers " +
+                          "and underscores."),
+            },
+        }
 
     def __init__(self, user = None, *args, **kwargs):
         kwargs.setdefault('label_suffix', '')
@@ -46,29 +54,16 @@ class CreateProjectForm(forms.Form):
     def save(self):
         project = Project(
             name=self.cleaned_data['name'],
-            slug=self.cleaned_data['slug']
+            slug=self.cleaned_data['slug'],
+            owner=self.user,
+            start_date=self.cleaned_data['start_date']
         )
-        project.owner = self.user
-        project.start_date = self.cleaned_data['start_date']
         project.save()
+
         # subscribe = SubscribedUser(user = self.user, project = project, group = 'Owner')
         # subscribe.save()
-        project = True
+
         return project
-
-    def clean_slug(self):
-        alnum_re = re.compile(r'^\w+$')
-        if not alnum_re.search(self.cleaned_data['slug']):
-            raise forms.ValidationError("This value must contain only letters, numbers and underscores.")
-        self.is_valid_slug()
-        return self.cleaned_data['slug']
-
-    def is_valid_slug(self):
-        try:
-            Project.objects.get(slug=self.cleaned_data['slug'])
-        except Project.DoesNotExist:
-            return
-        raise forms.ValidationError('This project name is already taken. Please try another.')
 
     def as_div(self):
         return self._html_output(

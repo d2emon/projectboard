@@ -6,6 +6,7 @@ from . import views
 urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^dashboard/$', views.dashboard, name='dashboard'),
+    url(r'^(?P<project_name>\w+)/$', views.project, name='project'),
     url(r'^create/$', views.createproject, name='createproject'),
 ]
 
