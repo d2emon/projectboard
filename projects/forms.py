@@ -45,8 +45,8 @@ class CreateProjectForm(forms.Form):
 
     def save(self):
         project = Project(
-            name = self.cleaned_data['name'],
-            shortname=self.cleaned_data['slug']
+            name=self.cleaned_data['name'],
+            slug=self.cleaned_data['slug']
         )
         project.owner = self.user
         project.start_date = self.cleaned_data['start_date']
@@ -58,19 +58,19 @@ class CreateProjectForm(forms.Form):
 
     def clean_slug(self):
         alnum_re = re.compile(r'^\w+$')
-        if not alnum_re.search(self.cleaned_data['shortname']):
+        if not alnum_re.search(self.cleaned_data['slug']):
             raise forms.ValidationError("This value must contain only letters, numbers and underscores.")
         self.is_valid_slug()
-        return self.cleaned_data['shortname']
+        return self.cleaned_data['slug']
 
     def is_valid_slug(self):
         try:
-            Project.objects.get(shortname = self.cleaned_data['slug'])
+            Project.objects.get(slug=self.cleaned_data['slug'])
         except Project.DoesNotExist:
             return
         raise forms.ValidationError('This project name is already taken. Please try another.')
 
-    def as_mydiv(self):
+    def as_div(self):
         return self._html_output(
             normal_row="<div class=\"form-group row\">" +
             "<div class=\"col-md-3 form-control-label\">%(label)s</div>" +

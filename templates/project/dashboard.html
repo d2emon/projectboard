@@ -175,60 +175,59 @@
         </div>
         <div class="card-block">
           <div class="tablepad">
-            <table width="100%" border="0" cellspacing="0" cellpadding="0" class="tbltitle">
-  <tr>
-    <td width="27%" style="text-align:center">Project Name</td>
-    <td width="27%" style="text-align:left" >Task</td>
-    <td width="20%" style="text-align:left">Was due on</td>
-    <td width="14%" style="text-align:left">User</td>
-    <td width="12%" style="text-align:center">Select</td>
-  </tr>
- 
-</table>
-<table width="100%" border="0" cellspacing="0" cellpadding="0" class="tbl">
- {% for project in subs %}
- <tr class={% cycle "" "tdbggrey" %}>
-    <td width="27%" class="projectname"><a href="{{project.get_absolute_url}}">{{project.name}}</a></td>
-    <td width="27%">task.name</td>
-    <td width="20%">task.expected_end_date</td>
-    <td width="14%" class="completed">task.user_responsible</td>
-    <td width="12%" style="vertical-align:middle; text-align:center">
-		<form action="." method="post" id="markdone-0" class="markdone">
-            {% csrf_token %}
-		<div>
-                <input type="hidden" name="taskid" value="0" />
-		<input type="checkbox" name="markdone" value="False" onchange="submit()"/>         
-		</div>
-    </form>
-		</td>
-  </tr> 
-             {% for task in project.overdue_tasks %}
- <tr class={% cycle "" "tdbggrey" %}>
-    <td width="27%" class="projectname"><a href="{{project.get_absolute_url}}">{{project.name}}</a></td>
-    <td width="27%"> <a href="{{task.get_absolute_url}}">{{task.name}}</a></td>
-    <td width="20%"> {{task.expected_end_date|date}}</td>
-    <td width="14%" class="completed">{{task.user_responsible}}<br />
-    <td width="12%" style="vertical-align:middle; text-align:center">
-		<form action="." method="post" id="markdone-{{task.id}}" class="markdone">
-            {% csrf_token %}
-		<div>
-            {% if task.is_complete %}
-                <input type="hidden" name="taskid" value="{{task.id}}" />
-		<input type="hidden" name="markundone" value="markundone" />
-		<input type="checkbox" name="markundone_check" value="{{task.is_complete}}" checked="checked" onchange="submit()" />
-            
-            {% else %}
-                <input type="hidden" name="taskid" value="{{task.id}}" />
-		<input type="checkbox" name="markdone" value="{{task.is_complete}}" onchange="submit()"/>         
-            {% endif %}
-		</div>
-    </form>
-		</td>
-  </tr> 
-	{% endfor %}
- {% endfor %}
- </tr> 
-</table>
+            <table>
+              <thead>
+                <tr>
+                  <th width="27%" style="text-align:center">Project Name</td>
+                  <th width="27%" style="text-align:left" >Task</td>
+                  <th width="20%" style="text-align:left">Was due on</td>
+                  <th width="14%" style="text-align:left">User</td>
+                  <th width="12%" style="text-align:center">Select</td>
+                </tr>
+              </thead>
+              <tbody>
+                {% for project in subs %}
+                <tr class={% cycle "" "tdbggrey" %}>
+                   <td width="27%" class="projectname"><a href="{{project.get_absolute_url}}">{{project.name}}</a></td>
+                   <td width="27%">task.name</td>
+                   <td width="20%">task.expected_end_date</td>
+                   <td width="14%" class="completed">task.user_responsible</td>
+                   <td width="12%" style="vertical-align:middle; text-align:center">
+                  	 <form action="." method="post" id="markdone-0" class="markdone">
+                       {% csrf_token %}
+                       <div>
+                         <input type="hidden" name="taskid" value="0" />
+                      	 <input type="checkbox" name="markdone" value="False" onchange="submit()"/>         
+                    	 </div>
+                     </form>
+                   </td>
+                </tr> 
+                {% for task in project.overdue_tasks %}
+                <tr class={% cycle "" "tdbggrey" %}>
+                   <td width="27%" class="projectname"><a href="{{project.get_absolute_url}}">{{project.name}}</a></td>
+                   <td width="27%"> <a href="{{task.get_absolute_url}}">{{task.name}}</a></td>
+                   <td width="20%"> {{task.expected_end_date|date}}</td>
+                   <td width="14%" class="completed">{{task.user_responsible}}<br />
+                   <td width="12%" style="vertical-align:middle; text-align:center">
+                 	   <form action="." method="post" id="markdone-{{task.id}}" class="markdone">
+                       {% csrf_token %}
+                       <div>
+                         {% if task.is_complete %}
+                         <input type="hidden" name="taskid" value="{{task.id}}" />
+		                     <input type="hidden" name="markundone" value="markundone" />
+		                     <input type="checkbox" name="markundone_check" value="{{task.is_complete}}" checked="checked" onchange="submit()" />
+                         {% else %}
+                         <input type="hidden" name="taskid" value="{{task.id}}" />
+		                     <input type="checkbox" name="markdone" value="{{task.is_complete}}" onchange="submit()"/>         
+                         {% endif %}
+		                   </div>
+                     </form>
+		               </td>
+                </tr> 
+                {% endfor %}
+                {% endfor %}
+              </tbody> 
+            </table>
           </div>
         </div>
       </div>
@@ -247,7 +246,7 @@
         {% for invite in invites %}
             <li>
                 {{invite.project.name}}
-                <form action="." method="post">
+                <form action="{{ invite }}" method="post">
                     {% csrf_token %}
                 <input type="hidden" name="projid" value={{invite.project.id}} />
                 <input type="hidden" name="invid" value={{invite.id}} />
@@ -265,13 +264,13 @@
   <div class="row">
     <div class="col-md-12">
       <div class="card">
-        <form action="{% url 'projects:dashboard' %}" method="post" class="form-horizontal">
+        <form action="{% url 'projects:createproject' %}" method="post" class="form-horizontal">
         <div class="card-header">
 			    Create a new project
         </div>
         <div class="card-block">
             {% csrf_token %}
-            {{ createform.as_mydiv }}				
+            {{ createform.as_div }}				
         </div>
         <div class="card-footer">
           <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-dot-circle-o"></i> Submit</button>
