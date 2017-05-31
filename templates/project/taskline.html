@@ -1,0 +1,96 @@
+                    <tr>
+                      <td class="projectname"><a href="#">{{task.name}}</a></td>
+                      <td> 
+                        <table>
+                          <tr>
+                            <td>Expected</td>
+                            <td>
+								              {% if task.expected_end_date %}
+                              {{task.expected_end_date|date}}
+							                {% else %}
+								              No date specified
+								              {% endif %}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>Actual</td>
+                            <td>
+								              {% if task.expected_end_date %}
+                              {{task.expected_end_date|date}}
+							                {% else %}
+								              No date specified
+								              {% endif %}
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                      <td> 
+                        <table>
+                          <tr>
+                            <td>Expected</td>
+                            <td>
+								              {% if task.expected_end_date %}
+                              {{task.expected_end_date|date}}
+							                {% else %}
+								              No date specified
+								              {% endif %}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>Actual</td>
+                            <td>
+								              {% if task.expected_end_date %}
+                              {{task.expected_end_date|date}}
+							                {% else %}
+								              No date specified
+								              {% endif %}
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                      <td class="completed">
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="avatar">
+                              <img src="/static/images/avatars/1.jpg" class="img-avatar" alt="admin@bootstrapmaster.com">
+                              <span class="avatar-status badge-success"></span>
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div>{{task.user_responsible}}</div>
+                            <div class="small text-muted">
+                              <span>New</span>| Registered: Jan 1, 2015
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <a href="#">Details</a>
+                      </td>
+                      <td><a href="#"><i class="icon-speech"></i></a></td>
+                      <td style="vertical-align:middle; text-align:center">
+                 	      <form action="." method="post" id="markdone-{{task.id}}" class="markdone">
+                          {% csrf_token %}
+                          <div>
+                            {% if task.is_complete %}
+                            <input type="hidden" name="taskid" value="{{task.id}}" />
+    		                    <input type="hidden" name="markundone" value="markundone" />
+		                        <input type="checkbox" name="markundone_check" value="{{task.is_complete}}" checked="checked" onchange="submit()" />
+                            {% else %}
+                            <input type="hidden" name="taskid" value="{{task.id}}" />
+		                        <input type="checkbox" name="markdone" value="{{task.is_complete}}" onchange="submit()"/>         
+                            {% endif %}
+		                      </div>
+                        </form>
+		                  </td>
+                      <td style="vertical-align:middle; text-align:center">
+                 	      <form action="." method="post" id="deletetask-{{task.id}}" class="deletetask">
+                          {% csrf_token %}
+                          <div>
+                            <input type="hidden" name="taskid" value="{{task.id}}" />
+    		                    <input type="hidden" name="deletetask" value="deletetask" />
+                            <input type="image" src="/site_media/images/x-icon.gif" name="deletetask" value="Delete" />
+		                      </div>
+                        </form>
+		                  </td>
+                    </tr> 

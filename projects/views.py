@@ -1,6 +1,5 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 # from django.urls import reverse
-# from django.http import HttpResponseRedirect
 
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
@@ -89,7 +88,56 @@ def createproject(request):
 
 
 @login_required
-def project(request):
+def project(request, project_name):
+    """
+    Point of entry for a specific project.
+    Shows the important information for a project.
+    Shows form to invite an user.
+    Form to create a new top task.
+    Actions available here:
+    Invite: Owner
+    New Top Task: Owner Participant
+    Mark Done: Owner Participant
+    """
+    user = request.user
+    project = get_object_or_404(Project, slug=project_name)  # Only subscribed
+    # access = get_access(project, request.user)
+    # inviteform = bforms.InviteUserForm()
+    # taskform = bforms.CreateTaskForm(project, user)
+    new_tasks = project.get_new()
+    overdue_tasks = project.get_overdue()
+
+    # inviteform = bforms.InviteUserForm()
+    # taskform = bforms.CreateTaskForm(project, request.user)
+
+    context = {
+        'project': project,
+        # 'inviteform': inviteform,
+        # 'taskform': taskform,
+        'new_tasks': new_tasks,
+        'overdue_tasks': overdue_tasks,
+        # 'access': access,
+        'userdata': get_userdata(),
+    }
+    # return render(request, 'project/projdetails.html', payload)
+    return render(request, 'project/project.html', context)
+
+
+@require_POST
+@login_required
+def project_csv(request):
+    #    response, writer = reponse_for_cvs()
+    #    writer.writerow(Project.as_csv_header())
+    #    writer.writerow(project.as_csv())
+    #    writer.writerow(())
+    #    writer.writerow(Task.as_csv_header())
+    #    for task in new_tasks:
+    #        writer.writerow(task.as_csv())
+    #    writer.writerow(())
+    #    writer.writerow(Task.as_csv_header())
+    #    for task in overdue_tasks:
+    #        writer.writerow(task.as_csv())
+    #    return response
     return redirect('projects:dashboard')
 
 
@@ -123,3 +171,52 @@ def markdone(request):
     print(request.POST)
     # handle_task_status(request)
     return redirect('projects:dashboard')
+
+
+@require_POST
+@login_required
+def invite(request):
+    # if not (access == 'Owner'):
+    #     return HttpResponseForbidden('%s(%s) does not have enough rights' % (request.user.username, access))
+    # inviteform = bforms.InviteUserForm(project, request.POST)
+    # if inviteform.is_valid():
+    #     inviteform.save()
+    return redirect('projects:project', kwargs={'project_name': "123"})
+
+
+@require_POST
+@login_required
+def task(request):
+    # if not (access in ('Owner', 'Participant')):
+    #     return HttpResponseForbidden('%s(%s) does not have enough rights' % (request.user.username, access))
+    # taskform = bforms.CreateTaskForm(project, user, request.POST)
+    #     if taskform.is_valid():
+    #         taskform.save()
+    return redirect('projects:project', kwargs={'project_name': "123"})
+
+
+@require_POST
+@login_required
+def project_markdone(request):
+    # if not (access in ('Owner', 'Participant')):
+    #     return HttpResponseForbidden('%s(%s) does not have enough rights' % (request.user.username, access))
+    # if request.POST.has_key('xhr'):
+    #     return handle_task_status(request, True)
+    # return handle_task_status(request)
+    return redirect('projects:project', kwargs={'project_name': "123"})
+
+
+@require_POST
+@login_required
+def deletetask(request):
+    # return delete_task(request)
+    return redirect('projects:project', kwargs={'project_name': "123"})
+
+# login_required
+# def full_logs(request, project_name):
+# login_required
+# def settings(request, project_name):
+# login_required
+# def noticeboard(request, project_name):
+# @login_required
+# def todo(request, project_name):

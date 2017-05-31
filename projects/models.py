@@ -61,3 +61,6 @@ class Project(models.Model):
                 'is_complete': True,
             },
         ]
+
+    def get_new(self):
+        return self.get_overdue()
