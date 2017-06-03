@@ -131,6 +131,7 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static1")
+MEDIA_ROOT = os.path.join(BASE_DIR, "static")
 
 
 ACCOUNT_ACTIVATION_DAYS = 7

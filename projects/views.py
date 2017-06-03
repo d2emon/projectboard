@@ -8,7 +8,6 @@ from .forms import CreateProjectForm
 from .models import Project
 
 from users.forms import UserCreationForm, LoginForm
-from users.models import get_userdata
 
 import users.views
 
@@ -42,7 +41,6 @@ def dashboard(request):
     Shows the pending invites to other projects.
     Shows very critical information about available projects.
     """
-    user = request.user
     subs = Project.objects.all()
     print(subs)
     invites = []
@@ -57,8 +55,6 @@ def dashboard(request):
         'subs': subs,
         'createform': createform,
         'invites': invites,
-
-        'userdata': get_userdata(),
     }
     return render(request, 'project/dashboard.html', context)
 
@@ -99,7 +95,6 @@ def project(request, project_name):
     New Top Task: Owner Participant
     Mark Done: Owner Participant
     """
-    user = request.user
     project = get_object_or_404(Project, slug=project_name)  # Only subscribed
     # access = get_access(project, request.user)
     # inviteform = bforms.InviteUserForm()
@@ -117,7 +112,6 @@ def project(request, project_name):
         'new_tasks': new_tasks,
         'overdue_tasks': overdue_tasks,
         # 'access': access,
-        'userdata': get_userdata(),
     }
     # return render(request, 'project/projdetails.html', payload)
     return render(request, 'project/project.html', context)
@@ -225,7 +219,6 @@ def settings(request, project_name):
     #     return HttpResponseForbidden('%s(%s) does not have enough rights' % (request.user.username, access))
     context = {
         'project': project,
-        'userdata': get_userdata(),
     }
     return render(request, 'project/settings.html', context)
 
