@@ -192,7 +192,7 @@ def task(request):
     # taskform = bforms.CreateTaskForm(project, user, request.POST)
     #     if taskform.is_valid():
     #         taskform.save()
-    return redirect('projects:project', kwargs={'project_name': "123"})
+    return redirect('projects:project', project_name="123")
 
 
 @require_POST
@@ -203,19 +203,50 @@ def project_markdone(request):
     # if request.POST.has_key('xhr'):
     #     return handle_task_status(request, True)
     # return handle_task_status(request)
-    return redirect('projects:project', kwargs={'project_name': "123"})
+    return redirect('projects:project', project_name="123")
 
 
 @require_POST
 @login_required
 def deletetask(request):
     # return delete_task(request)
-    return redirect('projects:project', kwargs={'project_name': "123"})
+    return redirect('projects:project', project_name="123")
 
 # login_required
 # def full_logs(request, project_name):
-# login_required
-# def settings(request, project_name):
+
+
+@login_required
+def settings(request, project_name):
+    """Allows settings site sepcific settings."""
+    project = get_object_or_404(Project, slug=project_name)  # Only subscribed
+    # access = get_access(project, request.user)
+    # if not (access == 'Owner'):
+    #     return HttpResponseForbidden('%s(%s) does not have enough rights' % (request.user.username, access))
+    context = {
+        'project': project,
+        'userdata': get_userdata(),
+    }
+    return render(request, 'project/settings.html', context)
+
+
+@require_POST
+def remove_settings(request):
+    # username = request.POST['user']
+    # sub = SubscribedUser.objects.get(project__shortname = project_name, user__username = username)
+    # sub.delete()
+    return redirect('projects:project', project_name="123")
+
+
+@require_POST
+def chgroup_settings(request):
+    # username = request.POST['user']
+    # sub = SubscribedUser.objects.get(project__shortname = project_name, user__username = username)
+    # sub.group = request.POST['group']
+    # sub.save()
+    return redirect('projects:project', project_name="123")
+
+
 # login_required
 # def noticeboard(request, project_name):
 # @login_required

@@ -20,7 +20,7 @@
     <a class="nav-link" href="{% url 'users:list' %}">Users</a>
   </li>
   <li class="nav-item px-3">
-  <a class="nav-link" href="{% url 'projects:settings' project.slug %}">Settings</a>
+    <a class="nav-link" href="{% url 'users:settings' %}">Settings</a>
   </li>
 </ul>
 {% endblock %}
@@ -130,94 +130,62 @@
           {{ project.name }}
         </div>
         <div class="card-block">
-          {% if new_tasks %}				
           <div class="tablepad">
             <table class="table table-responsive table-hover table-outline mb-0">
               <thead class="thead-default">
                 <tr>
-                  <th class="text-center">Project Name</td>
-                  <th style="text-align:left">Expected Start Due</td>
-                  <th style="text-align:left">Expected End Due</td>
-                  <th style="text-align:left">User Responsible</td>
-                  <th style="text-align:left">Details</td>
-                  <th style="text-align:left">Edit</td>
-                  <th style="text-align:left">Mark Done</td>
-                  <th class="text-center">Delete</td>
+                  <th>User</td>
+                  <th>Unsubscribe</td>
+                  <th>Change Permission</td>
                 </tr>
               </thead>
               <tbody>
-                {% for task in new_tasks %}
-                {% include 'project/taskline.html' %}
-                {% endfor %}
-              </tbody> 
-            </table>
-          </div>
-          {% else %}
-          <div class="card">
-            <div class="card-block">
-              <div>No recent tasks</div>
-            </div>
-          </div>
-          {% endif %}
-          <h3>Overdue Tasks</h3>
-          {% if overdue_tasks %}				
-          <div class="tablepad">
-            <table class="table table-responsive table-hover table-outline mb-0">
-              <thead class="thead-default">
+                {% for task in project.get_new %}
                 <tr>
-                  <th class="text-center">Project Name</td>
-                  <th style="text-align:left">Expected Start Due</td>
-                  <th style="text-align:left">Expected End Due</td>
-                  <th style="text-align:left">User Responsible</td>
-                  <th style="text-align:left">Details</td>
-                  <th style="text-align:left">Edit</td>
-                  <th style="text-align:left">Mark Done</td>
-                  <th class="text-center">Delete</td>
-                </tr>
-              </thead>
-              <tbody>
-                {% for task in overdue_tasks %}
-                {% include 'project/taskline.html' %}
-                {% endfor %}
-              </tbody> 
-            </table>
-          </div>
-          {% else %}
-          <div class="card">
-            <div class="card-block">
-              <div>No overdue tasks</div>
-            </div>
-          </div>
-          {% endif %}
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="card">
-        <div class="card-header">
-          Invite a User
-        </div>
-        <div class="card-block">
-          <form action="." method="post">
-            {% csrf_token %}
-            {{inviteform.as_p}}
-            <div><input type="submit" name="invite" value="Invite User" class="submitbutton" /></div>
-          </form>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-header">
-          Add a task
-        </div>
-        <div class="card-block">
-          <form action="." method="post">
-            {% csrf_token %}
-            {{taskform.as_p}}
-            <div><input type="submit" name="task" value="Add a task" class="submitbutton" /></div>
-          </form>
-        </div>
-      </div>
+                  <td>
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="avatar">
+                              <img src="/static/images/avatars/1.jpg" class="img-avatar" alt="admin@bootstrapmaster.com">
+                              <span class="avatar-status badge-success"></span>
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div>{{task.user_responsible}}</div>
+                            <div class="small text-muted">
+                              <span>New</span>| Registered: Jan 1, 2015
+                            </div>
+                          </div>
+                        </div>
 
+                  </td>
+                  <td>
+                    <form action="{% url 'projects:settings' project.slug %}"  method="post">
+	 	                  {% csrf_token %}
+	                    <input type="submit" name="remove" value="Unsubscribe" />
+	                    <input type="hidden" name="user" value="user.user.username" />
+	                  </form>
+                  </td>
+                  <td>
+                    <form action="{% url 'projects:settings' project.slug %}"  method="post">
+	 	                  {% csrf_token %}
+                      <label for="id_group">Group:</label>
+                      <select id="id_group" class="required" name="group">
+                        <option value="Owner" {% ifequal user_group 'Owner' %}selected="selected"{% endifequal %}>Owner</option>
+                        <option value="Participant" {% ifequal user_group 'Participant' %}selected="selected"{% endifequal %}>Participant</option>
+                        <option value="Viewer" {% ifequal user_group 'Viewer' %}selected="selected"{% endifequal %}>Viewer</option>
+                      </select>
+                      <input type="submit" name="chgroup" value="Change group" />
+	                    <input type="hidden" name="user" value="user.user.username" />
+	                  </form>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody> 
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -549,4 +517,3 @@
     <!-- Custom scripts required by this view -->
     <script src="{% static 'js/views/main.js' %}"></script>
 {% endblock %}
-
