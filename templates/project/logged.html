@@ -34,8 +34,8 @@
   </li>
   <li class="nav-item dropdown">
     <a class="nav-link dropdown-toggle nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-      <img src="{% static '' %}{{userdata.avatar}}" class="img-avatar" alt="{{ userdata.email }}">
-      <span class="d-md-down-none">{{ userdata.username }}</span>
+      <img src="{% static '' %}{{userdata.avatar}}" class="img-avatar" alt="{{ request.user.email }}">
+      <span class="d-md-down-none">{{ request.user.username }}</span>
     </a>
     <div class="dropdown-menu dropdown-menu-right">
       <div class="dropdown-header text-center">
