@@ -206,8 +206,34 @@ def deletetask(request):
     # return delete_task(request)
     return redirect('projects:project', project_name="123")
 
-# login_required
-# def full_logs(request, project_name):
+
+@login_required
+def full_logs(request, project_name):
+    """Shows the logs for a project.
+    Actions available here:
+    None"""
+    project = get_object_or_404(Project, slug=project_name)  # Only subscribed
+    # access = get_access(project, request.user)
+    # query_set = Log.objects.filter(project = project)
+    # logs, page_data = get_paged_objects(query_set, request, logs_per_page)
+    logs = []
+    page = []
+    context = {
+        'project': project,
+        'logs': logs,
+        'page': page,
+    }
+    return render(request, 'project/logs.html', context)
+
+
+@require_POST
+def full_logs_csv(request):
+    # response, writer = reponse_for_cvs(project=project)
+    # writer.writerow((Log.as_csv_header()))
+    # for log in query_set:
+    #     writer.writerow((log.as_csv()))
+    # return response
+    return redirect('projects:project', project_name="123")
 
 
 @login_required
