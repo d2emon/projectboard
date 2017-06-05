@@ -112,7 +112,6 @@ def project(request, project_name):
         'overdue_tasks': overdue_tasks,
         # 'access': access,
     }
-    # return render(request, 'project/projdetails.html', payload)
     return render(request, 'project/project.html', context)
 
 
