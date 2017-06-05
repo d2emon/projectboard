@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'registration',
     'users',
     'projects',
+    'django.contrib.admindocs',
 ]
 
 MIDDLEWARE = [
