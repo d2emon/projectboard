@@ -3,7 +3,7 @@ from django.forms import ModelForm
 from django.utils.translation import ugettext as _
 
 
-from .models import Project
+from .models import Project, ProjectUser
 
 
 import datetime
@@ -60,10 +60,56 @@ class CreateProjectForm(ModelForm):
         )
         project.save()
 
+        subscribe = ProjectUser(user=self.user, project=project)
+        subscribe.save()
         # subscribe = SubscribedUser(user = self.user, project = project, group = 'Owner')
         # subscribe.save()
 
         return project
+
+    def as_div(self):
+        return self._html_output(
+            normal_row="<div class=\"form-group row\">" +
+            "<div class=\"col-md-3 form-control-label\">%(label)s</div>" +
+            "<div class=\"col-md-9\">%(field)s%(errors)s%(help_text)s</div>" +
+            "</div>",
+            error_row="<span class=\"error\">%s</span>",
+            row_ender="</div>",
+            help_text_html="<span class=\"help_block\">%s</span>",
+            errors_on_separate_row=True,
+        )
+
+
+class InviteUserForm(ModelForm):
+    """
+    Invite a user to the project.
+    Username: username of the user to invite.
+    Group: The group in which to put the invited user.
+    """
+
+    class Meta:
+        model = ProjectUser
+        fields = ['user', ]
+        help_texts = {
+            'user': "User name of the user to invite.",
+            # 'group': "Permissions available to this user.",
+        }
+
+    def __init__(self, project = None, *args, **kwargs):
+        kwargs.setdefault('label_suffix', '')
+        super(InviteUserForm, self).__init__(*args, **kwargs)
+        self.project = project
+        for field in self.fields:
+            self.fields[field].widget.attrs['class'] = 'form-control'
+
+    def save(self):
+        invitation = ProjectUser(
+            user=self.cleaned_data['user'],
+            project=self.project,
+        )
+        invitation.save()
+
+        return invitation
 
     def as_div(self):
         return self._html_output(

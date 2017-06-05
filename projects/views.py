@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 
-from .forms import CreateProjectForm
+from .forms import CreateProjectForm, InviteUserForm
 from .models import Project
 
 from users.forms import UserCreationForm, LoginForm
@@ -96,7 +96,7 @@ def project(request, project_name):
     """
     project = get_object_or_404(Project, slug=project_name)  # Only subscribed
     # access = get_access(project, request.user)
-    # inviteform = bforms.InviteUserForm()
+    inviteform = InviteUserForm(project)
     # taskform = bforms.CreateTaskForm(project, user)
     new_tasks = project.get_new()
     overdue_tasks = project.get_overdue()
@@ -106,7 +106,7 @@ def project(request, project_name):
 
     context = {
         'project': project,
-        # 'inviteform': inviteform,
+        'inviteform': inviteform,
         # 'taskform': taskform,
         'new_tasks': new_tasks,
         'overdue_tasks': overdue_tasks,

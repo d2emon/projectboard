@@ -1,86 +1,80 @@
                     <tr>
-                      <td class="projectname"><a href="#">{{task.name}}</a></td>
-                      <td> 
-                        <table>
-                          <tr>
-                            <td>Expected</td>
-                            <td>
-								              {% if task.expected_end_date %}
-                              {{task.expected_end_date|date}}
-							                {% else %}
-								              No date specified
-								              {% endif %}
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>Actual</td>
-                            <td>
-								              {% if task.expected_end_date %}
-                              {{task.expected_end_date|date}}
-							                {% else %}
-								              No date specified
-								              {% endif %}
-                            </td>
-                          </tr>
-                        </table>
+                      <td style="vertical-align:middle; text-align:center" class="projectname"><a href="#">{{task.name}}</a></td>
+                      <td style="vertical-align:middle"> 
+                          <div>
+                            <span class="small text-muted">Expected</span>
+                            <span>
+							  {% if task.expected_start_date %}
+                              {{task.expected_start_date|date}}
+							  {% else %}
+							  No date specified
+							  {% endif %}
+                            </span>
+                          </div>
+                          <div>
+                            <span class="small text-muted">Actual</span>
+                            <span>
+				              {% if task.actual_start_date %}
+                              {{task.actual_start_date|date}}
+							  {% else %}
+							  No date specified
+							  {% endif %}
+                            </span>
+                          </div>
                       </td>
-                      <td> 
-                        <table>
-                          <tr>
-                            <td>Expected</td>
-                            <td>
-								              {% if task.expected_end_date %}
+                      <td style="vertical-align:middle"> 
+                          <div>
+                            <span class="small text-muted">Expected</span>
+                            <span>
+							  {% if task.expected_end_date %}
                               {{task.expected_end_date|date}}
-							                {% else %}
-								              No date specified
-								              {% endif %}
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>Actual</td>
-                            <td>
-								              {% if task.expected_end_date %}
-                              {{task.expected_end_date|date}}
-							                {% else %}
-								              No date specified
-								              {% endif %}
-                            </td>
-                          </tr>
-                        </table>
+							  {% else %}
+							  No date specified
+							  {% endif %}
+                            </span>
+                          </div>
+                          <div>
+                            <span class="small text-muted">Actual</span>
+                            <span>
+				              {% if task.actual_end_date %}
+                              {{task.actual_end_date|date}}
+							  {% else %}
+							  No date specified
+							  {% endif %}
+                            </span>
+                          </div>
                       </td>
-                      <td class="completed">
-                        <div class="row">
-                          <div class="col-md-6">
+                      <td style="vertical-align:middle; text-align:center" class="completed">
                             <div class="avatar">
                               <img src="/static/images/avatars/1.jpg" class="img-avatar" alt="admin@bootstrapmaster.com">
                               <span class="avatar-status badge-success"></span>
                             </div>
-                          </div>
-                          <div class="col-md-6">
                             <div>{{task.user_responsible}}</div>
-                            <div class="small text-muted">
-                              <span>New</span>| Registered: Jan 1, 2015
-                            </div>
-                          </div>
-                        </div>
                       </td>
-                      <td>
+                      <td style="vertical-align:middle; text-align:center">
                         <a href="#">Details</a>
                       </td>
-                      <td><a href="#"><i class="icon-speech"></i></a></td>
+                      <td style="vertical-align:middle; text-align:center"><a href="#"><i class="fa fa-edit fa-lg"></i></a></td>
                       <td style="vertical-align:middle; text-align:center">
                  	      <form action="." method="post" id="markdone-{{task.id}}" class="markdone">
                           {% csrf_token %}
                           <div>
+                            <input type="hidden" name="taskid" value="{{task.id}}" />
                             {% if task.is_complete %}
-                            <input type="hidden" name="taskid" value="{{task.id}}" />
-    		                    <input type="hidden" name="markundone" value="markundone" />
-		                        <input type="checkbox" name="markundone_check" value="{{task.is_complete}}" checked="checked" onchange="submit()" />
-                            {% else %}
-                            <input type="hidden" name="taskid" value="{{task.id}}" />
-		                        <input type="checkbox" name="markdone" value="{{task.is_complete}}" onchange="submit()"/>         
-                            {% endif %}
-		                      </div>
+		                    <input type="hidden" name="markundone" value="markundone" />
+			                <label class="switch switch-text switch-pill switch-primary">
+				              <input class="switch-input" type="checkbox" value="{{task.is_complete}}" onchange="submit()" name="markundone_check" checked="checked" />
+				              <span class="switch-label" data-on="On" data-off="Off"></span>
+				              <span class="switch-handle"></span>
+			                </label>
+	                        {% else %}
+			                <label class="switch switch-text switch-pill switch-primary">
+				              <input class="switch-input" type="checkbox" value="{{task.is_complete}}" onchange="submit()" name="markdone" />         
+				              <span class="switch-label" data-on="On" data-off="Off"></span>
+				              <span class="switch-handle"></span>
+			                </label>
+	                        {% endif %}
+	                      </div>
                         </form>
 		                  </td>
                       <td style="vertical-align:middle; text-align:center">
@@ -88,9 +82,9 @@
                           {% csrf_token %}
                           <div>
                             <input type="hidden" name="taskid" value="{{task.id}}" />
-    		                    <input type="hidden" name="deletetask" value="deletetask" />
-                            <input type="image" src="/site_media/images/x-icon.gif" name="deletetask" value="Delete" />
-		                      </div>
+    		                <input type="hidden" name="deletetask" value="deletetask" />
+    		                <a href="#" onclick="submit()"><i class="fa fa-trash fa-lg"></i></a>
+		                  </div>
                         </form>
 		                  </td>
                     </tr> 
