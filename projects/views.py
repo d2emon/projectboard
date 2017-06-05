@@ -41,13 +41,12 @@ def dashboard(request):
     Shows the pending invites to other projects.
     Shows very critical information about available projects.
     """
-    subs = Project.objects.all()
-    print(subs)
-    invites = []
+    subs = request.user.projectuser_set.all()
     # if request.GET.get('includeinactive', 0):
     #     subs = user.subscribeduser_set.all()
     # else:
     #     subs = user.subscribeduser_set.filter(project__is_active = True)
+    invites = request.user.projectuser_set.all()
     # invites = user.inviteduser_set.filter(rejected = False)
     createform = CreateProjectForm()
 

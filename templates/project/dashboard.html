@@ -107,29 +107,55 @@
 {% block content %}
 <div class="animated fadeIn">
   <div class="row">
-    <div class="col-md-9">
+  {% if invites %}
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+		  Pending Invites
+        </div>
+        <div class="card-block">
+	      <ul>
+	        {% for invite in invites %}
+	          <li>
+	            <form action="{{ invite }}" method="post" class="form-horizontal">
+	              {% csrf_token %}
+	              {{ invite.project }}
+	              <input type="hidden" name="projid" value={{invite.project.id}} />
+	              <input type="hidden" name="invid" value={{invite.id}} />
+	              <button href="submit()" class="btn btn-success"><i class="fa fa-check"></i> Accept</button>
+	            </form>
+	          </li>
+	        {% endfor %}
+	      </ul>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+    <div class="col-md-8">
       <div class="card">
         <div class="card-header">
           Projects
         </div>
         <div class="card-block">
-          <div class="tablepad">
-            <table class="table table-responsive table-hover table-outline mb-0">
-              <thead class="thead-default">
+          {% if subs %}
+            <table class="table table-responsive table-hover table-striped">
+              <thead>
                 <tr>
                   <th class="text-center">Project Name</td>
-                  <th style="text-align:left" >Task</td>
-                  <th style="text-align:left">Was due on</td>
-                  <th style="text-align:left">User</td>
+                  <th>Task</td>
+                  <th>Was due on</td>
+                  <th>User</td>
                   <th class="text-center">Select</td>
                 </tr>
               </thead>
               <tbody>
-                {% for project in subs %}
+                {% for sub in subs %}
+                {% with sub.project as project %}
                 <tr>
                   <td class="projectname"><a href="{{project.get_absolute_url}}">{{project.name}}</a></td>
                   <td>&nbsp;</td>
-                  <td>&nbsp; ({{project.start_date}}-{{project.end_date}})</td>
+                  <td>({{project.start_date}}{% if project.end_date %}-{{project.end_date}}{% endif %})</td>
                   <td class="completed">
                     <div class="row">
                       <div class="col-md-6">
@@ -173,53 +199,36 @@
                  	   <form action="." method="post" id="markdone-{{task.id}}" class="markdone">
                        {% csrf_token %}
                        <div>
+                         <input type="hidden" name="taskid" value="{{task.id}}" />
                          {% if task.is_complete %}
-                         <input type="hidden" name="taskid" value="{{task.id}}" />
-		                     <input type="hidden" name="markundone" value="markundone" />
-		                     <input type="checkbox" name="markundone_check" value="{{task.is_complete}}" checked="checked" onchange="submit()" />
+	                     <input type="hidden" name="markundone" value="markundone" />
+		                 <label class="switch switch-text switch-pill switch-primary">
+			               <input class="switch-input" type="checkbox" value="{{task.is_complete}}" onchange="submit()" name="markundone_check" checked="checked" />
+			               <span class="switch-label" data-on="On" data-off="Off"></span>
+			               <span class="switch-handle"></span>
+		                 </label>
                          {% else %}
-                         <input type="hidden" name="taskid" value="{{task.id}}" />
-		                     <input type="checkbox" name="markdone" value="{{task.is_complete}}" onchange="submit()"/>         
+		                 <label class="switch switch-text switch-pill switch-primary">
+			               <input class="switch-input" type="checkbox" value="{{task.is_complete}}" onchange="submit()" name="markdone" />         
+			               <span class="switch-label" data-on="On" data-off="Off"></span>
+			               <span class="switch-handle"></span>
+		                 </label>
                          {% endif %}
-		                   </div>
+		               </div>
                      </form>
 		               </td>
                 </tr> 
                 {% endfor %}
+                {% endwith %}
                 {% endfor %}
               </tbody> 
             </table>
-          </div>
+          {% endif %}
         </div>
       </div>
     </div>
 
-  {% if invites %}
-    <div class="col-md-12">
-      <div class="card">
-        <div class="card-header">
-			    Pending Invites
-        </div>
-        <div class="card-block">
-        <ul>
-        {% for invite in invites %}
-            <li>
-                {{invite.project.name}}
-                <form action="{{ invite }}" method="post">
-                    {% csrf_token %}
-                <input type="hidden" name="projid" value={{invite.project.id}} />
-                <input type="hidden" name="invid" value={{invite.id}} />
-                <input type="submit" name="acceptinv" value="Accept" />
-                </form>
-            </li>
-        {% endfor %}
-        </ul>
-        </div>
-      </div>
-    </div>
-  {% endif %}
-
-    <div class="col-md-3">
+    <div class="col-md-4">
       <div class="card">
         <form action="{% url 'projects:createproject' %}" method="post" class="form-horizontal">
         <div class="card-header">
@@ -565,5 +574,5 @@
     <!-- Plugins and scripts required by this views -->
 
     <!-- Custom scripts required by this view -->
-    <script src="{% static 'js/views/main.js' %}"></script>
+    <!-- script src="{% static 'js/views/main.js' %}"></script -->
 {% endblock %}

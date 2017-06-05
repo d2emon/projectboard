@@ -1,6 +1,11 @@
 from django.contrib import admin
+from .models import Project, ProjectUser
 
-from .models import Project
+
+class ProjectUserInline(admin.StackedInline):
+    model = ProjectUser
 
 
-admin.site.register(Project)
+@admin.register(Project)
+class ProjectAdmin(admin.ModelAdmin):
+    inlines = [ProjectUserInline, ]

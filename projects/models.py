@@ -64,3 +64,16 @@ class Project(models.Model):
 
     def get_new(self):
         return self.get_overdue()
+
+
+class ProjectUser(models.Model):
+    """Users who have access to a given project
+    Users who have invited to a given project
+    user: the user
+    project: the project
+    group: access rights
+    ----
+    rejected: has the user rejected the invitation
+    """    
+    user = models.ForeignKey(User)
+    project = models.ForeignKey(Project)
