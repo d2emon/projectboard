@@ -11,7 +11,7 @@ urlpatterns = [
     url(r'^(?P<project_name>\w+)/logs$', views.full_logs, name='logs'),
     url(r'^(?P<project_name>\w+)/settings$', views.settings, name='settings'),
     url(r'^(?P<project_name>\w+)/noticeboard$', views.noticeboard, name='noticeboard'),
-    url(r'^(?P<project_name>\w+)/todo$', views.full_logs, name='todo'),
+    url(r'^(?P<project_name>\w+)/todo$', views.todo, name='todo'),
 ]
 
 # project.foo

@@ -308,5 +308,76 @@ def noticeboard_csv(request):
     return redirect('projects:project', project_name="123")
 
 
-# @login_required
-# def todo(request, project_name):
+@login_required
+def todo(request, project_name):
+    """Allows to create a new todolist and todoitems.
+    Actions available here:
+    Add a todolist: Owner Participant
+    Add a todoitem: Owner Participant
+    """
+    project = get_object_or_404(Project, slug=project_name)  # Only subscribed
+    # access = get_access(project, request.user)
+    lists = []
+    # if request.GET.get('includecomplete', 0):
+    #     lists = TodoList.objects.filter(user = request.user, project = project)
+    # else:
+    #     lists = TodoList.objects.filter(user = request.user, project = project, is_complete_attr = False)
+    addlistform = []
+    # addlistform = bforms.AddTodoListForm()
+    context = {
+        'project': project,
+        'lists': lists,
+        'addlistform': addlistform,
+    }
+    return render(request, 'project/todo.html', context)
+
+
+@require_POST
+def add_todo_list(request):
+    # addlistform = bforms.AddTodoListForm(project, request.user, request.POST)
+    # if addlistform.is_valid():
+    #     addlistform.save()
+    return redirect('projects:project', project_name="123")
+
+
+@require_POST
+def add_todo_item(request):
+    # id = int(request.POST['id'])
+    # list = TodoList.objects.get(id = id)
+    # text_id = '%s-text'%list.id            
+    # if request.POST[text_id]:
+    #     item = TodoItem(list = list, text = request.POST[text_id])
+    #     item.save()
+    return redirect('projects:project', project_name="123")
+
+
+@require_POST
+def todo_listmarkdone(request):
+    # id = int(request.POST['id'])
+    # list = TodoList.objects.get(id = id)
+    # list.is_complete = True
+    # list.save()
+    return redirect('projects:project', project_name="123")
+
+
+@require_POST
+def todo_itemmarkdone(request):
+    # id = int(request.POST['id'])
+    # todoitem = TodoItem.objects.get(id = id)
+    # todoitem.is_complete = True
+    # todoitem.save()
+    return redirect('projects:project', project_name="123")
+
+
+def todo_csv(request):
+    # response, writer = reponse_for_cvs(project=project)
+    # writer.writerow(('Todo Lists',))
+    # writer.writerow((TodoList.as_csv_header()))
+    # lists = TodoList.objects.filter(user = request.user, project = project)
+    # for list in lists:
+    #     writer.writerow(list.as_csv())
+    # for list in lists:
+    #     for item in list.todoitem_set.all():
+    #         writer.writerow(item.as_csv())
+    # return response
+    return redirect('projects:project', project_name="123")
