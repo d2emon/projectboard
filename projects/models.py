@@ -86,3 +86,18 @@ class ProjectUser(models.Model):
     """    
     user = models.ForeignKey(User)
     project = models.ForeignKey(Project)
+
+
+class Log(models.Model):
+    """Log of the project.
+    project: Project for which this log is written.
+    text: Text of the log.
+    created_on: When was this log created.
+    """    
+    project = models.ForeignKey(Project)
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True, null=True)
+    created_on = models.DateTimeField(auto_now_add = 1)
+        
+    class Meta:
+        ordering = ('-created_on', )

@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 # from django.urls import reverse
-
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 
 from .forms import CreateProjectForm, InviteUserForm
-from .models import Project
+from .models import Project, Log
 
 from users.forms import UserCreationForm, LoginForm
 
@@ -212,10 +212,17 @@ def full_logs(request, project_name):
     None"""
     project = get_object_or_404(Project, slug=project_name)  # Only subscribed
     # access = get_access(project, request.user)
+    log_list = Log.objects.filter(project=project)
     # query_set = Log.objects.filter(project = project)
+    paginator = Paginator(log_list, 3)
+    page = request.GET.get('page')
+    try:
+        logs = paginator.page(page)
+    except PageNotAnInteger:
+        logs = paginator.page(1)
+    except EmptyPage:
+        logs = paginator.page(paginator.num_pages)
     # logs, page_data = get_paged_objects(query_set, request, logs_per_page)
-    logs = []
-    page = []
     context = {
         'project': project,
         'logs': logs,
