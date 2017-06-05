@@ -10,6 +10,8 @@ urlpatterns = [
     url(r'^(?P<project_name>\w+)/$', views.project, name='project'),
     url(r'^(?P<project_name>\w+)/logs$', views.full_logs, name='logs'),
     url(r'^(?P<project_name>\w+)/settings$', views.settings, name='settings'),
+    url(r'^(?P<project_name>\w+)/noticeboard$', views.noticeboard, name='noticeboard'),
+    url(r'^(?P<project_name>\w+)/todo$', views.full_logs, name='todo'),
 ]
 
 # project.foo
@@ -22,13 +24,3 @@ urlpatterns = [
 # project.metrics
 # project.files
 # project.pcalendar
-#
-# (r'^foo/$', TemplateView.as_view(template_name='project/dummy.html')),
-# (r'^admin/', include(admin.site.urls)),
-# (r'^dashboard/$', 'dashboard'),
-# (r'^(?P<project_name>\w+)/$', 'project_details'),
-# (r'^(?P<project_name>\w+)/settings/$', 'settings'),
-# (r'^(?P<project_name>\w+)/logs/$', 'full_logs'),
-# (r'^(?P<project_name>\w+)/noticeboard/$', 'noticeboard'),
-# (r'^(?P<project_name>\w+)/todo/$', 'todo'),
-#

@@ -266,7 +266,47 @@ def chgroup_settings(request):
     return redirect('projects:project', project_name="123")
 
 
-# login_required
-# def noticeboard(request, project_name):
+@login_required
+def noticeboard(request, project_name):
+    """A noticeboard for the project.
+    Shows the notices posted by the users.
+    Shows the add notice form.
+    Actions available here:
+    Add a notice: Owner Participant Viewer (All)
+    """
+    project = get_object_or_404(Project, slug=project_name)  # Only subscribed
+    # access = get_access(project, request.user)
+    # query_set = Notice.objects.filter(project = project)
+    notices = []
+    page = []
+    # notices, page_data = get_paged_objects(query_set, request, notices_per_page)
+    addnoticeform = []
+    # addnoticeform = bforms.AddNoticeForm()
+    context = {
+        'project': project,
+        'notices':notices,
+        'addnoticeform':addnoticeform,
+        'page_data':page,
+    }
+    return render(request, 'project/noticeboard.html', context)
+
+
+@require_POST
+def add_notice(request):
+    # addnoticeform = bforms.AddNoticeForm(project, request.user, request.POST)
+    # if addnoticeform.is_valid():
+    #     addnoticeform.save()
+    return redirect('projects:project', project_name="123")
+
+
+def noticeboard_csv(request):
+    # response, writer = reponse_for_cvs(project=project)
+    # writer.writerow((Notice.as_csv_header()))
+    # for notice in query_set:
+    #     writer.writerow((notice.as_csv()))
+    # return response
+    return redirect('projects:project', project_name="123")
+
+
 # @login_required
 # def todo(request, project_name):

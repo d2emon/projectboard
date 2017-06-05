@@ -1,53 +1,19 @@
-{% extends 'project/logged.html' %}
+{% extends 'project/project.html' %}
 {% load static %}
 {% load l10n %}
 
 {% block feeds %}
 {% endblock %}
 
-{% block title %}{{ block.super }} - {{ project }}{% endblock %}
+{% block title %}{{ block.super }} - Noticeboard{% endblock %}
 
-{% block navmenu %}
-<ul class="nav">
-  <li class="nav-item">
-    <a class="nav-link" href="{% url 'projects:dashboard' %}"><i class="icon-speedometer"></i> Dashboard</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{{ project.get_absolute_url }}"><i class="icon-puzzle"></i> Details</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{{ project.get_absolute_url }}tasks"><i class="icon-puzzle"></i> Tasks</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{% url 'projects:todo' project.slug %}"><i class="icon-puzzle"></i> Todo</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{% url 'projects:noticeboard' project.slug %}"><i class="icon-star"></i> Noticeboard</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{{ project.get_absolute_url }}calendar"><i class="icon-puzzle"></i> Calendar</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{{ project.get_absolute_url }}wiki"><i class="icon-puzzle"></i> Wiki</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{{ project.get_absolute_url }}files"><i class="icon-puzzle"></i> Files</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{{ project.get_absolute_url }}metrics"><i class="icon-calculator"></i> Metrics</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="{% url 'projects:logs' project.slug %}"><i class="icon-puzzle"></i> Logs</a>
-  </li>
-</ul>
-{% endblock %}  
- 
 {% block breadcrumbs %}
 <!-- Breadcrumb -->
 <ol class="breadcrumb">
   <li class="breadcrumb-item">Home</li>
   <li class="breadcrumb-item"><a href="{% url 'projects:dashboard' %}">Dashboard</a></li>
-  <li class="breadcrumb-item active">{{ project }}</li>
+  <li class="breadcrumb-item"><a href="{% url 'projects:project' project.slug  %}">{{ project }}</a></li>
+  <li class="breadcrumb-item active">Noticeboard</li>
 
   <!-- Breadcrumb Menu-->
   <li class="breadcrumb-menu d-md-down-none">
@@ -65,99 +31,45 @@
 <div class="animated fadeIn">
   <div class="row">
     <div class="col-md-9">
+	  {% if notices %}
+		{% for notice in notices %}
+        <div class="card">
+		  <div class="card-block">
+            <p class="noticetitle">{{notice.text|linebreaks|urlize}}</p>
+		    <p class="putby">Put by {{notice.user.username}} on {{notice.created_on|date}} {{notice.created_on|time}}</p>
+          </div>
+		</div>
+	    <div id="pagination">
+    	    {% if page_data.has_next_page %}
+        	<a href="./?page={{page_data.next_page}}">next</a>
+        	{% endif %}
+        
+        	{% if page_data.has_prev_page %}
+        	<a href="./?page={{page_data.prev_page}}">prev</a>
+        	{% endif %}
+		</div>
+	    {% endfor %}
+	  {% else %}
       <div class="card">
-        <div class="card-header">
-          {{ project.name }}
-        </div>
-        <div class="card-block">
-          {% if new_tasks %}				
-          <div class="tablepad">
-            <table class="table table-responsive table-hover table-outline mb-0">
-              <thead class="thead-default">
-                <tr>
-                  <th class="text-center">Project Name</td>
-                  <th style="text-align:left">Expected Start Due</td>
-                  <th style="text-align:left">Expected End Due</td>
-                  <th style="text-align:left">User Responsible</td>
-                  <th style="text-align:left">Details</td>
-                  <th style="text-align:left">Edit</td>
-                  <th style="text-align:left">Mark Done</td>
-                  <th class="text-center">Delete</td>
-                </tr>
-              </thead>
-              <tbody>
-                {% for task in new_tasks %}
-                {% include 'project/taskline.html' %}
-                {% endfor %}
-              </tbody> 
-            </table>
-          </div>
-          {% else %}
-          <div class="card">
-            <div class="card-block">
-              <div>No recent tasks</div>
-            </div>
-          </div>
-          {% endif %}
-          <h3>Overdue Tasks</h3>
-          {% if overdue_tasks %}				
-          <div class="tablepad">
-            <table class="table table-responsive table-hover table-outline mb-0">
-              <thead class="thead-default">
-                <tr>
-                  <th class="text-center">Project Name</td>
-                  <th style="text-align:left">Expected Start Due</td>
-                  <th style="text-align:left">Expected End Due</td>
-                  <th style="text-align:left">User Responsible</td>
-                  <th style="text-align:left">Details</td>
-                  <th style="text-align:left">Edit</td>
-                  <th style="text-align:left">Mark Done</td>
-                  <th class="text-center">Delete</td>
-                </tr>
-              </thead>
-              <tbody>
-                {% for task in overdue_tasks %}
-                {% include 'project/taskline.html' %}
-                {% endfor %}
-              </tbody> 
-            </table>
-          </div>
-          {% else %}
-          <div class="card">
-            <div class="card-block">
-              <div>No overdue tasks</div>
-            </div>
-          </div>
-          {% endif %}
-        </div>
+		<div class="card-block">
+		  No notices yet.
+		</div>
       </div>
+	  {% endif %}
     </div>
     <div class="col-md-3">
       <div class="card">
         <div class="card-header">
-          Invite a User
+          Add a notice
         </div>
         <div class="card-block">
           <form action="." method="post">
             {% csrf_token %}
-            {{inviteform.as_p}}
-            <div><input type="submit" name="invite" value="Invite User" class="submitbutton" /></div>
+            {{addnoticeform.as_p}}
+            <div><input type="submit" name="task" value="Add Notice" class="submitbutton" /></div>
           </form>
         </div>
       </div>
-      <div class="card">
-        <div class="card-header">
-          Add a task
-        </div>
-        <div class="card-block">
-          <form action="." method="post">
-            {% csrf_token %}
-            {{taskform.as_p}}
-            <div><input type="submit" name="task" value="Add a task" class="submitbutton" /></div>
-          </form>
-        </div>
-      </div>
-
     </div>
   </div>
 </div>
@@ -489,4 +401,3 @@
     <!-- Custom scripts required by this view -->
     <!-- script src="{% static 'js/views/main.js' %}"></script -->
 {% endblock %}
-
