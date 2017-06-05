@@ -6,10 +6,10 @@ from . import views
 urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^dashboard/$', views.dashboard, name='dashboard'),
+    url(r'^create/$', views.createproject, name='createproject'),
     url(r'^(?P<project_name>\w+)/$', views.project, name='project'),
     url(r'^(?P<project_name>\w+)/logs$', views.full_logs, name='logs'),
     url(r'^(?P<project_name>\w+)/settings$', views.settings, name='settings'),
-    url(r'^create/$', views.createproject, name='createproject'),
 ]
 
 # project.foo

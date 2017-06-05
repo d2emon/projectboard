@@ -119,7 +119,10 @@ USE_TZ = True
 USE_THOUSAND_SEPARATOR = True
 
 import locale
-locale.setlocale(locale.LC_ALL, 'ru_RU.utf8')
+try:
+    locale.setlocale(locale.LC_ALL, 'russian')
+except locale.Error:
+    locale.setlocale(locale.LC_ALL, 'ru_RU.utf8')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
