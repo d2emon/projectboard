@@ -3,7 +3,7 @@ from django.forms import ModelForm
 from django.utils.translation import ugettext as _
 
 
-from .models import Project, ProjectUser
+from .models import Project, ProjectUser, Notice
 
 
 import datetime
@@ -110,6 +110,46 @@ class InviteUserForm(ModelForm):
         invitation.save()
 
         return invitation
+
+    def as_div(self):
+        return self._html_output(
+            normal_row="<div class=\"form-group row\">" +
+            "<div class=\"col-md-3 form-control-label\">%(label)s</div>" +
+            "<div class=\"col-md-9\">%(field)s%(errors)s%(help_text)s</div>" +
+            "</div>",
+            error_row="<span class=\"error\">%s</span>",
+            row_ender="</div>",
+            help_text_html="<span class=\"help_block\">%s</span>",
+            errors_on_separate_row=True,
+        )
+
+
+class AddNoticeForm(ModelForm):
+    """
+    Add a notice to a task.
+    """
+
+    class Meta:
+        model = Notice
+        fields = ['text', ]
+
+    def __init__(self, project=None, user=None, *args, **kwargs):
+        kwargs.setdefault('label_suffix', '')
+        super(AddNoticeForm, self).__init__(*args, **kwargs)
+        self.project = project
+        self.user = user
+        for field in self.fields:
+            self.fields[field].widget.attrs['class'] = 'form-control'
+
+    def save(self):
+        notice = Notice(
+            user=self.user,
+            project=self.project,
+            text=self.cleaned_data['text'],
+        )
+        notice.save()
+
+        return notice
 
     def as_div(self):
         return self._html_output(

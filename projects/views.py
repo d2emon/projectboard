@@ -4,7 +4,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 
-from .forms import CreateProjectForm, InviteUserForm
+from .forms import CreateProjectForm, InviteUserForm, AddNoticeForm
 from .models import Project, Log, Notice
 
 from users.forms import UserCreationForm, LoginForm
@@ -288,13 +288,12 @@ def noticeboard(request, project_name):
         notices = paginator.page(1)
     except EmptyPage:
         notices = paginator.page(paginator.num_pages)
-    addnoticeform = []
-    # addnoticeform = bforms.AddNoticeForm()
+    addnoticeform = AddNoticeForm()
     context = {
         'project': project,
-        'notices':notices,
-        'addnoticeform':addnoticeform,
-        'page':page,
+        'notices': notices,
+        'addnoticeform': addnoticeform,
+        'page': page,
     }
     return render(request, 'project/noticeboard.html', context)
 
@@ -352,7 +351,7 @@ def add_todo_list(request):
 def add_todo_item(request):
     # id = int(request.POST['id'])
     # list = TodoList.objects.get(id = id)
-    # text_id = '%s-text'%list.id            
+    # text_id = '%s-text'%list.id
     # if request.POST[text_id]:
     #     item = TodoItem(list = list, text = request.POST[text_id])
     #     item.save()
