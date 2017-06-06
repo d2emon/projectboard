@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 
 from .forms import CreateProjectForm, InviteUserForm
-from .models import Project, Log
+from .models import Project, Log, Notice
 
 from users.forms import UserCreationForm, LoginForm
 
@@ -213,7 +213,6 @@ def full_logs(request, project_name):
     project = get_object_or_404(Project, slug=project_name)  # Only subscribed
     # access = get_access(project, request.user)
     log_list = Log.objects.filter(project=project)
-    # query_set = Log.objects.filter(project = project)
     paginator = Paginator(log_list, 3)
     page = request.GET.get('page')
     try:
@@ -222,7 +221,6 @@ def full_logs(request, project_name):
         logs = paginator.page(1)
     except EmptyPage:
         logs = paginator.page(paginator.num_pages)
-    # logs, page_data = get_paged_objects(query_set, request, logs_per_page)
     context = {
         'project': project,
         'logs': logs,
@@ -281,17 +279,22 @@ def noticeboard(request, project_name):
     """
     project = get_object_or_404(Project, slug=project_name)  # Only subscribed
     # access = get_access(project, request.user)
-    # query_set = Notice.objects.filter(project = project)
-    notices = []
-    page = []
-    # notices, page_data = get_paged_objects(query_set, request, notices_per_page)
+    notice_list = Notice.objects.filter(project = project)
+    paginator = Paginator(notice_list, 3)
+    page = request.GET.get('page')
+    try:
+        notices = paginator.page(page)
+    except PageNotAnInteger:
+        notices = paginator.page(1)
+    except EmptyPage:
+        notices = paginator.page(paginator.num_pages)
     addnoticeform = []
     # addnoticeform = bforms.AddNoticeForm()
     context = {
         'project': project,
         'notices':notices,
         'addnoticeform':addnoticeform,
-        'page_data':page,
+        'page':page,
     }
     return render(request, 'project/noticeboard.html', context)
 

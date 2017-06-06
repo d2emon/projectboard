@@ -101,3 +101,19 @@ class Log(models.Model):
         
     class Meta:
         ordering = ('-created_on', )
+
+
+class Notice(models.Model):
+    """
+    number: of the notice under the current project.
+    user: User who wrote this notice.
+    text: text of the notice.
+    created_on: When was this notice created. Auto filled.
+    """    
+    user = models.ForeignKey(User)
+    project = models.ForeignKey(Project)
+    text = models.TextField()
+    created_on = models.DateTimeField(auto_now_add = 1)
+        
+    class Meta:
+        ordering = ('-created_on', )        
