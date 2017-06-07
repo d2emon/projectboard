@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
+from django.conf import settings
 
 from .forms import CreateProjectForm, InviteUserForm, AddNoticeForm
 from .models import Project, Log, Notice
@@ -240,7 +241,7 @@ def full_logs_csv(request):
 
 
 @login_required
-def settings(request, project_name):
+def project_settings(request, project_name):
     """Allows settings site sepcific settings."""
     project = get_object_or_404(Project, slug=project_name)  # Only subscribed
     # access = get_access(project, request.user)
@@ -396,5 +397,11 @@ def clone_from_git(request, project_name):
     Clone from git
     """
     project = get_object_or_404(Project, slug=project_name)  # Only subscribed
-    print(project.git)
+
+    import logging
+    logger = logging.getLogger('git')
+    output, error = project.clone_from_git(cwd=settings.PROJECTS_DIR)
+    if error:
+        logger.error(error.decode('utf-8'))
+    logger.info(output.decode('utf-8'))
     return redirect('projects:project', project_name=project.slug)

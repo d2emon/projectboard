@@ -79,6 +79,15 @@ class Project(models.Model):
     def get_new(self):
         return self.get_overdue()
 
+    def clone_from_git(self, cwd='sources/'):
+        import subprocess
+        return subprocess.Popen(
+            ['git', 'clone', self.git],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            cwd=cwd
+        ).communicate()
+
 
 class ProjectUser(models.Model):
     """Users who have access to a given project
