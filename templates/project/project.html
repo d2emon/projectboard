@@ -136,6 +136,17 @@
     <div class="col-md-3">
       <div class="card">
         <div class="card-header">
+          Git
+        </div>
+        <div class="card-block">
+          {{ project.git }}
+        </div>
+        <div class="card-footer">
+          <a class="btn btn-sm btn-primary" href="{% url 'projects:from_git' project.slug %}"><i class="fa fa-dot-circle-o"></i> Clone</a>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
           Invite a User
         </div>
         <div class="card-block">

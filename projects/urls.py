@@ -12,6 +12,7 @@ urlpatterns = [
     url(r'^(?P<project_name>[\w-]+)/settings$', views.settings, name='settings'),
     url(r'^(?P<project_name>[\w-]+)/noticeboard$', views.noticeboard, name='noticeboard'),
     url(r'^(?P<project_name>[\w-]+)/todo$', views.todo, name='todo'),
+    url(r'^(?P<project_name>[\w-]+)/from_git$', views.clone_from_git, name='from_git'),
 ]
 
 # project.foo

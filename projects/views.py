@@ -388,3 +388,13 @@ def todo_csv(request):
     #         writer.writerow(item.as_csv())
     # return response
     return redirect('projects:project', project_name="123")
+
+
+@login_required
+def clone_from_git(request, project_name):
+    """
+    Clone from git
+    """
+    project = get_object_or_404(Project, slug=project_name)  # Only subscribed
+    print(project.git)
+    return redirect('projects:project', project_name=project.slug)
