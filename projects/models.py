@@ -31,6 +31,7 @@ class Project(models.Model):
     is_active = models.BooleanField(default = True)
     created_on = models.DateTimeField(auto_now_add = 1)
     git = models.CharField(max_length=100, blank=True, null=True)
+    uri = models.CharField(max_length=100, blank=True, null=True)
     programming_language = models.ForeignKey(ProgrammingLanguage)
 
     def __str__(self):
@@ -87,6 +88,12 @@ class Project(models.Model):
             stderr=subprocess.PIPE,
             cwd=cwd
         ).communicate()
+
+    def keywords(self):
+        return 'archive database flask privatisation',
+
+    def license(self):
+        return 'GPL-3.0',
 
 
 class ProjectUser(models.Model):

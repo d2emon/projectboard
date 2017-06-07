@@ -405,3 +405,19 @@ def clone_from_git(request, project_name):
         logger.error(error.decode('utf-8'))
     logger.info(output.decode('utf-8'))
     return redirect('projects:project', project_name=project.slug)
+
+
+@login_required
+def setup_py(request, project_name):
+    """
+    Generate setup.py
+    """
+    project = get_object_or_404(Project, slug=project_name)  # Only subscribed
+    return render(
+        request,
+        'projectfiles/setup.py',
+        {
+            'project': project,
+        },
+        content_type="application/x-python"
+    )
