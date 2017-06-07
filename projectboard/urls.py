@@ -18,6 +18,7 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^user/', include('users.urls', namespace='users')),
+    url(r'^techs/', include('techs.urls', namespace='techs')),
     url(r'^projects/', include('projects.urls', namespace='projects')),
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', admin.site.urls),
