@@ -5,6 +5,9 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 
 
+from techs.models import ProgrammingLanguage
+
+
 from datetime import datetime
 
 
@@ -27,6 +30,7 @@ class Project(models.Model):
     end_date = models.DateField(blank=True, null = True)
     is_active = models.BooleanField(default = True)
     created_on = models.DateTimeField(auto_now_add = 1)
+    programming_language = models.ForeignKey(ProgrammingLanguage)
 
     def __str__(self):
         return self.name
@@ -83,7 +87,7 @@ class ProjectUser(models.Model):
     group: access rights
     ----
     rejected: has the user rejected the invitation
-    """    
+    """
     user = models.ForeignKey(User)
     project = models.ForeignKey(Project)
 
@@ -93,12 +97,12 @@ class Log(models.Model):
     project: Project for which this log is written.
     text: Text of the log.
     created_on: When was this log created.
-    """    
+    """
     project = models.ForeignKey(Project)
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True, null=True)
     created_on = models.DateTimeField(auto_now_add = 1)
-        
+
     class Meta:
         ordering = ('-created_on', )
 
@@ -109,11 +113,11 @@ class Notice(models.Model):
     user: User who wrote this notice.
     text: text of the notice.
     created_on: When was this notice created. Auto filled.
-    """    
+    """
     user = models.ForeignKey(User)
     project = models.ForeignKey(Project)
     text = models.TextField()
     created_on = models.DateTimeField(auto_now_add = 1)
-        
+
     class Meta:
-        ordering = ('-created_on', )        
+        ordering = ('-created_on', )
