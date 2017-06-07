@@ -30,6 +30,7 @@ class Project(models.Model):
     end_date = models.DateField(blank=True, null = True)
     is_active = models.BooleanField(default = True)
     created_on = models.DateTimeField(auto_now_add = 1)
+    git = models.CharField(max_length=100, blank=True, null=True)
     programming_language = models.ForeignKey(ProgrammingLanguage)
 
     def __str__(self):
