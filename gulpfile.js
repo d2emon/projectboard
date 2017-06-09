@@ -98,7 +98,7 @@ gulp.task('html', function(){
 gulp.task('js', ['jquery', 'bootstrap_js', 'tether', 'pace', 'chart'], function(){
   return gulp.src([
     'assets/js/**/*.js',
-    '!assets/js/iviews/*.js'
+    '!assets/js/views/*.js'
   ])
     .pipe(concat('index.js'))
     .pipe(gulp.dest('static/js'));
