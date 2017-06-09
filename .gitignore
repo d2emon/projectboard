@@ -104,7 +104,8 @@ ENV/
 
 db/
 temp/
-static/bower/
+static/
+assets/bower_components
 node_modules/
 /.project
 /.pydevproject

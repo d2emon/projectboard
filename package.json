@@ -6,7 +6,7 @@
   "scripts": {
     "preinstall": "git pull && pip install -r requirements.txt",
     "install": "bower install",
-    "prestart": "./manage.py migrate",
+    "prestart": "./manage.py migrate && gulp",
     "start": "./manage.py runserver",
     "test": "./manage.py test"
   },
@@ -27,5 +27,13 @@
   "homepage": "https://github.com/d2emon/projectboard#readme",
   "dependencies": {
     "coreui.io": "^1.0.0-alpha.5"
+  },
+  "devDependencies": {
+    "del": "^2.2.2",
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-csso": "^3.0.0",
+    "gulp-less": "^3.3.0",
+    "gulp-pug": "^3.3.0"
   }
 }
