@@ -3,4 +3,6 @@ django-registration==2.2
 docutils==0.13.1
 olefile==0.44
 Pillow==4.1.1
+pypugjs==4.2.2
 pytz==2017.2
+six==1.10.0
