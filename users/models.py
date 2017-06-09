@@ -31,4 +31,10 @@ class UserProfile(models.Model):
         return notifications
 
     def rand_avatar(self):
-        return str(random.randint(1, 8)) + ".jpg"
+        return settings.MEDIA_URL + str(random.randint(1, 8)) + ".jpg"
+
+    @property
+    def avatar_url(self):
+        if self.avatar and hasattr(self.avatar, 'url'):
+            return self.avatar.url
+        return settings.MEDIA_URL
