@@ -157,3 +157,5 @@ PERSISTENT_SESSION_KEY = 'persistant'
 LOGIN_REDIRECT_URL = '/projects/dashboard/'
 
 PROJECTS_DIR = os.path.join(BASE_DIR, 'sources')
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
