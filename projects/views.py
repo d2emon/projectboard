@@ -8,6 +8,7 @@ from django.conf import settings
 from .forms import CreateProjectForm, InviteUserForm, AddNoticeForm
 from .models import Project, Log, Notice
 
+from users.models import UserProfile
 from users.forms import UserCreationForm, LoginForm
 
 import users.views
@@ -55,6 +56,7 @@ def dashboard(request):
         'subs': subs,
         'createform': createform,
         'invites': invites,
+        'no_avatar': UserProfile.rand_avatar(),
     }
     return render(request, 'projects/dashboard.pug', context)
 
