@@ -43,58 +43,59 @@ html(lang="en")
 
     // Footer options
     1. '.footer-fixed'						- Fixed footer
-  body(class="app header-fixed sidebar-fixed aside-menu-fixed aside-menu-hidden")
-    header(class="app-header navbar")
-      button(class="navbar-toggler mobile-sidebar-toggler d-lg-none", type="button") ☰
-      a(class="navbar-brand", href="#")
-      block topmenu
-        ul(class="nav navbar-nav d-md-down-none")
-          li.nav-item
-            a(class="nav-link navbar-toggler sidebar-toggler", href="#") ☰
+  block body
+    body(class="app header-fixed sidebar-fixed aside-menu-fixed aside-menu-hidden")
+      header(class="app-header navbar")
+        button(class="navbar-toggler mobile-sidebar-toggler d-lg-none", type="button") ☰
+        a(class="navbar-brand", href="#")
+        block topmenu
+          ul(class="nav navbar-nav d-md-down-none")
+            li.nav-item
+              a(class="nav-link navbar-toggler sidebar-toggler", href="#") ☰
 
-      block usermenu
+        block usermenu
         
-    block feeds
-    div(style="display:none;")
-      block sidebar
+      block feeds
+      div(style="display:none;")
+        block sidebar
   
-    .app-body
-      .sidebar
-        nav.sidebar-nav
-          block navmenu
-            ul.nav
-              li.nav-item
-                a(class="nav-link", href="index.html") <i class="icon-speedometer"></i> Dashboard <span class="badge badge-info">NEW</span>
+      .app-body
+        .sidebar
+          nav.sidebar-nav
+            block navmenu
+              ul.nav
+                li.nav-item
+                  a(class="nav-link", href="index.html") <i class="icon-speedometer"></i> Dashboard <span class="badge badge-info">NEW</span>
 
-      // Main content
-      main.main
-        block breadcrumbs_block
+        // Main content
+        main.main
+          block breadcrumbs_block
         
-        .container-fluid
-          block content
+          .container-fluid
+            block content
             
-        // /.conainer-fluid
+          // /.conainer-fluid
       
-      block aside
+        block aside
         
-    footer.app-footer
-      a(href="http://coreui.io") CoreUI
-      | © 2017 creativeLabs.
-      span.float-right Powered by <a href="http://coreui.io">CoreUI</a>
+      footer.app-footer
+        a(href="http://coreui.io") CoreUI
+        | © 2017 creativeLabs.
+        span.float-right Powered by <a href="http://coreui.io">CoreUI</a>
     
-    // Bootstrap and necessary plugins
-    script(src="{% static 'js/jquery.min.js' %}")
-    script(src="{% static 'js/tether.min.js' %}")
-    script(src="{% static 'js/bootstrap.min.js' %}")
-    script(src="{% static 'js/pace.min.js' %}")
+      // Bootstrap and necessary plugins
+      script(src="{% static 'js/jquery.min.js' %}")
+      script(src="{% static 'js/tether.min.js' %}")
+      script(src="{% static 'js/bootstrap.min.js' %}")
+      script(src="{% static 'js/pace.min.js' %}")
 
-    // Plugins and scripts required by all views
-    script(src="{% static 'js/Chart.min.js' %}")
+      // Plugins and scripts required by all views
+      script(src="{% static 'js/Chart.min.js' %}")
 
-    // GenesisUI main scripts
-    script(src="{% static 'js/index.js' %}")
+      // GenesisUI main scripts
+      script(src="{% static 'js/index.js' %}")
 
-    block jsblock
-      // Plugins and scripts required by this views
-      // Custom scripts required by this view
-      script(src="{% static 'js/views/main.js' %}")
+      block jsblock
+        // Plugins and scripts required by this views
+        // Custom scripts required by this view
+        script(src="{% static 'js/views/main.js' %}")

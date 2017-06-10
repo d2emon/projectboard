@@ -1,10 +1,10 @@
-{% extends "registration/base.html" %}
+{% extends "_base.pug" %}
 
 {% block title %}
 {{block.super}} - Login
 {% endblock %}
 
-{% block contents %}
+{% block content %}
 		  <div id="content" style="height:300px;">
 <div class="message">
 {% if user.is_authenticated %}

@@ -61,7 +61,8 @@ gulp.task('img', function(){
 gulp.task('less', function(){
   return gulp.src('assets/less/*.less')
     .pipe(less())
-    .pipe(csso())
+    .pipe(concat('style.css'))
+    // .pipe(csso())
     .pipe(gulp.dest('static/css'));
 });
 
@@ -91,7 +92,7 @@ gulp.task('html', function(){
   ])
     .pipe(pug({pretty: true}))
     // .pipe(on("error", console.log))
-    .pipe(gulp.dest('templates/html'));
+    .pipe(gulp.dest('templates/'));
 });
 
 // Prepare js
@@ -106,8 +107,8 @@ gulp.task('js', ['jquery', 'bootstrap_js', 'tether', 'pace', 'chart'], function(
 
 // Watch for changes
 gulp.task('watch', ['css', 'html', 'js', 'fonts', 'images'], function() {
-  gulp.watch('assets/css/*.less', ['css']);
-  gulp.watch('assets/pug/*.pug', ['html']);
+  gulp.watch('assets/less/*.less', ['css']);
+  gulp.watch('assets/pug/**/*.pug', ['html']);
   gulp.watch('assets/fonts/*', ['fonts']);
   gulp.watch('assets/js/**/*.js', ['js']);
   gulp.watch('assets/images/*', ['images']);

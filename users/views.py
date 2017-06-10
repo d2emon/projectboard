@@ -16,6 +16,7 @@ def login(request):
     Display and processs the login form.
     """
 
+    print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
     no_cookies = False
     account_disabled = False
     invalid_login = False
