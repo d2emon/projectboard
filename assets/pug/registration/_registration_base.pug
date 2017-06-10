@@ -1,0 +1,21 @@
+| {% extends "_base.pug" %}
+| {% load static %}
+
+| {% block title %}
+block title
+
+| {% endblock %}
+
+| {% block body %}
+body(class="app flex-row align-items-center")
+  .container
+    div(class="row justify-content-center")
+      block content
+      
+  // Bootstrap and necessary plugins
+  script(src="{% static 'js/jquery.min.js' %}")
+  script(src="{% static 'js/tether.min.js' %}")
+  script(src="{% static 'js/bootstrap.min.js' %}")
+  script(src="{% static 'js/pace.min.js' %}")
+
+| {% endblock %}

@@ -1,85 +1,72 @@
-| {% extends "_base.pug" %}
-| {% load static %}
+extends _registration_base.pug
 
-| {% block title %}
-| {{block.super}} - Create a new user
-| {% endblock %}
-
-| {% block body %}
-body(class="app flex-row align-items-center")
-  .container
-    div(class="row justify-content-center")
-      .col-md-6
-        div(class="card mx-4")
-          div(class="card-block p-4")
-            form(method="post", action="{% url 'registration_register' %}")
-              h1 Register
-              p.text-muted Create your account
+block title
+  | {{block.super}} - Create a new user
+ 
+block content
+  .col-md-6
+    div(class="card mx-4")
+      div(class="card-block p-4")
+        form(method="post", action="{% url 'registration_register' %}")
+          h1 Register
+          p.text-muted Create your account
             
-              | {% csrf_token %}
-              | {% if form.non_field_errors %}
-              div(class="alert alert-danger login-error")
-                | {{ form.non_field_errors }}
+          | {% csrf_token %}
+          | {% if form.non_field_errors %}
+          div(class="alert alert-danger login-error")
+            | {{ form.non_field_errors }}
+          | {% endif %}
+
+          .form-group
+            .controls
+              div(class="input-group mb-3")
+                span.input-group-addon
+                  i.icon-user
+                input(type="text", class="form-control", placeholder="Username", name="username", id="{{form.username.id_for_label}}", required="", autofocus="")
+              div(class="help-block text-muted") {{form.username.help_text|safe}}
+              | {% if form.username.errors %}
+              div(class="alert alert-danger") {{form.username.errors|safe}}
               | {% endif %}
 
-              .form-group
-                .controls
-                  div(class="input-group mb-3")
-                    span.input-group-addon
-                      i.icon-user
-                    input(type="text", class="form-control", placeholder="Username", name="username", id="{{form.username.id_for_label}}", required="", autofocus="")
-                  div(class="help-block text-muted") {{form.username.help_text|safe}}
-                  | {% if form.username.errors %}
-                  div(class="alert alert-danger") {{form.username.errors|safe}}
-                  | {% endif %}
+          .form-group
+            .controls
+              div(class="input-group mb-3")
+                span.input-group-addon
+                  | @
+                input(type="email", class="form-control", placeholder="Email", name="email", id="{{form.email.id_for_label}}", required="")
+              div(class="help-block text-muted") {{form.email.help_text|safe}}
+              | {% if form.email.errors %}
+              div(class="alert alert-danger") {{form.email.errors|safe}}
+              | {% endif %}
 
-              .form-group
-                .controls
-                  div(class="input-group mb-3")
-                    span.input-group-addon
-                      | @
-                    input(type="email", class="form-control", placeholder="Email", name="email", id="{{form.email.id_for_label}}", required="")
-                  div(class="help-block text-muted") {{form.email.help_text|safe}}
-                  | {% if form.email.errors %}
-                  div(class="alert alert-danger") {{form.email.errors|safe}}
-                  | {% endif %}
+          .form-group
+            .controls
+              div(class="input-group mb-3")
+                span.input-group-addon
+                  i.icon-lock
+                input(type="password", class="form-control", placeholder="Password", name="password1", id="{{form.password1.id_for_label}}", required="")
+              div(class="help-block text-muted") {{form.password1.help_text|safe}}
+              | {% if form.password1.errors %}
+              div(class="alert alert-danger") {{form.password1.errors|safe}}
+              | {% endif %}
 
-              .form-group
-                .controls
-                  div(class="input-group mb-3")
-                    span.input-group-addon
-                      i.icon-lock
-                    input(type="password", class="form-control", placeholder="Password", name="password1", id="{{form.password1.id_for_label}}", required="")
-                  div(class="help-block text-muted") {{form.password1.help_text|safe}}
-                  | {% if form.password1.errors %}
-                  div(class="alert alert-danger") {{form.password1.errors|safe}}
-                  | {% endif %}
-
-              .form-group
-                .controls
-                  div(class="input-group mb-4")
-                    span.input-group-addon
-                      i.icon-lock
-                    input(type="password", class="form-control", placeholder="Repeat password", name="password2", id="{{form.password2.id_for_label}}", required="")
-                  div(class="help-block text-muted") {{form.password2.help_text|safe}}
-                  | {% if form.password2.errors %}
-                  div(class="alert alert-danger") {{form.password2.errors|safe}}
-                  | {% endif %}
+          .form-group
+            .controls
+              div(class="input-group mb-4")
+                span.input-group-addon
+                  i.icon-lock
+                input(type="password", class="form-control", placeholder="Repeat password", name="password2", id="{{form.password2.id_for_label}}", required="")
+              div(class="help-block text-muted") {{form.password2.help_text|safe}}
+              | {% if form.password2.errors %}
+              div(class="alert alert-danger") {{form.password2.errors|safe}}
+              | {% endif %}
             
-              button(type="submit", class="btn btn-block btn-success") Create Account
-          div(class="card-footer p-4")
-            .row
-              .col-6
-                button(class="btn btn-block btn-facebook", type="button")
-                  span facebook
-              .col-6
-                button(class="btn btn-block btn-twitter", type="button")
-                  span twitter
-              
-  // Bootstrap and necessary plugins
-  script(src="{% static 'js/jquery.min.js' %}")
-  script(src="{% static 'js/tether.min.js' %}")
-  script(src="{% static 'js/bootstrap.min.js' %}")
-  script(src="{% static 'js/pace.min.js' %}")
-
-| {% endblock %}
+          button(type="submit", class="btn btn-block btn-success") Create Account
+      div(class="card-footer p-4")
+        .row
+          .col-6
+            button(class="btn btn-block btn-facebook", type="button")
+              span facebook
+          .col-6
+            button(class="btn btn-block btn-twitter", type="button")
+              span twitter
