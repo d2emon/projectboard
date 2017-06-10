@@ -44,18 +44,17 @@ block navmenu
       a(class="nav-link", href="charts.html") <i class="icon-pie-chart"></i> Charts
     li.divider
     li.nav-title Extras
-    //-
-      li(class="nav-item nav-dropdown")
-        a(class="nav-link nav-dropdown-toggle", href="#") <i class="icon-star"></i> Pages
-        ul.nav-dropdown-items
-          li.nav-item
-            a(class="nav-link", href="pages-login.html" target="_top") <i class="icon-star"></i> Login
-          li.nav-item
-            a(class="nav-link", href="pages-register.html" target="_top") <i class="icon-star"></i> Register
-          li.nav-item
-            a(class="nav-link", href="pages-404.html" target="_top") <i class="icon-star"></i> Error 404
-          li.nav-item
-            a(class="nav-link", href="pages-500.html" target="_top") <i class="icon-star"></i> Error 500
+    li(class="nav-item nav-dropdown")
+      a(class="nav-link nav-dropdown-toggle", href="#") <i class="icon-star"></i> Pages
+      ul.nav-dropdown-items
+        li.nav-item
+          a(class="nav-link", href="pages-login.html", target="_top") <i class="icon-star"></i> Login
+        li.nav-item
+          a(class="nav-link", href="pages-register.html", target="_top") <i class="icon-star"></i> Register
+        li.nav-item
+          a(class="nav-link", href="pages-404.html", target="_top") <i class="icon-star"></i> Error 404
+        li.nav-item
+          a(class="nav-link", href="pages-500.html", target="_top") <i class="icon-star"></i> Error 500
 
 block breadcrumbs_block
   ol.breadcrumb
@@ -74,7 +73,7 @@ block breadcrumbs_block
   // You are subscribed to {{subs.count}} projects.
 
 block content
-  .animated fadeIn
+  div(class="animated fadeIn")
     .row
       if invites
         .col-md-12
