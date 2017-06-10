@@ -56,7 +56,7 @@ def dashboard(request):
         'createform': createform,
         'invites': invites,
     }
-    return render(request, 'project/dashboard.pug', context)
+    return render(request, 'projects/dashboard.pug', context)
 
 
 @login_required
