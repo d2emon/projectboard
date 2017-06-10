@@ -61,7 +61,7 @@ gulp.task('img', function(){
 gulp.task('less', function(){
   return gulp.src('assets/less/*.less')
     .pipe(less())
-    .pipe(concat('style.css'))
+    .pipe(concat('index.css'))
     // .pipe(csso())
     .pipe(gulp.dest('static/css'));
 });
