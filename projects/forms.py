@@ -28,8 +28,8 @@ class CreateProjectForm(ModelForm):
             "Can not contain spaces/sepcial chars.",
         }
         widgets = {
-            'start_date': forms.DateInput(attrs={'type': "date"}),
-            'end_date': forms.DateInput(attrs={'type': "date"}),
+            'start_date': forms.DateInput(attrs={'type': "date"}, format="%Y-%m-%d"),
+            'end_date': forms.DateInput(attrs={'type': "date"}, format="%Y-%m-%d"),
         }
         labels = {
             'end_date': _("End Date"),

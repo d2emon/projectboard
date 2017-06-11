@@ -48,6 +48,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -116,7 +117,14 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+from django.utils.translation import ugettext_lazy as _
+
+# LANGUAGE_CODE = 'en-us'
+# LANGUAGE_CODE = 'ru'
+LANGUAGES = [
+    ('en', _('English')),
+    ('ru', _('Russian')),
+]
 
 TIME_ZONE = 'UTC'
 
@@ -128,11 +136,11 @@ USE_TZ = True
 
 USE_THOUSAND_SEPARATOR = True
 
-import locale
-try:
-    locale.setlocale(locale.LC_ALL, 'russian')
-except locale.Error:
-    locale.setlocale(locale.LC_ALL, 'ru_RU.utf8')
+# import locale
+# try:
+#     locale.setlocale(locale.LC_ALL, 'russian')
+# except locale.Error:
+#     locale.setlocale(locale.LC_ALL, 'ru_RU.utf8')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
