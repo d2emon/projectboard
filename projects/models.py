@@ -95,6 +95,9 @@ class Project(models.Model):
     def license(self):
         return 'GPL-3.0',
 
+    class Meta:
+        ordering = ['-start_date', ]
+
 
 class ProjectUser(models.Model):
     """Users who have access to a given project
@@ -105,8 +108,21 @@ class ProjectUser(models.Model):
     ----
     rejected: has the user rejected the invitation
     """
+    STATUS_INVITED = 1
+    STATUS_ACCEPTED = 2
+    STATUS_DECLINED = 3
+    STATUSES = (
+        (STATUS_INVITED, "Invited"),
+        (STATUS_ACCEPTED, "Accepted"),
+        (STATUS_DECLINED, "Declined"),
+    )
+
     user = models.ForeignKey(User)
     project = models.ForeignKey(Project)
+    status = models.IntegerField(
+        null=True,
+        choices=STATUSES,
+    )
 
 
 class Log(models.Model):

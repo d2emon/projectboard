@@ -6,10 +6,9 @@ from django.views.decorators.http import require_POST
 from django.conf import settings
 
 from .forms import CreateProjectForm, InviteUserForm, AddNoticeForm
-from .models import Project, Log, Notice
+from .models import Project, ProjectUser, Log, Notice
 
-from users.models import UserProfile
-from users.forms import UserCreationForm, LoginForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
 import users.views
 
@@ -23,15 +22,15 @@ def index(request):
         return redirect('projects:dashboard')
     if request.method == 'POST':
         return users.views.login(request)
-    register_form = UserCreationForm(prefix='register')
-    login_form = LoginForm()
-    request.session.set_test_cookie()
 
-    context = {
+    register_form = UserCreationForm()
+    login_form = AuthenticationForm()
+    # request.session.set_test_cookie()
+
+    return render(request, 'projects/index.pug', {
         'register_form': register_form,
         'login_form': login_form
-    }
-    return render(request, 'projects/index.pug', context)
+    })
 
 
 @login_required
@@ -43,22 +42,22 @@ def dashboard(request):
     Shows the pending invites to other projects.
     Shows very critical information about available projects.
     """
-    subs = request.user.projectuser_set.all()
-    # if request.GET.get('includeinactive', 0):
-    #     subs = user.subscribeduser_set.all()
-    # else:
-    #     subs = user.subscribeduser_set.filter(project__is_active = True)
-    invites = request.user.projectuser_set.all()
-    # invites = user.inviteduser_set.filter(rejected = False)
+    inactive = request.GET.get('inactive', False)
+    projects = request.user.projectuser_set.order_by('-project__start_date')
+    if inactive:
+        subs = projects.all()
+    else:
+        subs = projects.filter(project__is_active=True)
+
+    invites = request.user.projectuser_set.filter(status=ProjectUser.STATUS_INVITED)
     createform = CreateProjectForm()
 
-    context = {
-        'subs': subs,
-        'createform': createform,
+    return render(request, 'projects/dashboard.pug', {
+        'subs': subs.filter(status=ProjectUser.STATUS_ACCEPTED),
         'invites': invites,
-        'no_avatar': UserProfile.rand_avatar(),
-    }
-    return render(request, 'projects/dashboard.pug', context)
+        'inactive': inactive,
+        'createform': createform,
+    })
 
 
 @login_required

@@ -80,15 +80,16 @@ block content
           .card
             .card-header Pending Invites
             .card-block
-              ul
-                each invite in invites
-                  li
-                    form(action=invite, method="post", class="form-horizontal")
-                       - csrf_token
-                       = invite.project
-                       input(type="hidden", name="projid", value=invite.project.id)
-                       input(type="hidden", name="invid", value=invite.id)
-                       button(href="submit()", class="btn btn-success") <i class="fa fa-check"></i> Accept
+              each invite in invites
+                div(class="alert alert-info alert-dismissible")
+                  form(action=invite, method="post", class="form-horizontal")
+                    - csrf_token
+                    p You are invited to <strong><a href="#{invite.project.get_absolute_url}">#{invite.project}</a></strong>
+                    input(type="hidden", name="projid", value=invite.project.id)
+                    input(type="hidden", name="invid", value=invite.id)
+                    p
+                      button(href="submit()", class="btn btn-sm btn-success") <i class="fa fa-check"></i> Accept
+                      button(type="button", data-dismiss="alert", class="btn btn-sm btn-danger") <i class="fa fa-remove"></i> Decline
 
       .col-md-8
         .card
@@ -186,8 +187,12 @@ block content
           .card-footer
             p Your dashboard has #{subs.count} projects.
             ul
-              li
-                a(href="{% url 'projects:dashboard' %}?inactive=1") Show inactive projects
+              if inactive
+                li
+                  a(href="{% url 'projects:dashboard' %}?inactive=") Hide inactive projects
+              else
+                li
+                  a(href="{% url 'projects:dashboard' %}?inactive=1") Show inactive projects
 
 block jsblock
   - load static
