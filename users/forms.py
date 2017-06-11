@@ -30,8 +30,8 @@ class UserCreationForm(forms.Form):
     def clean_username(self):
         alnum_re = re.compile(r'^\w+$')
         if not alnum_re.search(self.cleaned_data['username']):
-            raise forms.ValidationError("This value must contain only letters, " +
-                                        "numbers and underscores.")
+            raise forms.ValidationError(_("This value must contain only letters, " +
+                                        "numbers and underscores."))
         self.isValidUsername()
         return self.cleaned_data['username']
 
@@ -50,8 +50,8 @@ class UserCreationForm(forms.Form):
     def clean_project_name(self):
         alnum_re = re.compile(r'^\w+$')
         if not alnum_re.search(self.cleaned_data['project_name']):
-            raise forms.ValidationError("This value must contain only letters, " +
-                                        "numbers and underscores.")
+            raise forms.ValidationError(_("This value must contain only letters, " +
+                                        "numbers and underscores."))
         self.is_valid_shortname()
         return self.cleaned_data['project_name']
 
@@ -60,8 +60,8 @@ class UserCreationForm(forms.Form):
             Project.objects.get(shortname = self.cleaned_data['project_name'])
         except Project.DoesNotExist:
             return
-        raise forms.ValidationError('This project name is already taken. Please ' +
-                                    'try another.')
+        raise forms.ValidationError(_('This project name is already taken. Please ' +
+                                    'try another.'))
 
     def save(self):
         user = User.objects.create_user(self.cleaned_data['username'], '',
@@ -79,8 +79,8 @@ class LoginForm(forms.Form):
         min_length=1,
         widget=forms.widgets.TextInput(attrs={'class': 'input'}),
         error_messages={
-            'min_length': 'Must be 1-30 alphanumeric characters or underscores.',
-            'max_length': 'Must be 1-30 alphanumeric characters or underscores.',
+            'min_length': _('Must be 1-30 alphanumeric characters or underscores.'),
+            'max_length': _('Must be 1-30 alphanumeric characters or underscores.'),
         }
     )
     password = forms.CharField(
@@ -99,11 +99,11 @@ class LoginForm(forms.Form):
             try:
                 user = User.objects.get(username__iexact = self.cleaned_data['username'])
             except KeyError:
-                raise forms.ValidationError('Please provide a username.')
+                raise forms.ValidationError(_('Please provide a username.'))
         except User.DoesNotExist:
-            raise forms.ValidationError('Invalid username, please try again.')
+            raise forms.ValidationError(_('Invalid username, please try again.'))
 
         if not user.check_password(self.cleaned_data['password']):
-            raise forms.ValidationError('Invalid password, please try again.')
+            raise forms.ValidationError(_('Invalid password, please try again.'))
 
         return self.cleaned_data
