@@ -1,0 +1,71 @@
+extends _base.pug
+- load static
+
+block title
+  | Index
+
+block content
+  .row
+    .col-md-4
+      div(class="card card-inverse card-primary")
+        .card-header
+          h1 Welcome to Projectboard!
+        .card-block
+          h3 Plan. Track. Manage.
+          ul
+            li Manage depenedencies with multi-level-hierchical task structure.
+            li Track time spent with task items.
+            li Integrated wiki, file storage and notice board.
+            li Versioned projects so your data is never lost.
+            li Integrated metrics.
+            li Keep track of changes via mail or rss.
+            li Multiple access levels.
+      
+          h2 Oh look. Some screenshots!
+
+          .m-img
+            img(src="{% static 'screenshots/tn_calendar_1.png' %}", alt="")
+            br
+            | Calendar
+          .m-img
+            img(src="{% static 'screenshots/tn_dashboard_1.png' %}", alt="")
+            br
+            | Metrics
+          .m-img
+            img(src="{% static 'screenshots/tn_metrics_1.png' %}", alt="")
+            | Dashboard
+    
+    .col-md-8
+      div(class="card-group mb-0")
+        form(method="post", action="{% url 'auth_login' %}")
+          div(class="card p-4")
+            .card-block
+              h1 Login
+              p.text-muted Sign In to your account
+              | {% csrf_token %}
+              input(type="hidden", name="next", value="{{ next }}")
+              | {% if form.non_field_errors %}
+              div(class="alert alert-danger login-error")
+                | {{ form.non_field_errors }}
+              | {% endif %}
+              div(class="input-group mb-3")
+                span.input-group-addon 
+                  i.icon-user
+                input(type="text", class="form-control", placeholder="Username", name="username", id="{{form.username.id_for_label}}", required="", autofocus="")
+                | {{ form.username.errors }}
+              div(class="input-group mb-4")
+                span.input-group-addon 
+                  i.icon-lock
+                input(type="password", class="form-control", placeholder="Password", name="password", id="{{form.password.id_for_label}}", required="")
+                | {{ form.password.errors }}
+              .row
+                div(class="col-6")
+                  button(type="submit", class="btn btn-primary px-4") Login
+                div(class="col-6 text-right")
+                  a(href="{% url 'auth_password_reset' %}", class="btn btn-link px-0") Forgot password?
+        div(class="card card-inverse card-primary py-5 d-md-down-none")
+          div(class="card-block text-center")
+            div
+              h2 Sign up
+              p Don't have an Account yet?<br /> Signing up is easy.
+              a(href="{% url 'registration_register' %}", class="btn btn-primary active mt-3") Register Now!

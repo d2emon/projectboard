@@ -1,6 +1,8 @@
 extends _base.pug
 
 block topmenu
+  button(class="navbar-toggler mobile-sidebar-toggler d-lg-none", type="button") ☰
+  a(class="navbar-brand", href="#")
   ul(class="nav navbar-nav d-md-down-none")
     li.nav-item
       a(class="nav-link navbar-toggler sidebar-toggler", href="#") ☰
@@ -73,6 +75,14 @@ block usermenu
           a(class="dropdown-item", href="{% url 'users:logout' %}") <i class="fa fa-lock"></i> Logout
       li(class="nav-item d-md-down-none")
         a(class="nav-link navbar-toggler aside-menu-toggler", href="#") ☰
+
+block sidemenu
+  .sidebar
+    nav.sidebar-nav
+      block navmenu
+        ul.nav
+          li.nav-item
+            a(class="nav-link", href="index.html") <i class="icon-speedometer"></i> Dashboard <span class="badge badge-info">NEW</span>
 
 block aside
   aside.aside-menu

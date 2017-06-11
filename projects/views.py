@@ -31,7 +31,7 @@ def index(request):
         'register_form': register_form,
         'login_form': login_form
     }
-    return render(request, 'project/index.html', context)
+    return render(request, 'projects/index.pug', context)
 
 
 @login_required

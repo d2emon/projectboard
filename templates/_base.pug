@@ -47,12 +47,8 @@ html(lang="en")
   block body
     body(class="app header-fixed sidebar-fixed aside-menu-fixed aside-menu-hidden")
       header(class="app-header navbar")
-        button(class="navbar-toggler mobile-sidebar-toggler d-lg-none", type="button") ☰
-        a(class="navbar-brand", href="#")
         block topmenu
-          ul(class="nav navbar-nav d-md-down-none")
-            li.nav-item
-              a(class="nav-link navbar-toggler sidebar-toggler", href="#") ☰
+          a(class="navbar-brand", href="#")
 
         block usermenu
         
@@ -61,12 +57,7 @@ html(lang="en")
         block sidebar
   
       .app-body
-        .sidebar
-          nav.sidebar-nav
-            block navmenu
-              ul.nav
-                li.nav-item
-                  a(class="nav-link", href="index.html") <i class="icon-speedometer"></i> Dashboard <span class="badge badge-info">NEW</span>
+        block sidemenu
 
         // Main content
         main.main
