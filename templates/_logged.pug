@@ -27,10 +27,7 @@ block usermenu
           i.icon-location-pin
       li(class="nav-item dropdown")
         a(class="nav-link dropdown-toggle nav-link", data-toggle="dropdown", href="#", role="button", aria-haspopup="true", aria-expanded="false")
-          - if userdata
-            img(src="userdata.avatar_url()", class="img-avatar", alt=request.user.email)
-          - else
-            img(src=no_avatar, class="img-avatar", alt=request.user.email)
+          img(src=userdata.avatar_url, class="img-avatar", alt=request.user.email)
           span.d-md-down-none= request.user.username
         div(class="dropdown-menu dropdown-menu-right")
           div(class="dropdown-header text-center")
