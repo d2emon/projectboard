@@ -1,0 +1,209 @@
+| {% extends '_logged.pug' %}
+| {% load i18n %}
+
+| {% block feeds %}
+| {% endblock %}
+
+| {% block title %}{%trans 'Dashboard' %}{% endblock %}
+
+| {% block navmenu %}
+ul.nav
+  li.nav-item
+    a(class="nav-link", href="{% url 'projects:dashboard' %}") <i class="icon-speedometer"></i> Dashboard <span class="badge badge-info">NEW</span>
+  li.nav-title UI Elements
+  li(class="nav-item nav-dropdown")
+    a(class="nav-link nav-dropdown-toggle", href="#") <i class="icon-puzzle"></i> Components</a>
+    ul.nav-dropdown-items
+      li.nav-item
+        a(class="nav-link", href="components-buttons.html") <i class="icon-puzzle"></i> Buttons</a>
+      li.nav-item
+        a(class="nav-link", href="components-social-buttons.html") <i class="icon-puzzle"></i> Social Buttons</a>
+      li.nav-item
+        a(class="nav-link", href="components-cards.html") <i class="icon-puzzle"></i> Cards</a>
+      li.nav-item
+        a(class="nav-link", href="components-forms.html") <i class="icon-puzzle"></i> Forms</a>
+      li.nav-item
+        a(class="nav-link", href="components-modals.html") <i class="icon-puzzle"></i> Modals</a>
+      li.nav-item
+        a(class="nav-link", href="components-buttons.html") <i class="icon-puzzle"></i> Buttons</a>
+      li.nav-item
+        a(class="nav-link", href="components-switches.html") <i class="icon-puzzle"></i> Switches</a>
+      li.nav-item
+        a(class="nav-link", href="components-tables.html") <i class="icon-puzzle"></i> Tables</a>
+      li.nav-item
+        a(class="nav-link", href="components-tabs.html") <i class="icon-puzzle"></i> Tabs</a>
+  li(class="nav-item nav-dropdown")
+    a(class="nav-link nav-dropdown-toggle", href="#") <i class="icon-star"></i> Icons
+    ul.nav-dropdown-items
+      li.nav-item
+        a(class="nav-link", href="icons-font-awesome.html") <i class="icon-star"></i> Font Awesome
+      li.nav-item
+        a(class="nav-link", href="icons-simple-line-icons.html") <i class="icon-star"></i> Simple Line Icons
+  li.nav-item
+    a(class="nav-link", href="widgets.html") <i class="icon-calculator"></i> Widgets <span class="badge badge-info">NEW</span>
+  li.nav-item
+    a(class="nav-link", href="charts.html") <i class="icon-pie-chart"></i> Charts
+  li.divider
+  li.nav-title Extras
+  li(class="nav-item nav-dropdown")
+    a(class="nav-link nav-dropdown-toggle", href="#") <i class="icon-star"></i> Pages
+    ul.nav-dropdown-items
+      li.nav-item
+        a(class="nav-link", href="pages-login.html", target="_top") <i class="icon-star"></i> Login
+      li.nav-item
+        a(class="nav-link", href="pages-register.html", target="_top") <i class="icon-star"></i> Register
+      li.nav-item
+        a(class="nav-link", href="pages-404.html", target="_top") <i class="icon-star"></i> Error 404
+      li.nav-item
+        a(class="nav-link", href="pages-500.html", target="_top") <i class="icon-star"></i> Error 500
+| {% endblock %}
+
+| {%block breadcrumbs_block%}
+ol.breadcrumb
+  | {%block breadcrumbs%}
+  li.breadcrumb-item Home
+  li.breadcrumb-item
+    a(href="/admin") Admin
+  li(class="breadcrumb-item active") Dashboard
+
+  li(class="breadcrumb-menu d-md-down-none")
+    | {% block breadcrumb_menu %}
+    div(class="btn-group", role="group", aria-label="Button group with nested dropdown")
+      a(class="btn btn-secondary", href="{% url 'users:chat' %}") <i class="icon-speech"></i>
+      a(class="btn btn-secondary", href="{% url 'projects:dashboard' %}") <i class="icon-graph"></i> &nbsp;Dashboard
+      a(class="btn btn-secondary", href="{% url 'users:settings' %}") <i class="icon-settings"></i> &nbsp;Settings
+    | {% endblock %}
+  | {% endblock %}
+  // You are subscribed to {{subs.count}} projects.
+| {% endblock %}
+
+| {% block content %}
+div(class="animated fadeIn")
+  | {% for invite in invites %}
+  div(class="alert alert-info alert-dismissible")
+    form(action=invite, method="post", class="form-horizontal")
+      | {% csrf_token %}
+      p {% blocktrans with project=invite.project url=invite.project.get_absolute_url %}You are invited to project <strong><a href="{{url}}">"{{project}}"</a></strong>{% endblocktrans %}
+      input(type="hidden", name="projid", value="{{invite.project.id}}")
+      input(type="hidden", name="invid", value="{{invite.id}}")
+      p
+        button(href="submit()", class="btn btn-sm btn-success") <i class="fa fa-check"></i> {% trans 'Accept' %}
+        button(type="button", data-dismiss="alert", class="btn btn-sm btn-danger") <i class="fa fa-remove"></i> {% trans 'Decline' %}
+  | {% endfor %}
+  .row
+    .col-md-8
+      .card
+        .card-block
+          p {% blocktrans count counter=subs.count %}Your dashboard has one project.{% plural %}Your dashboard has {{counter}} projects.{% endblocktrans %}
+          ul
+            | {% if inactive %}
+            li
+              a(href="{% url 'projects:dashboard' %}?inactive=") {% trans 'Hide inactive projects' %}
+            | {% else %}
+            li
+              a(href="{% url 'projects:dashboard' %}?inactive=1") {% trans 'Show inactive projects' %}
+            | {% endif %}
+      .card
+        .card-header {% trans 'Projects' %}
+        .card-block
+          | {% if subs %}
+          table(class="table table-responsive table-hover table-striped")
+            thead
+              tr
+                th(class="text-center") {% trans 'Project Name' %}
+                th {% trans 'Task' %}
+                th {% trans 'Was due on' %}
+                th {% trans 'User' %}
+                th(class="text-center") {% trans 'Select' %}
+            tbody
+              | {% for sub in subs %}
+              tr
+                td(class="projectname")
+                  a(href="{{ sub.project.get_absolute_url }}") {{sub.project.name}}
+                td &nbsp;
+                td ({{sub.project.start_date}}{% if sub.project.end_date %} - {{sub.project.end_date}}{% endif %})
+                td(class="completed")
+                  .row
+                    .col-md-6
+                      .avatar
+                        img(src="/media/avatars/1.jpg", class="img-avatar", alt="admin@bootstrapmaster.com")
+                        span(class="avatar-status badge-success")
+                    .col-md-6
+                      div {{sub.project.owner}}
+                      div(class="small text-muted") {% blocktrans %}<span>New</span>| Registered: Jan 1, 2015{% endblocktrans %}
+                td(style="vertical-align:middle; text-align:center")
+                  | &nbsp;
+              | {% for task in sub.project.get_overdue %}
+              tr
+                td(class="projectname")
+                  a(href="{{sub.project.get_absolute_url}}") {{ sub.project.name }}
+                td
+                  a(href="task.get_absolute_url") {{ task.name }}
+                td {{ task.expected_end_date|date }}
+                td(class="completed")
+                  .row
+                    .col-md-6
+                      .avatar
+                        img(src="/media/avatars/1.jpg", class="img-avatar", alt="admin@bootstrapmaster.com")
+                        span(class="avatar-status badge-success")
+                    .col-md-6
+                      div {{task.user_responsible}}
+                      div(class="small text-muted") {% blocktrans %}<span>New</span>| Registered: Jan 1, 2015{% endblocktrans %}
+                td(style="vertical-align:middle; text-align:center")
+                  form(action=".", method="post", id="markdone-" + "task.id", class="markdone")
+                    | {% csrf_token %}
+                    div
+                      input(type="hidden", name="taskid", value="task.id")
+                      | {% if task.is_complete %}
+                      input(type="hidden", name="markundone", value="markundone")
+                      label(class="switch switch-text switch-pill switch-primary")
+                        input(class="switch-input", type="checkbox", value="task.is_complete", onchange="submit()", name="markundone_check", checked="checked")
+                        span(class="switch-label", data-on="On", data-off="Off")
+                        span(class="switch-handle")
+                      | {% else %}
+                      label(class="switch switch-text switch-pill switch-primary")
+                        input(class="switch-input", type="checkbox", value="task.is_complete", onchange="submit()", name="markdone")
+                        span(class="switch-label", data-on="On", data-off="Off")
+                        span(class="switch-handle")
+                      | {% endif %} 
+              | {% endfor %}
+              | {% endfor %}
+          | {% endif %}
+      .card
+        .card-header {% trans 'Meta' %}
+        .card-block
+          | {% if subs %}
+          ul
+            | {% for sub in subs %}
+            li
+              label(class="switch switch-text switch-pill switch-primary")
+                | {% if sub.project.is_active %}
+                input(class="switch-input", type="checkbox", value="{{sub.project.is_active}}", onchange="submit()", name="activestatus", id="project-{{sub.project.id}}", checked="")
+                | {% else %}
+                input(class="switch-input", type="checkbox", value="{{sub.project.is_active}}", onchange="submit()", name="activestatus", id="project-{{sub.project.id}}")
+                | {% endif %}
+                span(class="switch-label", data-on="On", data-off="Off")
+                span(class="switch-handle")
+                input(type="hidden", name="projectid", value="{{sub.project.id}}")
+              a(href="{{sub.project.get_absolute_url}}") {{sub.project.name}}
+            | {% endfor %}
+          | {% else %}
+          p {% trans 'You are not subscribed to any project' %}
+          | {% endif %}
+    .col-md-4
+      .card
+        .card-header {% trans 'Create new project' %}
+        .card-block
+          form(action="{% url 'projects:createproject' %}", method="post", class="form-horizontal")
+            | {% csrf_token %}
+            | {{ createform.as_div }}
+        .card-footer
+          button(type="submit", class="btn btn-sm btn-primary") <i class="fa fa-dot-circle-o"></i> {% trans 'Create' %}
+| {% endblock %}
+
+| {% block jsblock %}
+| {% load static %}
+// Plugins and scripts required by this views
+// Custom scripts required by this view
+// script src="{% static 'js/views/main.js' %}"></script
+| {% endblock %}

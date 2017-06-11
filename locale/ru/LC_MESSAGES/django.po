@@ -3,45 +3,98 @@
 # This file is distributed under the same license as the projectboard package.
 # Dmitry Kutseko <d2emonium@gmail.com>, 2017
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-11 16:42+0000\n"
-"PO-Revision-Date: 2017-06-11 16:42+0000\n"
+"POT-Creation-Date: 2017-06-11 22:30+0000\n"
+"PO-Revision-Date: 2017-06-12 00:44+0300\n"
+"Last-Translator: Dmitry Kutsenko <d2emonium@gmail.com>\n"
+"Language-Team: \n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
-"%100>=11 && n%100<=14)? 2 : 3);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 2.0.1\n"
 
-#: projectboard/settings.py:125
-msgid "English"
-msgstr "Английский"
+#: templates/projects/dashboard.html:6
+msgid "Dashboard"
+msgstr "Панель управления"
 
-#: projectboard/settings.py:126
-msgid "Russian"
-msgstr "Русский"
+#: templates/projects/dashboard.html:57
+#, python-format
+msgid ""
+"You are invited to project <strong><a href=\"%(url)s\">\"%(project)s\"</a></"
+"strong>"
+msgstr ""
+"Вас пригласили в проект <strong><a href=\"%(url)s\">\"%(project)s\"</a></"
+"strong>"
 
-#: projects/forms.py:35
-msgid "End Date"
-msgstr "Дата Окончания"
+#: templates/projects/dashboard.html:61
+msgid "Accept"
+msgstr "Принять"
 
-#: projects/forms.py:39
-msgid "This project name is already taken. Please try another."
-msgstr "Проект с таким названием уже существует. Выберите другое название."
+#: templates/projects/dashboard.html:62
+msgid "Decline"
+msgstr "Отклонить"
 
-#: projects/forms.py:41
-msgid "This value must contain only letters, numbers and underscores."
-msgstr "Может содержать только цифры, буквы и знак подчеркивания"
+#: templates/projects/dashboard.html:70
+msgid "Your dashboard has one project."
+msgid_plural "Your dashboard has %(counter)s projects."
+msgstr[0] "Вы участвуете в %(counter)s проекте."
+msgstr[1] "Вы участвуете в %(counter)s проектах."
+msgstr[2] "Вы участвуете в %(counter)s проектах."
 
-#: users/forms.py:40
-msgid "The two password fields didn't match."
-msgstr "Пароли не совпадают."
+#: templates/projects/dashboard.html:72
+msgid "Hide inactive projects"
+msgstr "Скрыть неактивные проекты"
 
-#: users/forms.py:48
-msgid "A user with that username already exists."
-msgstr "Пользователь с таким именем уже существует."
+#: templates/projects/dashboard.html:73
+msgid "Show inactive projects"
+msgstr "Показать неактивные проекты"
+
+#: templates/projects/dashboard.html:78
+msgid "Projects"
+msgstr "Проекты"
+
+#: templates/projects/dashboard.html:83
+msgid "Project Name"
+msgstr "Название Проекта"
+
+#: templates/projects/dashboard.html:84
+msgid "Task"
+msgstr "Задача"
+
+#: templates/projects/dashboard.html:85
+msgid "Was due on"
+msgstr "Сроки"
+
+#: templates/projects/dashboard.html:86
+msgid "User"
+msgstr "Пользователь"
+
+#: templates/projects/dashboard.html:87
+msgid "Select"
+msgstr "Выбрать"
+
+#: templates/projects/dashboard.html:102 templates/projects/dashboard.html:119
+msgid "<span>New</span>| Registered: Jan 1, 2015"
+msgstr "<span>Новый</span>| Зарегистрирован: Янв 1, 2015"
+
+#: templates/projects/dashboard.html:144
+msgid "Meta"
+msgstr ""
+
+#: templates/projects/dashboard.html:155
+msgid "You are not subscribed to any project"
+msgstr "Вы не участвуете ни в одном проекте"
+
+#: templates/projects/dashboard.html:161
+msgid "Create new project"
+msgstr "Создать новый проект"
+
+#: templates/projects/dashboard.html:169
+msgid "Create"
+msgstr "Создать"

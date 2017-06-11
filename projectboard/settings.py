@@ -65,6 +65,7 @@ TEMPLATES = [
         # 'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.i18n',
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
@@ -124,6 +125,10 @@ from django.utils.translation import ugettext_lazy as _
 LANGUAGES = [
     ('en', _('English')),
     ('ru', _('Russian')),
+]
+
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale'),
 ]
 
 TIME_ZONE = 'UTC'

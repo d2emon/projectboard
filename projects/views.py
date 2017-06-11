@@ -52,7 +52,7 @@ def dashboard(request):
     invites = request.user.projectuser_set.filter(status=ProjectUser.STATUS_INVITED)
     createform = CreateProjectForm()
 
-    return render(request, 'projects/dashboard.pug', {
+    return render(request, 'projects/dashboard.html', {
         'subs': subs.filter(status=ProjectUser.STATUS_ACCEPTED),
         'invites': invites,
         'inactive': inactive,
