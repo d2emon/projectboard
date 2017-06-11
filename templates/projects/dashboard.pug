@@ -160,37 +160,34 @@ block content
                                   span(class="switch-handle")
       .col-md-4
         .card
-          form(action="{% url 'projects:createproject' %}", method="post", class="form-horizontal")
-            .card-header Create a new project
-            .card-block
+          .card-header Create a new project
+          .card-block
+            form(action="{% url 'projects:createproject' %}", method="post", class="form-horizontal")
               - csrf_token
               != createform.as_div
             .card-footer
               button(type="submit", class="btn btn-sm btn-primary") <i class="fa fa-dot-circle-o"></i> Submit
 
-block sidebar
-  if subs
-    ul
-      each sub in subs
-        li
-          a(href=sub.project.get_absolute_url)= sub.project.name
-          .floatform
-            form(action=".", method="post")
-              - csrf_token
-              input(type="hidden", name="projectid", value=sub.project.id)
-              if sub.project.is_active
-                input(type="hidden", name="activestatus", value="true")
-                input(type="checkbox", name="inactivate", value="", onchange="submit()", checked="checked", class="projstatus")
-              else
-                input(type="hidden", name="activestatus", value="false")
-                input(type="checkbox", name="activate", value="", onchange="submit()", class="projstatus")
-  else
-    p You are not subscribed to any project
-  h3 Meta
-  p.sideblurb Your dashboard has #{subs.count} projects.
-  ul
-    li
-      a(href="./?includeinactive=1") Show inactive projects
+        .card
+          .card-header Meta
+          .card-block
+            if subs
+              ul
+                each sub in subs
+                  li
+                    label(class="switch switch-text switch-pill switch-primary")
+                      input(class="switch-input", type="checkbox", value="sub.project.is_active", onchange="submit()", name="activestatus", id="project-" + str(sub.project.id))
+                      span(class="switch-label", data-on="On", data-off="Off")
+                      span(class="switch-handle")
+                      input(type="hidden", name="projectid", value=sub.project.id)
+                    a(href=sub.project.get_absolute_url())= sub.project.name
+            else
+              p You are not subscribed to any project
+          .card-footer
+            p Your dashboard has #{subs.count} projects.
+            ul
+              li
+                a(href="{% url 'projects:dashboard' %}?inactive=1") Show inactive projects
 
 block jsblock
   - load static
