@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-11 22:30+0000\n"
+"POT-Creation-Date: 2017-06-11 22:48+0000\n"
 "PO-Revision-Date: 2017-06-12 00:44+0300\n"
 "Last-Translator: Dmitry Kutsenko <d2emonium@gmail.com>\n"
 "Language-Team: \n"
@@ -41,6 +41,7 @@ msgid "Decline"
 msgstr "Отклонить"
 
 #: templates/projects/dashboard.html:70
+#, python-format
 msgid "Your dashboard has one project."
 msgid_plural "Your dashboard has %(counter)s projects."
 msgstr[0] "Вы участвуете в %(counter)s проекте."

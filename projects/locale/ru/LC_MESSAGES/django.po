@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the projectboard package.
 # Dmitry Kutseko <d2emonium@gmail.com>, 2017
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-11 22:30+0000\n"
+"POT-Creation-Date: 2017-06-11 22:48+0000\n"
 "PO-Revision-Date: 2017-06-11 16:42+0000\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
@@ -18,14 +17,30 @@ msgstr ""
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: projects/forms.py:35
+#: projects/forms.py:32
+msgid "Name of the project."
+msgstr "Название проекта"
+
+#: projects/forms.py:33
+msgid ""
+"Shortname for your project. Determines URL. Can not contain spaces/sepcial "
+"chars."
+msgstr ""
+"Краткое название проекта. Определяет ссылку на проект. Не может содержать "
+"пробелы/специальные символы"
+
+#: projects/forms.py:47
 msgid "End Date"
 msgstr "Дата Окончания"
 
-#: projects/forms.py:39
+#: projects/forms.py:51
 msgid "This project name is already taken. Please try another."
 msgstr "Проект с таким названием уже существует. Выберите другое название."
 
-#: projects/forms.py:41
+#: projects/forms.py:53
 msgid "This value must contain only letters, numbers and underscores."
 msgstr "Может содержать только цифры, буквы и знак подчеркивания"
+
+#: projects/forms.py:106
+msgid "User name of the user to invite."
+msgstr ""

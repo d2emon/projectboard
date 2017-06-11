@@ -21,15 +21,27 @@ class CreateProjectForm(ModelForm):
 
     class Meta:
         model = Project
-        fields = ['name', 'slug', 'start_date', 'end_date']
+        fields = [
+            'name',
+            'slug',
+            'programming_language',
+            'start_date',
+            'end_date',
+        ]
         help_texts = {
-            'name': "Name of the project.",
-            'slug': "Shortname for your project. Determines URL. " +
-            "Can not contain spaces/sepcial chars.",
+            'name': _("Name of the project."),
+            'slug': _("Shortname for your project. Determines URL. " +
+            "Can not contain spaces/sepcial chars."),
         }
         widgets = {
-            'start_date': forms.DateInput(attrs={'type': "date"}, format="%Y-%m-%d"),
-            'end_date': forms.DateInput(attrs={'type': "date"}, format="%Y-%m-%d"),
+            'start_date': forms.DateInput(
+                attrs={'type': "date"},
+                format="%Y-%m-%d"
+            ),
+            'end_date': forms.DateInput(
+                attrs={'type': "date"},
+                format="%Y-%m-%d"
+            ),
         }
         labels = {
             'end_date': _("End Date"),
@@ -91,7 +103,7 @@ class InviteUserForm(ModelForm):
         model = ProjectUser
         fields = ['user', ]
         help_texts = {
-            'user': "User name of the user to invite.",
+            'user': _("User name of the user to invite."),
             # 'group': "Permissions available to this user.",
         }
 
@@ -108,7 +120,6 @@ class InviteUserForm(ModelForm):
             project=self.project,
         )
         invitation.save()
-
         return invitation
 
     def as_div(self):
@@ -148,7 +159,6 @@ class AddNoticeForm(ModelForm):
             text=self.cleaned_data['text'],
         )
         notice.save()
-
         return notice
 
     def as_div(self):
