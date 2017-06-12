@@ -104,7 +104,7 @@ ENV/
 
 db/
 temp/
-templates/registration
+templates/
 static/
 assets/bower_components
 node_modules/

@@ -85,10 +85,18 @@ gulp.task('images', ['img'], function(){
 });
 
 // Prepare pug
-gulp.task('html', function(){
+gulp.task('txt', function(){
   return gulp.src([
-    'assets/pug/**/*.pug',
-    '!assets/pug/**/_*.pug'
+    'assets/templates/**/*.txt',
+    '!assets/templates/**/_*.txt'
+  ])
+    .pipe(gulp.dest('templates/'));
+});
+
+gulp.task('html', ['txt'], function(){
+  return gulp.src([
+    'assets/templates/**/*.pug',
+    '!assets/templates/**/_*.pug'
   ])
     .pipe(pug({pretty: true}))
     // .pipe(on("error", console.log))
