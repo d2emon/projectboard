@@ -106,6 +106,9 @@ def project(request, project_name):
     # inviteform = bforms.InviteUserForm()
     # taskform = bforms.CreateTaskForm(project, request.user)
 
+    for user in project.projectuser_set.all():
+        print(user)
+
     context = {
         'project': project,
         'inviteform': inviteform,
@@ -338,7 +341,7 @@ def todo(request, project_name):
         'lists': lists,
         'addlistform': addlistform,
     }
-    return render(request, 'project/todo.html', context)
+    return render(request, 'projects/todo.html', context)
 
 
 @require_POST

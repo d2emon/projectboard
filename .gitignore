@@ -102,9 +102,9 @@ ENV/
 # mypy
 .mypy_cache/
 
-db/
-temp/
-templates/
+/db/
+/temp/
+/templates/
 static/
 assets/bower_components
 node_modules/

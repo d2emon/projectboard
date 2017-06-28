@@ -125,6 +125,50 @@ div(class="animated fadeIn")
             | {{ taskform.as_p }}
         .card-footer
           button(type="submit", class="btn btn-sm btn-primary") <i class="fa fa-dot-circle-o"></i> {% trans 'Add a Task' %}
+      block sidebar
+        .card
+          .card-header {% trans 'Actions' %}
+          .card-block
+            ul
+              li 
+                a(href="#", id="taskshow") {% trans 'Add a task' %}
+              li
+                a(href="#", id="inviteshow") {% trans 'Invite a user' %}
+        .card
+          .card-header {% trans 'Meta' %}
+          .card-block
+            | {% blocktrans with project=project.name tasks=project.task_set.all.count %}You are looking at details for project <strong>{{project}}</strong>.{% endblocktrans %}
+            | {% blocktrans count counter=3 %}This project has one task.{% plural %}This project has {{counter}}({project.task_set.all.count}) tasks.{% endblocktrans %}
+            ul
+              li
+                a(href="{{project.quicktasks_url}}") {% trans 'Tasks Quick Entry' %}
+              li
+                a(href="{{project.quicktaskitems_url}}") {% trans 'Task Items Quick Entry' %}
+              | {% ifequal access 'Owner' %}
+              li
+                a(href="{{project.settings_url}}") {% trans 'Settings' %}
+              | {% endifequal %}
+        | {% if project.invited_users %}
+        .card
+          .card-header {% trans 'Pending users' %}
+          .card-block
+            ul
+              | {% for user in project.invited_users %}
+              li {{user.user.username}}
+              | {% endfor %}
+        | {% endif %}
+        .card
+          .card-header {% trans 'Users' %}
+          .card-block
+            ul
+              | {% for user in project.projectuser_set.all %}
+              li
+                a(href="{{user.user.get_absolute_url}}")
+                  .avatar
+                    img(src="{{ user.user.userprofile.avatar_url }}", class="img-avatar", alt="{{ user.user.email }}")
+                    span(class="avatar-status badge-success")
+                  div {{ user.user }}
+              | {% endfor %}
 | {% endblock %}
 
 | {% block jsblock %}
