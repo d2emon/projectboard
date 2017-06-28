@@ -13,6 +13,18 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 import users.views
 
 
+def add_pager(objects, request):
+    paginator = Paginator(objects, 3)
+    page = request.GET.get('page')
+    try:
+        items = paginator.page(page)
+    except PageNotAnInteger:
+        items = paginator.page(1)
+    except EmptyPage:
+        items = paginator.page(paginator.num_pages)
+    return items, page
+
+
 def index(request):
     """
     If the user is not logged in, show him the login/register forms, with some
@@ -60,21 +72,6 @@ def dashboard(request):
     })
 
 
-@login_required
-def dashboard_csv(request):
-    # response, writer = reponse_for_cvs()
-    # writer.writerow(('Project',))
-    # for sub in subs:
-    #     writer.writerow((sub.project.name, ))
-    # writer.writerow(())
-    # writer.writerow(('Project', 'Task Name', 'Due On'))
-    # for sub in subs:
-    #     for task in sub.project.overdue_tasks():
-    #         writer.writerow((task.project.name, task.name, task.expected_end_date))
-    # return response
-    pass
-
-
 @require_POST
 @login_required
 def createproject(request):
@@ -97,17 +94,12 @@ def project(request, project_name):
     Mark Done: Owner Participant
     """
     project = get_object_or_404(Project, slug=project_name)  # Only subscribed
+    access = project.projectuser_set.filter(user=request.user).first()
     # access = get_access(project, request.user)
     inviteform = InviteUserForm(project)
-    # taskform = bforms.CreateTaskForm(project, user)
+    # taskform = bforms.CreateTaskForm(project, request.user)
     new_tasks = project.get_new()
     overdue_tasks = project.get_overdue()
-
-    # inviteform = bforms.InviteUserForm()
-    # taskform = bforms.CreateTaskForm(project, request.user)
-
-    for user in project.projectuser_set.all():
-        print(user)
 
     context = {
         'project': project,
@@ -118,24 +110,6 @@ def project(request, project_name):
         # 'access': access,
     }
     return render(request, 'projects/project.html', context)
-
-
-@require_POST
-@login_required
-def project_csv(request):
-    #    response, writer = reponse_for_cvs()
-    #    writer.writerow(Project.as_csv_header())
-    #    writer.writerow(project.as_csv())
-    #    writer.writerow(())
-    #    writer.writerow(Task.as_csv_header())
-    #    for task in new_tasks:
-    #        writer.writerow(task.as_csv())
-    #    writer.writerow(())
-    #    writer.writerow(Task.as_csv_header())
-    #    for task in overdue_tasks:
-    #        writer.writerow(task.as_csv())
-    #    return response
-    return redirect('projects:dashboard')
 
 
 @require_POST
@@ -217,31 +191,15 @@ def full_logs(request, project_name):
     None"""
     project = get_object_or_404(Project, slug=project_name)  # Only subscribed
     # access = get_access(project, request.user)
-    log_list = Log.objects.filter(project=project)
-    paginator = Paginator(log_list, 3)
-    page = request.GET.get('page')
-    try:
-        logs = paginator.page(page)
-    except PageNotAnInteger:
-        logs = paginator.page(1)
-    except EmptyPage:
-        logs = paginator.page(paginator.num_pages)
+    # log_list = Log.objects.filter(project=project)
+    log_list = project.log_set.all()
+    items, page = add_pager(log_list, request)
     context = {
         'project': project,
-        'logs': logs,
+        'logs': items,
         'page': page,
     }
     return render(request, 'projects/logs.html', context)
-
-
-@require_POST
-def full_logs_csv(request):
-    # response, writer = reponse_for_cvs(project=project)
-    # writer.writerow((Log.as_csv_header()))
-    # for log in query_set:
-    #     writer.writerow((log.as_csv()))
-    # return response
-    return redirect('projects:project', project_name="123")
 
 
 @login_required
@@ -284,20 +242,13 @@ def noticeboard(request, project_name):
     """
     project = get_object_or_404(Project, slug=project_name)  # Only subscribed
     # access = get_access(project, request.user)
-    notice_list = Notice.objects.filter(project = project)
-    paginator = Paginator(notice_list, 3)
-    page = request.GET.get('page')
-    try:
-        notices = paginator.page(page)
-    except PageNotAnInteger:
-        notices = paginator.page(1)
-    except EmptyPage:
-        notices = paginator.page(paginator.num_pages)
     addnoticeform = AddNoticeForm()
+    notice_list = project.notice_set.all()
+    items, page = add_pager(notice_list, request)
     context = {
         'project': project,
-        'notices': notices,
         'addnoticeform': addnoticeform,
+        'notices': items,
         'page': page,
     }
     return render(request, 'projects/noticeboard.html', context)
@@ -311,15 +262,6 @@ def add_notice(request):
     return redirect('projects:project', project_name="123")
 
 
-def noticeboard_csv(request):
-    # response, writer = reponse_for_cvs(project=project)
-    # writer.writerow((Notice.as_csv_header()))
-    # for notice in query_set:
-    #     writer.writerow((notice.as_csv()))
-    # return response
-    return redirect('projects:project', project_name="123")
-
-
 @login_required
 def todo(request, project_name):
     """
@@ -330,13 +272,13 @@ def todo(request, project_name):
     """
     project = get_object_or_404(Project, slug=project_name)  # Only subscribed
     # access = get_access(project, request.user)
-    lists = TodoList.objects.all()
-    print(lists)
+    addlistform = AddTodoListForm()
+    # lists = TodoList.objects.all()
+    lists = project.todolist_set.all()
     # if request.GET.get('includecomplete', 0):
     #     lists = TodoList.objects.filter(user = request.user, project = project)
     # else:
     #     lists = TodoList.objects.filter(user = request.user, project = project, is_complete_attr = False)
-    addlistform = AddTodoListForm()
     context = {
         'project': project,
         'lists': lists,
@@ -382,20 +324,6 @@ def todo_itemmarkdone(request):
     return redirect('projects:project', project_name="123")
 
 
-def todo_csv(request):
-    # response, writer = reponse_for_cvs(project=project)
-    # writer.writerow(('Todo Lists',))
-    # writer.writerow((TodoList.as_csv_header()))
-    # lists = TodoList.objects.filter(user = request.user, project = project)
-    # for list in lists:
-    #     writer.writerow(list.as_csv())
-    # for list in lists:
-    #     for item in list.todoitem_set.all():
-    #         writer.writerow(item.as_csv())
-    # return response
-    return redirect('projects:project', project_name="123")
-
-
 @login_required
 def clone_from_git(request, project_name):
     """
@@ -426,3 +354,72 @@ def setup_py(request, project_name):
         },
         content_type="application/x-python"
     )
+
+
+# CSV
+@login_required
+def dashboard_csv(request):
+    # response, writer = reponse_for_cvs()
+    # writer.writerow(('Project',))
+    # for sub in subs:
+    #     writer.writerow((sub.project.name, ))
+    # writer.writerow(())
+    # writer.writerow(('Project', 'Task Name', 'Due On'))
+    # for sub in subs:
+    #     for task in sub.project.overdue_tasks():
+    #         writer.writerow((task.project.name, task.name, task.expected_end_date))
+    # return response
+    pass
+
+
+@require_POST
+@login_required
+def project_csv(request):
+    #    response, writer = reponse_for_cvs()
+    #    writer.writerow(Project.as_csv_header())
+    #    writer.writerow(project.as_csv())
+    #    writer.writerow(())
+    #    writer.writerow(Task.as_csv_header())
+    #    for task in new_tasks:
+    #        writer.writerow(task.as_csv())
+    #    writer.writerow(())
+    #    writer.writerow(Task.as_csv_header())
+    #    for task in overdue_tasks:
+    #        writer.writerow(task.as_csv())
+    #    return response
+    return redirect('projects:dashboard')
+
+
+@require_POST
+def full_logs_csv(request):
+    # response, writer = reponse_for_cvs(project=project)
+    # writer.writerow((Log.as_csv_header()))
+    # for log in query_set:
+    #     writer.writerow((log.as_csv()))
+    # return response
+    return redirect('projects:project', project_name="123")
+
+
+@require_POST
+def noticeboard_csv(request):
+    # response, writer = reponse_for_cvs(project=project)
+    # writer.writerow((Notice.as_csv_header()))
+    # for notice in query_set:
+    #     writer.writerow((notice.as_csv()))
+    # return response
+    return redirect('projects:project', project_name="123")
+
+
+@require_POST
+def todo_csv(request):
+    # response, writer = reponse_for_cvs(project=project)
+    # writer.writerow(('Todo Lists',))
+    # writer.writerow((TodoList.as_csv_header()))
+    # lists = TodoList.objects.filter(user = request.user, project = project)
+    # for list in lists:
+    #     writer.writerow(list.as_csv())
+    # for list in lists:
+    #     for item in list.todoitem_set.all():
+    #         writer.writerow(item.as_csv())
+    # return response
+    return redirect('projects:project', project_name="123")
