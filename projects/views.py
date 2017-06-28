@@ -296,6 +296,7 @@ def noticeboard(request, project_name):
     addnoticeform = AddNoticeForm()
     context = {
         'project': project,
+        'notices_total': notice_list.count(),
         'notices': notices,
         'addnoticeform': addnoticeform,
         'page': page,
