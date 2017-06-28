@@ -300,7 +300,7 @@ def noticeboard(request, project_name):
         'addnoticeform': addnoticeform,
         'page': page,
     }
-    return render(request, 'project/noticeboard.html', context)
+    return render(request, 'projects/noticeboard.html', context)
 
 
 @require_POST

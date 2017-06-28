@@ -5,7 +5,8 @@
 | {% block feeds %}
 | {% endblock %}
 
-| {% block title %}{{ project }}{% endblock %}
+block title
+  | {% block title %}{{ project }}{% endblock %}
 
 | {% block navmenu %}
 ul.nav
@@ -22,7 +23,7 @@ ul.nav
   li.nav-item
     a(class="nav-link", href="{{ project.get_absolute_url }}todo/calendar") <i class="fa fa-calendar"></i> Calendar
   li.nav-item
-    a(class="nav-link", href="{{ project.get_absolute_url }}todo/wiki") <i class="fa fa-text"></i> Wiki
+    a(class="nav-link", href="{{ project.get_absolute_url }}todo/wiki") <i class="fa fa-file-text"></i> Wiki
   li.nav-item
     a(class="nav-link", href="{{ project.get_absolute_url }}todo/files") <i class="fa fa-file"></i> Files
   li.nav-item
@@ -34,10 +35,11 @@ ul.nav
 | {%block breadcrumbs_block%}
 ol.breadcrumb
   | {%block breadcrumbs%}
-  li.breadcrumb-item Home
-  li.breadcrumb-item
-    a(href="{% url 'projects:dashboard' %}") Dashboard
-  li(class="breadcrumb-item active") {{ project }}
+  block breadcrumbs
+    li.breadcrumb-item Home
+    li.breadcrumb-item
+      a(href="{% url 'projects:dashboard' %}") Dashboard
+    li(class="breadcrumb-item active") {{ project }}
 
   li(class="breadcrumb-menu d-md-down-none")
     | {% block breadcrumb_menu %}
@@ -54,35 +56,13 @@ ol.breadcrumb
 div(class="animated fadeIn")
   .row
     .col-md-9
-      .card
-        .card-header {{ project }}
-        .card-block
-          | {% if new_tasks %}
-          table(class="table table-responsive table-hover table-striped")
-            thead
-              tr
-                th.text-center {% trans 'Project Name' %}
-                th.text-center {% trans 'Start Due' %}
-                th.text-center {% trans 'End Due' %}
-                th.text-center {% trans 'User Responsible' %}
-                th.text-center {% trans 'Details' %}
-                th.text-center {% trans 'Edit' %}
-                th.text-center {% trans 'Mark Done' %}
-                th.text-center {% trans 'Delete' %}
-            tbody
-              | {% for task in new_tasks %}
-              | {% include 'projects/taskline.html' %}
-              | {% endfor %}
-          | {% else %}
-          .card
-            .card-block
-              div {% trans 'No recent tasks' %}
-          | {% endif %}
-          h3 Overdue Tasks
-          | {% if overdue_tasks %}
-          .tablepad
-            table(class="table table-responsive table-hover table-outline mb-0")
-              thead.thead-default
+      block content
+        .card
+          .card-header {{ project }}
+          .card-block
+            | {% if new_tasks %}
+            table(class="table table-responsive table-hover table-striped")
+              thead
                 tr
                   th.text-center {% trans 'Project Name' %}
                   th.text-center {% trans 'Start Due' %}
@@ -93,38 +73,62 @@ div(class="animated fadeIn")
                   th.text-center {% trans 'Mark Done' %}
                   th.text-center {% trans 'Delete' %}
               tbody
-                | {% for task in overdue_tasks %}
+                | {% for task in new_tasks %}
                 | {% include 'projects/taskline.html' %}
                 | {% endfor %}
-          | {% else %}
-          .card
-            .card-block
-              div {% trans 'No overdue tasks' %}
-          | {% endif %}
+            | {% else %}
+            .card
+              .card-block
+                div {% trans 'No recent tasks' %}
+            | {% endif %}
+            h3 Overdue Tasks
+            | {% if overdue_tasks %}
+            .tablepad
+              table(class="table table-responsive table-hover table-outline mb-0")
+                thead.thead-default
+                  tr
+                    th.text-center {% trans 'Project Name' %}
+                    th.text-center {% trans 'Start Due' %}
+                    th.text-center {% trans 'End Due' %}
+                    th.text-center {% trans 'User Responsible' %}
+                    th.text-center {% trans 'Details' %}
+                    th.text-center {% trans 'Edit' %}
+                    th.text-center {% trans 'Mark Done' %}
+                    th.text-center {% trans 'Delete' %}
+                tbody
+                  | {% for task in overdue_tasks %}
+                  | {% include 'projects/taskline.html' %}
+                  | {% endfor %}
+            | {% else %}
+            .card
+              .card-block
+                div {% trans 'No overdue tasks' %}
+            | {% endif %}
 
     .col-md-3
-      .card
-        .card-header Git
-        .card-block
-          | {{ project.git }}
-        .card-footer
-          a(class="btn btn-sm btn-primary", href="{% url 'projects:from_git' project.slug %}") <i class="fa fa-dot-circle-o"></i> {% trans 'Clone' %}
-      .card
-        .card-header {% trans 'Invite a User' %}
-        .card-block
-          form(action="{% url 'projects:createproject' %}", method="post", class="form-horizontal")
-            | {% csrf_token %}
-            | {{ inviteform.as_div }}
-        .card-footer
-          button(type="submit", class="btn btn-sm btn-primary") <i class="fa fa-dot-circle-o"></i> {% trans 'Invite User' %}
-      .card
-        .card-header {% trans 'Add a Task' %}
-        .card-block
-          form(action="{% url 'projects:createproject' %}", method="post", class="form-horizontal")
-            | {% csrf_token %}
-            | {{ taskform.as_p }}
-        .card-footer
-          button(type="submit", class="btn btn-sm btn-primary") <i class="fa fa-dot-circle-o"></i> {% trans 'Add a Task' %}
+      block sideblock
+        .card
+          .card-header Git
+          .card-block
+            | {{ project.git }}
+          .card-footer
+            a(class="btn btn-sm btn-primary", href="{% url 'projects:from_git' project.slug %}") <i class="fa fa-dot-circle-o"></i> {% trans 'Clone' %}
+        .card
+          .card-header {% trans 'Invite a User' %}
+          .card-block
+            form(action="{% url 'projects:createproject' %}", method="post", class="form-horizontal")
+              | {% csrf_token %}
+              | {{ inviteform.as_div }}
+          .card-footer
+            button(type="submit", class="btn btn-sm btn-primary") <i class="fa fa-dot-circle-o"></i> {% trans 'Invite User' %}
+        .card
+          .card-header {% trans 'Add a Task' %}
+          .card-block
+            form(action="{% url 'projects:createproject' %}", method="post", class="form-horizontal")
+              | {% csrf_token %}
+              | {{ taskform.as_p }}
+          .card-footer
+            button(type="submit", class="btn btn-sm btn-primary") <i class="fa fa-dot-circle-o"></i> {% trans 'Add a Task' %}
       block sidebar
         .card
           .card-header {% trans 'Actions' %}

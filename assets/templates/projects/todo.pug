@@ -1,0 +1,92 @@
+extends project.pug
+
+block title
+  | {% block title %}{{ project }} - ToDo{% endblock %}
+
+block breadcrumbs
+  li.breadcrumb-item Home
+  li.breadcrumb-item
+    a(href="{% url 'projects:dashboard' %}") Dashboard
+  li.breadcrumb-item
+    a(href="{{ project.get_absolute_url }}") {{ project }}
+  li(class="breadcrumb-item active") Todo
+
+block content
+  | {% if lists %}
+  | {% for list in lists %}
+  .card
+    .card-header
+      a(id="todolist-{{list.id}}") {{list.name}}
+    .card-block
+      .items
+        | {% if list.todoitem_set.all %}
+        table
+          | {% for item in list.todoitem_set.all %}
+          tr
+            td(class="{% cycle 'odd' 'even' %}") {{item.text}}
+            td
+              form(action=".", method="post")
+                | {% csrf_token %}
+                p
+                  | {% if item.is_complete %}
+                  input(type="hidden", name="todoitemid", value="{{item.id}}")
+                  input(type="checkbox", name="itemmarkdone", value="", checked="checked", disabled="disabled")
+                  | {% else %}
+                  input(type="hidden", name="id", value="{{item.id}}")
+                  input(type="checkbox", name="itemmarkdone", value="", onchange="submit()")
+                  | {% endif %}
+          | {% endfor %}
+        | {% else %}
+        div {% trans 'No items added for this todo list.' %}
+        | {% endif %}
+      .listcontrols
+        .genericform
+          h3 {% trans 'Add a todo item.' %}
+          .createcontent
+            form(action=".", method="post")
+              | {% csrf_token %}
+              | {{list.item_form.as_p}}
+              input(type="hidden", name="id", value="{{list.id}}")
+              input(type="submit", name="additem", value="Add todo item")
+      .listcontrols
+        form(action=".", method="post")
+          fieldset
+            label {% trans 'Complete' %}
+            | {% if list.is_complete %}
+            input(type="hidden", name="todoitemid", value="{{list.id}}")
+            input(type="checkbox", name="listmarkdone", value="", checked="checked", disabled="disabled")
+            | {% else %}
+            input(type="hidden", name="id", value="{{list.id}}")
+            input(type="checkbox", name="listmarkdone", value="", onchange="submit()")
+            | {% endif %}
+  #pagination
+    | {% if page_data.has_next_page %}
+    a(href="./?page={{page_data.next_page}}") {% trans 'next' %}
+    | {% endif %}
+    | {% if page_data.has_prev_page %}
+    a(href="./?page={{page_data.prev_page}}") {% trans 'prev' %}
+    | {% endif %}
+  | {% endfor %}
+  | {% else %}
+  .card
+    .card-block {% trans 'No Todo Lists.' %}
+  | {% endif %}
+
+block sideblock
+  .card
+    .card-header {% trans 'Create a new todo list' %}
+    .card-block
+      form(action="{% url 'projects:createproject' %}", method="post", class="form-horizontal")
+        | {% csrf_token %}
+        | {{ addlistform.as_p }}
+    .card-footer
+      button(type="submit", class="btn btn-sm btn-primary") <i class="fa fa-dot-circle-o"></i> {% trans 'Add Todo List' %}
+
+block sidebar
+  .card
+    .card-header {% trans 'Meta' %}
+    .card-block
+      p {% blocktrans with project=project.name %}You are looking at your todo items for <strong>{{project}}</strong>.{% endblocktrans %}
+      ul
+        li 
+          a(href="./?includecomplete=1") {% trans 'Display completed lists' %}
