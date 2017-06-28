@@ -231,7 +231,7 @@ def full_logs(request, project_name):
         'logs': logs,
         'page': page,
     }
-    return render(request, 'project/logs.html', context)
+    return render(request, 'projects/logs.html', context)
 
 
 @require_POST
@@ -296,7 +296,6 @@ def noticeboard(request, project_name):
     addnoticeform = AddNoticeForm()
     context = {
         'project': project,
-        'notices_total': notice_list.count(),
         'notices': notices,
         'addnoticeform': addnoticeform,
         'page': page,

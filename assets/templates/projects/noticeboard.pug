@@ -40,7 +40,7 @@ block content
         .card-block
           | {% trans 'No notices yet.' %}
       | {% endfor %}
-      | {% if logs.has_other_pages %}
+      | {% if notices.has_other_pages %}
       div
         ul.pagination
           | {% if notices.has_previous %}
@@ -70,7 +70,7 @@ block sidebar
     .card-header {% trans 'About' %}
     .card-block
       | {% blocktrans with project=project.name %}You are viewing notices put for <strong>{{project}}</strong>.{% endblocktrans %}
-      | {% blocktrans count counter=notices_total %}There are one notice.{% plural %}There are {{counter}} notices.{% endblocktrans %}
+      | {% blocktrans count counter=notices.paginator.count %}There are one notice.{% plural %}There are {{counter}} notices.{% endblocktrans %}
       | {% if notices %}
       | {% blocktrans with user=notices.0.user.username date=notices.0.created_on|date %}The latest notice was put by <strong>{{user}}</strong> on {{date}}.{% endblocktrans %}
       | {% endif %}

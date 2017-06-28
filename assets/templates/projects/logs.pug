@@ -1,0 +1,60 @@
+extends project.pug
+
+block title
+  | {% block title %}{{ project }} - Logs{% endblock %}
+
+block breadcrumbs
+  li.breadcrumb-item Home
+  li.breadcrumb-item
+    a(href="{% url 'projects:dashboard' %}") Dashboard
+  li.breadcrumb-item
+    a(href="{{ project.get_absolute_url }}") {{ project }}
+  li(class="breadcrumb-item active") Logs
+
+block content
+  .card
+    .card-header Logs for {{project.name}}
+    .card-block
+      | {% for log in logs %}
+      .message
+        div
+          span(class="text-truncate font-weight-bold") {{log.title}}
+          small(class="text-muted float-right mt-1") {{log.created_on|date}} {{log.created_on|time}}
+          | {% if log.description %}
+        small(class="text-muted") {{log.description}}
+        | {% endif %}
+      | {% if not forloop.last %}
+      hr
+      | {% endif %}
+      | {% endfor %}
+      | {% if logs.has_other_pages %}
+      div
+        ul.pagination
+          | {% if logs.has_previous %}
+          li(class="page-item")
+            a(class="page-link", href="?page={{ logs.previous_page_number }}") &laquo;
+          | {% else %}
+          li(class="page-item disabled")
+            a(class="page-link", href="#") &laquo;
+          | {% endif %}
+          | {% for i in logs.paginator.page_range %}
+          li(class="page-item{% if logs.number == i %} active{% endif %}")
+            a(class="page-link", href="?page={{i}}") {{ i }}
+          | {% endfor %}
+          | {% if logs.has_next %}
+          li(class="page-item")
+            a(class="page-link", href="?page={{ logs.next_page_number }}") &raquo;
+          | {% else %}
+          li(class="page-item disabled")
+            a(class="page-link", href="#") &raquo;
+          | {% endif %}
+      | {% endif %}
+
+block sideblock
+
+block sidebar
+  .card
+    .card-header {% trans 'Meta' %}
+    .card-block
+      p {% blocktrans with project=project.name %}You are viewing logs for <strong>{{project}}</strong>.{% endblocktrans %}
+      p {% blocktrans %}These are also aviable as <a href="#">RSS feeds</a>.{% endblocktrans %}
