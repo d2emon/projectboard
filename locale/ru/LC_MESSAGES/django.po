@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-11 23:00+0000\n"
+"POT-Creation-Date: 2017-06-28 19:29+0000\n"
 "PO-Revision-Date: 2017-06-12 00:44+0300\n"
 "Last-Translator: Dmitry Kutsenko <d2emonium@gmail.com>\n"
 "Language-Team: \n"
@@ -60,7 +60,8 @@ msgstr "Показать неактивные проекты"
 msgid "Projects"
 msgstr "Проекты"
 
-#: templates/projects/dashboard.html:83
+#: templates/projects/dashboard.html:83 templates/projects/project.html:46
+#: templates/projects/project.html:72
 msgid "Project Name"
 msgstr "Название Проекта"
 
@@ -72,7 +73,7 @@ msgstr "Задача"
 msgid "Was due on"
 msgstr "Сроки"
 
-#: templates/projects/dashboard.html:86
+#: templates/projects/dashboard.html:86 templates/projects/settings.html:41
 msgid "User"
 msgstr "Пользователь"
 
@@ -99,3 +100,228 @@ msgstr "Создать новый проект"
 #: templates/projects/dashboard.html:169
 msgid "Create"
 msgstr "Создать"
+
+#: templates/projects/logs.html:37
+msgid "You are viewing logs for <strong>%(project)s</strong>."
+msgstr ""
+"Вы смотрите логи проекта <strong>%(project)s</strong>"
+
+#: templates/projects/logs.html:38
+msgid "These are also aviable as <a href=\"#\">RSS feeds</a>."
+msgstr "Так же доступен как <a href=\"#\">RSS лента</a>."
+
+#: templates/projects/noticeboard.html:37
+msgid "You are viewing notices put for <strong>%(project)s</strong>."
+msgstr ""
+"Вы смотрите замечания к проекту <strong>%(project)s</strong>"
+
+#: templates/projects/noticeboard.html:38
+#, python-format
+msgid "There are one notice."
+msgid_plural "There are %(counter)s notices."
+msgstr[0] "%(counter)s замечание."
+msgstr[1] "%(counter)s замечаний."
+msgstr[2] "%(counter)s замечаний."
+
+#: templates/projects/noticeboard.html:40
+#, python-format
+msgid "The latest notice was put by <strong>%(user)s</strong> on %(date)s."
+msgstr "Последнее замечание добавил пользователь <strong>%(user)s</strong> %(date)s."
+
+#: templates/projects/noticeboard.html:44
+msgid "Add a notice"
+msgstr "Добавить замечание"
+
+#: templates/projects/noticeboard.html:50
+msgid "Add Notice"
+msgstr "Добавить Замечание"
+
+#: templates/projects/noticeboard.html:63
+msgid "No notices yet."
+msgstr "Пока замечаний нет."
+
+#: templates/projects/project.html:36
+msgid "You are looking at details for project <strong>%(project)s</strong>."
+msgstr ""
+"Вы смотрите проект <strong>%(project)s</strong>"
+
+#: templates/projects/project.html:37
+#, python-format, python-brace-format
+msgid "This project has one task."
+msgid_plural ""
+"This project has %(counter)s({project.task_set.all.count}) tasks."
+msgstr[0] "%(counter)s задача."
+msgstr[1] "%(counter)s задачи."
+msgstr[2] "%(counter)s задач."
+
+#: templates/projects/project.html:39
+msgid "Tasks Quick Entry"
+msgstr "Быстрый Доступ к Задачам"
+
+#: templates/projects/project.html:40
+msgid "Task Items Quick Entry"
+msgstr "Быстрый Доступ к Содержанию Задач"
+
+#: templates/projects/project.html:41
+msgid "Settings"
+msgstr "Настройки"
+
+#: templates/projects/project.html:47 templates/projects/project.html:73
+msgid "Start Due"
+msgstr "Срок Начала"
+
+#: templates/projects/project.html:48 templates/projects/project.html:74
+msgid "End Due"
+msgstr "Срок Окончания"
+
+#: templates/projects/project.html:49 templates/projects/project.html:75
+msgid "User Responsible"
+msgstr "Ответственный"
+
+#: templates/projects/project.html:50 templates/projects/project.html:76
+#: templates/projects/taskline.html:35
+msgid "Details"
+msgstr "Подробности"
+
+#: templates/projects/project.html:51 templates/projects/project.html:77
+msgid "Edit"
+msgstr "Править"
+
+#: templates/projects/project.html:52 templates/projects/project.html:78
+msgid "Mark Done"
+msgstr "Готовность"
+
+#: templates/projects/project.html:53 templates/projects/project.html:79
+msgid "Delete"
+msgstr "Удалить"
+
+#: templates/projects/project.html:64
+msgid "No recent tasks"
+msgstr "Нет недавних задач"
+
+#: templates/projects/project.html:91
+msgid "No overdue tasks"
+msgstr "Нет просроченных задач"
+
+#: templates/projects/project.html:101
+msgid "Clone"
+msgstr "Клонировать"
+
+#: templates/projects/project.html:104
+msgid "Invite a User"
+msgstr "Пригласить Пользователя"
+
+#: templates/projects/project.html:112
+msgid "Invite User"
+msgstr "Пригласить Пользователя"
+
+#: templates/projects/project.html:116 templates/projects/project.html:124
+msgid "Add a Task"
+msgstr "Добавить Задачу"
+
+#: templates/projects/project.html:128
+msgid "Actions"
+msgstr "Действия"
+
+#: templates/projects/project.html:131
+msgid "Add a task"
+msgstr "Добавить задачу"
+
+#: templates/projects/project.html:132
+msgid "Invite a user"
+msgstr "Пригласить пользователя"
+
+#: templates/projects/project.html:137
+msgid "Pending users"
+msgstr "Приглашенные пользователи"
+
+#: templates/projects/project.html:145
+msgid "Users"
+msgstr "Пользователи"
+
+#: templates/projects/settings.html:37
+msgid "You are viewing settings for <strong>%(project)s</strong>."
+msgstr ""
+"Вы смотрите настройки проекта <strong>%(project)s</strong>"
+
+#: templates/projects/settings.html:42 templates/projects/settings.html:55
+msgid "Unsubscribe"
+msgstr "Отписаться"
+
+#: templates/projects/settings.html:43
+msgid "Change Permission"
+msgstr "Изменить Доступ"
+
+#: templates/projects/settings.html:63
+msgid "Group:"
+msgstr "Группа:"
+
+#: templates/projects/settings.html:66
+msgid "Owner"
+msgstr "Владелец"
+
+#: templates/projects/settings.html:67
+msgid "Participant"
+msgstr "Участник"
+
+#: templates/projects/settings.html:68
+msgid "Viewer"
+msgstr "Наблюдатель"
+
+#: templates/projects/settings.html:72
+msgid "Change group"
+msgstr "Сменить группу"
+
+#: templates/projects/taskline.html:5 templates/projects/taskline.html:19
+msgid "Expected"
+msgstr "Ожидаемая"
+
+#: templates/projects/taskline.html:9 templates/projects/taskline.html:15
+#: templates/projects/taskline.html:23 templates/projects/taskline.html:29
+msgid "No date specified"
+msgstr "Дата не указана"
+
+#: templates/projects/taskline.html:11 templates/projects/taskline.html:25
+msgid "Actual"
+msgstr "Актуальная"
+
+#: templates/projects/todo.html:37
+msgid "You are looking at your todo items for <strong>%(project)s</strong>."
+msgstr ""
+"Вы смотрите список дел проекта <strong>%(project)s</strong>"
+
+#: templates/projects/todo.html:39
+msgid "Display completed lists"
+msgstr "Показать законченые дела"
+
+#: templates/projects/todo.html:62
+msgid "No items added for this todo list."
+msgstr "В этом списке дел нет."
+
+#: templates/projects/todo.html:66
+msgid "Add a todo item."
+msgstr "добавить дело в список."
+
+#: templates/projects/todo.html:80
+msgid "Complete"
+msgstr "Выполнено"
+
+#: templates/projects/todo.html:90
+msgid "next"
+msgstr "вперед"
+
+#: templates/projects/todo.html:91
+msgid "prev"
+msgstr "назад"
+
+#: templates/projects/todo.html:95
+msgid "No Todo Lists."
+msgstr "Нет спиков Дел."
+
+#: templates/projects/todo.html:102
+msgid "Create a new todo list"
+msgstr "Создать новый список дел"
+
+#: templates/projects/todo.html:110
+msgid "Add Todo List"
+msgstr "добавить Список Дел"
