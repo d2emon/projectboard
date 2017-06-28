@@ -37,10 +37,9 @@ tr
         | {% trans 'No date specified' %}
         | {% endif %}
   td(style="vertical-align:middle; text-align:center", class="completed")
-    .avatar
-      img(src="/media/avatars/1.jpg", class="img-avatar", alt="admin@bootstrapmaster.com")
-      span(class="avatar-status badge-success")
-    div {{task.user_responsible}}
+    | {% with user=task.user_responsible %}
+    include _user.pug
+    | {% endwith %}
   td(style="vertical-align:middle; text-align:center")
     a(href="#") {% trans 'Details' %}
   td(style="vertical-align:middle; text-align:center")

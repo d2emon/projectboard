@@ -166,11 +166,9 @@ div(class="animated fadeIn")
             ul
               | {% for user in project.projectuser_set.all %}
               li
-                a(href="{{user.user.get_absolute_url}}")
-                  .avatar
-                    img(src="{{ user.user.userprofile.avatar_url }}", class="img-avatar", alt="{{ user.user.email }}")
-                    span(class="avatar-status badge-success")
-                  div {{ user.user }}
+                | {% with user=user.user %}
+                include _user.pug
+                | {% endwith %}
               | {% endfor %}
 | {% endblock %}
 

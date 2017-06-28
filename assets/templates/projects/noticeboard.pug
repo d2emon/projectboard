@@ -29,13 +29,13 @@ block content
         button(type="submit", class="btn btn-sm btn-primary") <i class="fa fa-dot-circle-o"></i> {% trans 'Add Notice' %}
   | {% for notice in notices %}
   .message
+    | {% with user=notice.user %}
     div(class="py-3 pb-5 mr-3 float-left")
-      .avatar
-        img(src="{% static '' %}{{notice.user.userprofile.avatar}}", class="img-avatar", alt="{{ notice.user.email }}")
-        span(class="avatar-status badge-success")
+      include _user.pug
     div
-      small(class="text-muted") {{notice.user}}
+      small(class="text-muted") {{ user }}
       small(class="text-muted float-right mt-1") {{notice.created_on|date}} {{notice.created_on|time}}
+    | {% endwith %}
     small {{notice.text|linebreaks|urlize}}
   | {% if not forloop.last %}
   hr

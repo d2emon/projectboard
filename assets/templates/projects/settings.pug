@@ -26,10 +26,9 @@ block content
       tr
         td
           .row
-            .avatar
-              img(src="{{ user.user.userprofile.avatar_url }}", class="img-avatar", alt="{{ user.user_email }}")
-              span(class="avatar-status badge-success")
-            div {{ user.user }}
+            | {% with user=user.user %}
+            include _user.pug
+            | {% endwith %}
         td
           form(action="{% url 'projects:settings' project.slug %}", method="post")
             | {% csrf_token %}
