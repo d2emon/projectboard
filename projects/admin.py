@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Project, ProjectUser, Log, Notice
+from .models import Project, ProjectUser, Log, Notice, TodoList
 
 
 class ProjectUserInline(admin.StackedInline):
@@ -18,4 +18,9 @@ class LogAdmin(admin.ModelAdmin):
 
 @admin.register(Notice)
 class NoticeAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(TodoList)
+class TodoListAdmin(admin.ModelAdmin):
     pass

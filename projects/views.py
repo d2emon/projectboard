@@ -6,7 +6,7 @@ from django.views.decorators.http import require_POST
 from django.conf import settings
 
 from .forms import CreateProjectForm, InviteUserForm, AddNoticeForm, AddTodoListForm
-from .models import Project, ProjectUser, Log, Notice
+from .models import Project, ProjectUser, Log, Notice, TodoList
 
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
@@ -330,7 +330,8 @@ def todo(request, project_name):
     """
     project = get_object_or_404(Project, slug=project_name)  # Only subscribed
     # access = get_access(project, request.user)
-    lists = []
+    lists = TodoList.objects.all()
+    print(lists)
     # if request.GET.get('includecomplete', 0):
     #     lists = TodoList.objects.filter(user = request.user, project = project)
     # else:

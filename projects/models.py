@@ -172,6 +172,3 @@ class TodoList(models.Model):
 
     class Meta:
         ordering = ('-created_on', )
-
-    class Admin:
-        pass

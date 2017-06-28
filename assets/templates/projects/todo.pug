@@ -51,7 +51,7 @@ block content
           .createcontent
             form(action=".", method="post")
               | {% csrf_token %}
-              | {{list.item_form.as_p}}
+              | {{list.item_form.as_div}}
               input(type="hidden", name="id", value="{{list.id}}")
               input(type="submit", name="additem", value="Add todo item")
       .listcontrols
@@ -84,7 +84,7 @@ block sideblock
     .card-block
       form(action="{% url 'projects:createproject' %}", method="post", class="form-horizontal")
         | {% csrf_token %}
-        | {{ addlistform.as_p }}
+        | {{ addlistform.as_div }}
     .card-footer
       button(type="submit", class="btn btn-sm btn-primary") <i class="fa fa-dot-circle-o"></i> {% trans 'Add Todo List' %}
 
