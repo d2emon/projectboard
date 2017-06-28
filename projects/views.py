@@ -254,7 +254,7 @@ def project_settings(request, project_name):
     context = {
         'project': project,
     }
-    return render(request, 'project/settings.html', context)
+    return render(request, 'projects/settings.html', context)
 
 
 @require_POST
