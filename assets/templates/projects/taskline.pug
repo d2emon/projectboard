@@ -1,0 +1,71 @@
+| {% load i18n %}
+tr
+  td(style="vertical-align:middle; text-align:center", class="projectname")
+    a(href="#") {{task.name}}
+  td(style="vertical-align:middle")
+    div
+      span(class="small text-muted") {% trans 'Expected' %}
+      span
+        | {% if task.expected_start_date %}
+        | {{task.expected_start_date|date}}
+        | {% else %}
+        | {% trans 'No date specified' %}
+        | {% endif %}
+    div
+      span(class="small text-muted") {% trans 'Actual' %}
+      span
+        | {% if task.actual_start_date %}
+        | {{task.actual_start_date|date}}
+        | {% else %}
+        | {% trans 'No date specified' %}
+        | {% endif %}
+  td(style="vertical-align:middle")
+    div
+      span(class="small text-muted") {% trans 'Expected' %}
+      span
+        | {% if task.expected_end_date %}
+        | {{task.expected_end_date|date}}
+        | {% else %}
+        | {% trans 'No date specified' %}
+        | {% endif %}
+    div
+      span(class="small text-muted") {% trans 'Actual' %}
+      span
+        | {% if task.actual_end_date %}
+        | {{task.actual_end_date|date}}
+        | {% else %}
+        | {% trans 'No date specified' %}
+        | {% endif %}
+  td(style="vertical-align:middle; text-align:center", class="completed")
+    .avatar
+      img(src="/media/avatars/1.jpg", class="img-avatar", alt="admin@bootstrapmaster.com")
+      span(class="avatar-status badge-success")
+    div {{task.user_responsible}}
+  td(style="vertical-align:middle; text-align:center")
+    a(href="#") {% trans 'Details' %}
+  td(style="vertical-align:middle; text-align:center")
+    a(href="#") <i class="fa fa-edit fa-lg"></i>
+  td(style="vertical-align:middle; text-align:center")
+    form(action=".", method="post", id="markdone-{{task.id}}", class="markdone")
+      | {% csrf_token %}
+      div
+        input(type="hidden", name="taskid", value="{{task.id}}")
+        | {% if task.is_complete %}
+        input(type="hidden", name="markundone", value="markundone")
+        label(class="switch switch-text switch-pill switch-primary")
+          input(class="switch-input", type="checkbox", value="{{task.is_complete}}", onchange="submit()", name="markundone_check", checked="checked")
+          span(class="switch-label", data-on="On", data-off="Off")
+          span(class="switch-handle") 
+        | {% else %}
+        label(class="switch switch-text switch-pill switch-primary")
+          input(class="switch-input", type="checkbox", value="{{task.is_complete}}", onchange="submit()", name="markdone")
+          span(class="switch-label", data-on="On", data-off="Off")
+          span(class="switch-handle") 
+        | {% endif %}
+  td(style="vertical-align:middle; text-align:center")
+    form(action=".", method="post", id="deletetask-{{task.id}}", class="deletetask")
+      | {% csrf_token %}
+      div
+        input(type="hidden", name="taskid", value="{{task.id}}")
+        input(type="hidden", name="deletetask", value="deletetask")
+        a(href="#", onclick="submit()") <i class="fa fa-trash fa-lg"></i>

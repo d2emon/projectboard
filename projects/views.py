@@ -114,7 +114,7 @@ def project(request, project_name):
         'overdue_tasks': overdue_tasks,
         # 'access': access,
     }
-    return render(request, 'project/project.html', context)
+    return render(request, 'projects/project.html', context)
 
 
 @require_POST
