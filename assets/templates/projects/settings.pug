@@ -11,50 +11,46 @@ block breadcrumbs
     a(href="{{ project.get_absolute_url }}") {{ project }}
   li(class="breadcrumb-item active") Settings
 
+block meta
+  p {% blocktrans with project=project.name %}You are viewing settings for <strong>{{project}}</strong>.{% endblocktrans %}
+
 block content
-  .card
-    .card-header {{project.name}}
-    .card-block
-      table(class="table table-responsive table-hover table-striped")
-        thead
-          tr
-            th {% trans 'User' %}
-            th {% trans 'Unsubscribe' %}
-            th {% trans 'Change Permission' %}
-        tbody
-          | {% for user in project.projectuser_set.all %}
-          tr
-            td
-              .row
-                .avatar
-                  img(src="{{ user.user.userprofile.avatar_url }}", class="img-avatar", alt="{{ user.user_email }}")
-                  span(class="avatar-status badge-success")
-                div {{ user.user }}
-            td
-              form(action="{% url 'projects:settings' project.slug %}", method="post")
-                | {% csrf_token %}
-                button(type="submit", class="btn btn-sm btn-danger") <i class="fa fa-trash"></i> {% trans 'Unsubscribe' %}
-                input(type="hidden", name="user", value="user.user.username")
-            td
-              form(action="{% url 'projects:settings' project.slug %}",  method="post", class="form-horizontal")
-                | {% csrf_token %}
-                input(type="hidden", name="user", value="user.user.username")
-                div(class="form-group row")
-                  label(for="id_group", class="form-control-label col-md-2") {% trans 'Group:' %}
-                  .col-md-5
-                    select(id="id_group", class="form-control required", name="group")
-                      option(value="Owner",selected="{% ifequal user_group 'Owner' %}selected{% endifequal %}") {% trans 'Owner' %}
-                      option(value="Participant",selected="{% ifequal user_group 'Participant' %}selected{% endifequal %}") {% trans 'Participant' %}
-                      option(value="Viewer",selected="{% ifequal user_group 'Viewer' %}selected{% endifequal %}") {% trans 'Viewer' %}
-                  .col-md-5
-                    button(type="submit", class="form-control btn btn-primary") {% trans 'Change group' %}
-          | {% endfor %}
+  table(class="table table-responsive table-hover table-striped")
+    thead
+      tr
+        th {% trans 'User' %}
+        th {% trans 'Unsubscribe' %}
+        th {% trans 'Change Permission' %}
+    tbody
+      | {% for user in project.projectuser_set.all %}
+      tr
+        td
+          .row
+            .avatar
+              img(src="{{ user.user.userprofile.avatar_url }}", class="img-avatar", alt="{{ user.user_email }}")
+              span(class="avatar-status badge-success")
+            div {{ user.user }}
+        td
+          form(action="{% url 'projects:settings' project.slug %}", method="post")
+            | {% csrf_token %}
+            button(type="submit", class="btn btn-sm btn-danger") <i class="fa fa-trash"></i> {% trans 'Unsubscribe' %}
+            input(type="hidden", name="user", value="user.user.username")
+        td
+          form(action="{% url 'projects:settings' project.slug %}",  method="post", class="form-horizontal")
+            | {% csrf_token %}
+            input(type="hidden", name="user", value="user.user.username")
+            div(class="form-group row")
+              label(for="id_group", class="form-control-label col-md-2") {% trans 'Group:' %}
+              .col-md-5
+                select(id="id_group", class="form-control required", name="group")
+                  option(value="Owner",selected="{% ifequal user_group 'Owner' %}selected{% endifequal %}") {% trans 'Owner' %}
+                  option(value="Participant",selected="{% ifequal user_group 'Participant' %}selected{% endifequal %}") {% trans 'Participant' %}
+                  option(value="Viewer",selected="{% ifequal user_group 'Viewer' %}selected{% endifequal %}") {% trans 'Viewer' %}
+              .col-md-5
+                button(type="submit", class="form-control btn btn-primary") {% trans 'Change group' %}
+      | {% endfor %}
 
 block sideblock
 
 block sidebar
-  .card
-    .card-header {% trans 'Meta' %}
-    .card-block
-      p {% blocktrans with project=project.name %}You are viewing settings for <strong>{{project}}</strong>.{% endblocktrans %}
 

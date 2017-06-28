@@ -11,6 +11,12 @@ block breadcrumbs
     a(href="{{ project.get_absolute_url }}") {{ project }}
   li(class="breadcrumb-item active") Todo
 
+block meta
+  p {% blocktrans with project=project.name %}You are looking at your todo items for <strong>{{project}}</strong>.{% endblocktrans %}
+  ul
+    li 
+      a(href="./?includecomplete=1") {% trans 'Display completed lists' %}
+
 block content
   | {% if lists %}
   | {% for list in lists %}
@@ -83,10 +89,4 @@ block sideblock
       button(type="submit", class="btn btn-sm btn-primary") <i class="fa fa-dot-circle-o"></i> {% trans 'Add Todo List' %}
 
 block sidebar
-  .card
-    .card-header {% trans 'Meta' %}
-    .card-block
-      p {% blocktrans with project=project.name %}You are looking at your todo items for <strong>{{project}}</strong>.{% endblocktrans %}
-      ul
-        li 
-          a(href="./?includecomplete=1") {% trans 'Display completed lists' %}
+

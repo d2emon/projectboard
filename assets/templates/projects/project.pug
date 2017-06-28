@@ -56,10 +56,23 @@ ol.breadcrumb
 div(class="animated fadeIn")
   .row
     .col-md-9
-      block content
-        .card
-          .card-header {{ project }}
-          .card-block
+      .card
+        .card-header {{ project }}
+        .card-block
+          block meta
+            | {% blocktrans with project=project.name tasks=project.task_set.all.count %}You are looking at details for project <strong>{{project}}</strong>.{% endblocktrans %}
+            | {% blocktrans count counter=3 %}This project has one task.{% plural %}This project has {{counter}}({project.task_set.all.count}) tasks.{% endblocktrans %}
+            ul
+              li
+                a(href="{{project.quicktasks_url}}") {% trans 'Tasks Quick Entry' %}
+              li
+                a(href="{{project.quicktaskitems_url}}") {% trans 'Task Items Quick Entry' %}
+              | {% ifequal access 'Owner' %}
+              li
+                a(href="{{project.settings_url}}") {% trans 'Settings' %}
+              | {% endifequal %}
+
+          block content
             | {% if new_tasks %}
             table(class="table table-responsive table-hover table-striped")
               thead
@@ -138,20 +151,6 @@ div(class="animated fadeIn")
                 a(href="#", id="taskshow") {% trans 'Add a task' %}
               li
                 a(href="#", id="inviteshow") {% trans 'Invite a user' %}
-        .card
-          .card-header {% trans 'Meta' %}
-          .card-block
-            | {% blocktrans with project=project.name tasks=project.task_set.all.count %}You are looking at details for project <strong>{{project}}</strong>.{% endblocktrans %}
-            | {% blocktrans count counter=3 %}This project has one task.{% plural %}This project has {{counter}}({project.task_set.all.count}) tasks.{% endblocktrans %}
-            ul
-              li
-                a(href="{{project.quicktasks_url}}") {% trans 'Tasks Quick Entry' %}
-              li
-                a(href="{{project.quicktaskitems_url}}") {% trans 'Task Items Quick Entry' %}
-              | {% ifequal access 'Owner' %}
-              li
-                a(href="{{project.settings_url}}") {% trans 'Settings' %}
-              | {% endifequal %}
         | {% if project.invited_users %}
         .card
           .card-header {% trans 'Pending users' %}
