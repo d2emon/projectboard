@@ -154,3 +154,24 @@ class Notice(models.Model):
 
     class Meta:
         ordering = ('-created_on', )
+
+
+class TodoList(models.Model):
+    """
+    A todo list of a user of the project.
+    name: name of the todo list.
+    user: User for which this todo list is created.
+    project: Project under which this list is created.
+    is_complete_attr: Is this list complete?
+    created_on: When was this list created?
+    """
+    name = models.CharField(max_length = 200)
+    user = models.ForeignKey(User)
+    project = models.ForeignKey(Project)
+    created_on = models.DateTimeField(auto_now_add = 1)
+
+    class Meta:
+        ordering = ('-created_on', )
+
+    class Admin:
+        pass

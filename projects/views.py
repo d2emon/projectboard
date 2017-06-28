@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.conf import settings
 
-from .forms import CreateProjectForm, InviteUserForm, AddNoticeForm
+from .forms import CreateProjectForm, InviteUserForm, AddNoticeForm, AddTodoListForm
 from .models import Project, ProjectUser, Log, Notice
 
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
@@ -322,7 +322,8 @@ def noticeboard_csv(request):
 
 @login_required
 def todo(request, project_name):
-    """Allows to create a new todolist and todoitems.
+    """
+    Allows to create a new todolist and todoitems.
     Actions available here:
     Add a todolist: Owner Participant
     Add a todoitem: Owner Participant
@@ -334,8 +335,7 @@ def todo(request, project_name):
     #     lists = TodoList.objects.filter(user = request.user, project = project)
     # else:
     #     lists = TodoList.objects.filter(user = request.user, project = project, is_complete_attr = False)
-    addlistform = []
-    # addlistform = bforms.AddTodoListForm()
+    addlistform = AddTodoListForm()
     context = {
         'project': project,
         'lists': lists,
