@@ -1,6 +1,7 @@
 from django import forms
 from django.forms import ModelForm
 from django.utils.translation import ugettext as _
+from django.contrib.auth.models import User
 
 
 from .models import Project, ProjectUser, Notice, TodoList
@@ -117,6 +118,10 @@ class InviteUserForm(DivForm):
         kwargs.setdefault('label_suffix', '')
         super(InviteUserForm, self).__init__(*args, **kwargs)
         self.project = project
+        self.fields['user'].queryset = User.objects.order_by(
+            'username'
+        )
+
         for field in self.fields:
             self.fields[field].widget.attrs['class'] = 'form-control'
 
