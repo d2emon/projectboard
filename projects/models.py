@@ -149,14 +149,34 @@ class Log(models.Model):
     created_on = models.DateTimeField(auto_now_add = 1)
 
     @receiver(post_save, sender=Project)
-    def create_log(sender, instance, created, **kwargs):
+    def create_project_log(sender, instance, created, **kwargs):
         if created:
-            record = Log.objects.create(
-                project=instance,
-                title="Created:",
-                description="Project %s created by %s at %s" % (instance, instance.owner, instance.created_on),
-            )
-            record.save()
+            log_title = "Created"
+            log_text = "Project %s created by %s" % (instance, instance.owner)
+        else:
+            log_title = "Changed"
+            log_text = "Project %s changed" % (instance, )
+        record = Log.objects.create(
+            project=instance,
+            title=log_title,
+            description=log_text,
+        )
+        record.save()
+
+    @receiver(post_save, sender=ProjectUser)
+    def create_user_log(sender, instance, created, **kwargs):
+        if created:
+            log_title = "Invited User"
+            log_text = "User %s invited" % (instance.user, )
+        else:
+            log_title = "Permission Changed"
+            log_text = "User %s changed permission to %d" % (instance.user, instance.status)
+        record = Log.objects.create(
+            project=instance,
+            title=log_title,
+            description=log_text,
+        )
+        record.save()
 
     class Meta:
         ordering = ('-created_on', )
