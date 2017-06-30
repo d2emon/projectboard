@@ -123,14 +123,9 @@ div(class="animated fadeIn")
                 td &nbsp;
                 td ({{sub.project.start_date}}{% if sub.project.end_date %} - {{sub.project.end_date}}{% endif %})
                 td(class="completed")
-                  .row
-                    .col-md-6
-                      .avatar
-                        img(src="/media/avatars/1.jpg", class="img-avatar", alt="admin@bootstrapmaster.com")
-                        span(class="avatar-status badge-success")
-                    .col-md-6
-                      div {{sub.project.owner}}
-                      div(class="small text-muted") {% blocktrans %}<span>New</span>| Registered: Jan 1, 2015{% endblocktrans %}
+                  | {% with user=sub.project.owner %}
+                  include _user.pug
+                  | {% endwith %}
                 td(style="vertical-align:middle; text-align:center")
                   | &nbsp;
               | {% for task in sub.project.get_overdue %}
@@ -141,14 +136,9 @@ div(class="animated fadeIn")
                   a(href="task.get_absolute_url") {{ task.name }}
                 td {{ task.expected_end_date|date }}
                 td(class="completed")
-                  .row
-                    .col-md-6
-                      .avatar
-                        img(src="/media/avatars/1.jpg", class="img-avatar", alt="admin@bootstrapmaster.com")
-                        span(class="avatar-status badge-success")
-                    .col-md-6
-                      div {{task.user_responsible}}
-                      div(class="small text-muted") {% blocktrans %}<span>New</span>| Registered: Jan 1, 2015{% endblocktrans %}
+                  | {% with user=task.user_responsible %}
+                  include _user.pug
+                  | {% endwith %}
                 td(style="vertical-align:middle; text-align:center")
                   form(action=".", method="post", id="markdone-" + "task.id", class="markdone")
                     | {% csrf_token %}

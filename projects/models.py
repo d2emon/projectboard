@@ -1,5 +1,7 @@
 from django.db import models
 from django.urls import reverse
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 
 from django.contrib.auth.models import User
@@ -124,6 +126,16 @@ class ProjectUser(models.Model):
         choices=STATUSES,
     )
 
+    @receiver(post_save, sender=Project)
+    def create_log(sender, instance, created, **kwargs):
+        if created:
+            owner = ProjectUser.objects.create(
+                user=instance.owner,
+                project=instance,
+                status=ProjectUser.STATUS_ACCEPTED,
+            )
+            owner.save()
+
 
 class Log(models.Model):
     """Log of the project.
@@ -135,6 +147,16 @@ class Log(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True, null=True)
     created_on = models.DateTimeField(auto_now_add = 1)
+
+    @receiver(post_save, sender=Project)
+    def create_log(sender, instance, created, **kwargs):
+        if created:
+            record = Log.objects.create(
+                project=instance,
+                title="Created:",
+                description="Project %s created by %s at %s" % (instance, instance.owner, instance.created_on),
+            )
+            record.save()
 
     class Meta:
         ordering = ('-created_on', )
