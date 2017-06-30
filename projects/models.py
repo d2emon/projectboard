@@ -82,6 +82,10 @@ class Project(models.Model):
     def get_new(self):
         return self.get_overdue()
 
+    @property
+    def users(self):
+        return [user.user for user in self.projectuser_set.all()]
+
     def clone_from_git(self, cwd='sources/'):
         import subprocess
         return subprocess.Popen(

@@ -21,14 +21,15 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         count = options.get('count', 1)
         fake = Factory.create('ru_RU')
+
+        users = UserProfile.objects.all()
+        languages = ProgrammingLanguage.objects.all()
+
         for i in range(count):
             self.stdout.write(
                 "Adding project %d of %d" % (i + 1, count),
                 self.style.SUCCESS
             )
-            users = UserProfile.objects.all()
-            languages = ProgrammingLanguage.objects.all()
-
             project = Project()
             project.name = fake.company()
             project.slug = fake.slug()

@@ -2,5 +2,6 @@ a(href="{{user.get_absolute_url}}")
   .avatar
     img(src="{{ user.userprofile.avatar_url }}", class="img-avatar", alt="{{ user.email }}")
     span(class="avatar-status badge-success")
-  div {{ user }}
+  div
+    small {{ user }}
 

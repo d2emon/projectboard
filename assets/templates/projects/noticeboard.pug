@@ -27,20 +27,25 @@ block content
         | {{addnoticeform.as_p}}
       .card-footer
         button(type="submit", class="btn btn-sm btn-primary") <i class="fa fa-dot-circle-o"></i> {% trans 'Add Notice' %}
-  | {% for notice in notices %}
-  .message
-    | {% with user=notice.user %}
-    div(class="py-3 pb-5 mr-3 float-left")
-      include _user.pug
-    div
-      small(class="text-muted") {{ user }}
-      small(class="text-muted float-right mt-1") {{notice.created_on|date}} {{notice.created_on|time}}
-    | {% endwith %}
-    small {{notice.text|linebreaks|urlize}}
-  | {% if not forloop.last %}
-  hr
-  | {% endif %}
-  | {% empty %}
+  .notices
+    | {% for notice in notices %}
+    div(class="message", style="min-height: 100px;")
+      | {% with user=notice.user %}
+      div(class="py-3 pb-5 mr-3 float-left")
+        a(href="{{user.get_absolute_url}}")
+          .avatar
+            img(src="{{ user.userprofile.avatar_url }}", class="img-avatar", alt="{{ user.email }}")
+            span(class="avatar-status badge-success")
+            // include _user.pug
+      div
+        small(class="text-muted") {{ user }}
+        small(class="text-muted float-right mt-1") {{notice.created_on|date}} {{notice.created_on|time}}
+      | {% endwith %}
+      small {{notice.text|linebreaks|urlize}}
+    | {% if not forloop.last %}
+    hr
+    | {% endif %}
+    | {% empty %}
   .card
     .card-block
       | {% trans 'No notices yet.' %}

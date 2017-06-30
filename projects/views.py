@@ -6,7 +6,7 @@ from django.views.decorators.http import require_POST
 from django.conf import settings
 
 from .forms import CreateProjectForm, InviteUserForm, AddNoticeForm, AddTodoListForm
-from .models import Project, ProjectUser, Log, Notice, TodoList
+from .models import Project, ProjectUser, Log, Notice
 
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
@@ -14,7 +14,7 @@ import users.views
 
 
 def add_pager(objects, request):
-    paginator = Paginator(objects, 3)
+    paginator = Paginator(objects, 5)
     page = request.GET.get('page')
     try:
         items = paginator.page(page)
