@@ -172,7 +172,7 @@ class Log(models.Model):
             log_title = "Permission Changed"
             log_text = "User %s changed permission to %d" % (instance.user, instance.status)
         record = Log.objects.create(
-            project=instance,
+            project=instance.project,
             title=log_title,
             description=log_text,
         )
