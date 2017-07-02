@@ -1,5 +1,6 @@
 Django==1.11.1
 django-registration==2.2
+djangorestframework==3.6.3
 docutils==0.13.1
 fake-factory==9999.9.9
 Faker==0.7.17
