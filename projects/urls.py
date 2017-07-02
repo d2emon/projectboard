@@ -8,6 +8,7 @@ urlpatterns = [
     url(r'^dashboard/$', views.dashboard, name='dashboard'),
     url(r'^create/$', views.project, name='createproject'),
     url(r'^(?P<project_name>[\w-]+)/$', views.project, name='project'),
+    url(r'^(?P<project_name>[\w-]+)/invite$', views.invitation, name='invitation'),
     url(r'^(?P<project_name>[\w-]+)/logs$', views.full_logs, name='logs'),
     url(r'^(?P<project_name>[\w-]+)/settings$', views.project_settings, name='settings'),
     url(r'^(?P<project_name>[\w-]+)/noticeboard$', views.noticeboard, name='noticeboard'),

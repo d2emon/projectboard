@@ -86,9 +86,11 @@ class Project(models.Model):
     def users(self):
         return [user.user for user in self.projectuser_set.all()]
 
+    def user(self, user):
+        return self.projectuser_set.get(user=user)
+
     def user_status(self, user):
-        user_status = self.projectuser_set.get(user=user)
-        return user_status.status
+        return self.user(user).status
 
     @property
     def invited_users(self):
@@ -168,6 +170,26 @@ class ProjectUser(models.Model):
                 status=ProjectUser.STATUS_ACCEPTED,
             )
             owner.save()
+
+    def accept(self):
+        if self.status != ProjectUser.STATUS_INVITED:
+            raise Exception("User is not invited")
+
+        self.status = ProjectUser.STATUS_ACCEPTED
+
+    def decline(self):
+        if self.status != ProjectUser.STATUS_INVITED:
+            raise Exception("User is not invited")
+
+        self.status = ProjectUser.STATUS_DECLINED
+
+    def as_dict(self):
+        return {
+            'user_username': self.user.username,
+            'user_email': self.user.email,
+            'user_avatar': self.user.userprofile.avatar_url,
+            'status': self.status,
+        }
 
 
 class Log(models.Model):

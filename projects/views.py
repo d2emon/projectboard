@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
 # from django.urls import reverse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.conf import settings
@@ -27,9 +29,9 @@ def add_pager(objects, request):
 
 def get_allowed_project(slug, user):
     project = get_object_or_404(Project, slug=slug)  # Only subscribed
-    access = project.user_status(user)
+    access = project.allowed(user)
     if not access:
-        pass
+        raise PermissionDenied
     return project
 
 
@@ -147,29 +149,54 @@ def invitation(request, project_name):
     New Top Task: Owner Participant
     Mark Done: Owner Participant
     """
-    project = get_allowed_project(project_name, request.user)
+    project = get_object_or_404(Project, slug=project_name)
+    user = project.user(request.user)
+    user_id = request.POST.get('user_id')
+    invited_user = ProjectUser.objects.filter(
+        user=request.user,
+        project=project,
+        status=ProjectUser.STATUS_INVITED
+    ).first()
     if request.method == 'PUT':
-        return {
-            "project": project,
-            "method": 'PUT',
-            "answer": 'New project',
-        }
-    elif request.method == 'POST':
-        # Accept invitation
+        # if not (access == 'Owner'):
+        #     return HttpResponseForbidden('%s(%s) does not have enough rights' % (request.user.username, access))
+        # inviteform = bforms.InviteUserForm(project, request.POST)
+        # if inviteform.is_valid():
+        #     inviteform.save()
+        if not project.allowed(request.user):
+            raise PermissionDenied
 
-        # invite = InvitedUser.objects.get(id = request.POST['invid'])
-        # subscribe = SubscribedUser(project = project, user = user, group = invite.group)
-        # subscribe.save()
-        # invite.delete()
-        return redirect('projects:dashboard')
+        if ProjectUser.objects.filter(
+            project=project,
+            user_id=user_id,
+            status__in=[
+                ProjectUser.STATUS_INVITED,
+                ProjectUser.STATUS_ACCEPTED,
+            ],
+        ).count():
+            raise Exception("user allready invited")
+
+        project_user = ProjectUser(
+            project=project,
+            user_id=user_id,
+            status=ProjectUser.STATUS_INVITED,
+        )
+    elif request.method == 'POST':
+        if invited_user is None:
+            raise Exception("User is not invited")
+        invited_user.accept()
     elif request.method == 'DELETE':
-        return {
-            "project": project,
-            "method": 'DELETE',
-            "answer": 'Delete project',
-        }
+        if invited_user is None:
+            raise Exception("User is not invited")
+        invited_user.decline()
     elif request.method == 'GET':
         pass
+
+    return JsonResponse({
+        'user': invited_user.as_dict(),
+        'invited': [invite.as_dict() for invite in project.invited_users],
+        'active': [invite.as_dict() for invite in project.active_users],
+    })
 
 
 @require_POST
@@ -191,17 +218,6 @@ def markdone(request):
     print(request.POST)
     # handle_task_status(request)
     return redirect('projects:dashboard')
-
-
-@require_POST
-@login_required
-def invite(request):
-    # if not (access == 'Owner'):
-    #     return HttpResponseForbidden('%s(%s) does not have enough rights' % (request.user.username, access))
-    # inviteform = bforms.InviteUserForm(project, request.POST)
-    # if inviteform.is_valid():
-    #     inviteform.save()
-    return redirect('projects:project', kwargs={'project_name': "123"})
 
 
 @require_POST
