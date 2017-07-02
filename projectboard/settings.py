@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'techs',
     'projects',
     'django.contrib.admindocs',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -152,7 +153,6 @@ STATICFILES_DIRS = [
 STATIC_ROOT = os.path.join(BASE_DIR, "static1")
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-
 ACCOUNT_ACTIVATION_DAYS = 7
 
 EMAIL_HOST = 'localhost'
@@ -164,3 +164,14 @@ LOGIN_REDIRECT_URL = '/projects/dashboard/'
 PROJECTS_DIR = os.path.join(BASE_DIR, 'sources')
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+PAGE_SIZE = 10
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAdminUser',
+    ],
+    'PAGE_SIZE': PAGE_SIZE,
+}
