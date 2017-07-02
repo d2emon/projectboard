@@ -90,14 +90,23 @@ class Project(models.Model):
         user_status = self.projectuser_set.get(user=user)
         return user_status.status
 
+    @property
+    def invited_users(self):
+        return self.projectuser_set.filter(
+            status=ProjectUser.STATUS_INVITED,
+        )
+
+    @property
+    def active_users(self):
+        return self.projectuser_set.filter(
+            status__in=ProjectUser.ACTIVE_STATUSES
+        )
+
     def allowed(self, user):
         if user.is_admin:
             return True
         status = self.user_status(user)
-        return status in [
-            ProjectUser.STATUS_INVITED,
-            ProjectUser.STATUS_ACCEPTED,
-        ]
+        return status in ProjectUser.ALLOWED_STATUSES
 
     def clone_from_git(self, cwd='sources/'):
         import subprocess
@@ -134,6 +143,13 @@ class ProjectUser(models.Model):
         (STATUS_INVITED, "Invited"),
         (STATUS_ACCEPTED, "Accepted"),
         (STATUS_DECLINED, "Declined"),
+    )
+    ACTIVE_STATUSES = (
+        STATUS_ACCEPTED,
+    )
+    ALLOWED_STATUSES = (
+        STATUS_INVITED,
+        STATUS_ACCEPTED,
     )
 
     user = models.ForeignKey(User)

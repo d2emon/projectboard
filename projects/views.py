@@ -119,6 +119,10 @@ def project(request, project_name=None):
         new_tasks = project.get_new()
         overdue_tasks = project.get_overdue()
 
+        print(project)
+        print(project.active_users)
+        print(project.invited_users)
+
         context = {
             'project': project,
 

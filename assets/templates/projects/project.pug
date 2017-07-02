@@ -147,14 +147,17 @@ block content
             .card-block
               ul
                 | {% for user in project.invited_users %}
-                li {{user.user.username}}
+                li
+                  | {% with user=user.user %}
+                  include _user.pug
+                  | {% endwith %}
                 | {% endfor %}
           | {% endif %}
           .card
             .card-header {% trans 'Users' %}
             .card-block
               ul
-                | {% for user in project.projectuser_set.all %}
+                | {% for user in project.active_users %}
                 li
                   | {% with user=user.user %}
                   include _user.pug
