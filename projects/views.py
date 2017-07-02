@@ -6,7 +6,7 @@ from django.views.decorators.http import require_POST
 from django.conf import settings
 
 from .forms import CreateProjectForm, InviteUserForm, AddNoticeForm, AddTodoListForm
-from .models import Project, ProjectUser, Log, Notice
+from .models import Project, ProjectUser
 
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
@@ -23,6 +23,14 @@ def add_pager(objects, request):
     except EmptyPage:
         items = paginator.page(paginator.num_pages)
     return items, page
+
+
+def get_allowed_project(slug, user):
+    project = get_object_or_404(Project, slug=slug)  # Only subscribed
+    access = project.user_status(user)
+    if not access:
+        pass
+    return project
 
 
 def index(request):
@@ -72,17 +80,8 @@ def dashboard(request):
     })
 
 
-@require_POST
 @login_required
-def createproject(request):
-    createform = CreateProjectForm(request.user, request.POST)
-    if createform.is_valid():
-        createform.save()
-    return redirect('projects:dashboard')
-
-
-@login_required
-def project(request, project_name):
+def project(request, project_name=None):
     """
     Point of entry for a specific project.
     Shows the important information for a project.
@@ -93,34 +92,80 @@ def project(request, project_name):
     New Top Task: Owner Participant
     Mark Done: Owner Participant
     """
-    project = get_object_or_404(Project, slug=project_name)  # Only subscribed
-    access = project.projectuser_set.filter(user=request.user).first()
-    # access = get_access(project, request.user)
-    inviteform = InviteUserForm(project)
-    # taskform = bforms.CreateTaskForm(project, request.user)
-    new_tasks = project.get_new()
-    overdue_tasks = project.get_overdue()
+    project = get_allowed_project(project_name, request.user)
+    createform = CreateProjectForm(request.user, request.POST)
+    if request.method == 'PUT':
+        valid = createform.is_valid()
+        if valid:
+            createform.save()
+        return redirect('projects:dashboard')
+    elif request.method == 'POST':
+        return {
+            "project": project,
+            "method": 'POST',
+            "answer": 'Update project',
+        }
+    elif request.method == 'DELETE':
+        return {
+            "project": project,
+            "method": 'DELETE',
+            "answer": 'Delete project',
+        }
+    elif request.method == 'GET':
+        inviteform = InviteUserForm(project)
+        # taskform = bforms.CreateTaskForm(project, request.user)
 
-    context = {
-        'project': project,
-        'inviteform': inviteform,
-        # 'taskform': taskform,
-        'new_tasks': new_tasks,
-        'overdue_tasks': overdue_tasks,
-        # 'access': access,
-    }
-    return render(request, 'projects/project.html', context)
+        # Tasks
+        new_tasks = project.get_new()
+        overdue_tasks = project.get_overdue()
+
+        context = {
+            'project': project,
+
+            'inviteform': inviteform,
+            # 'taskform': taskform,
+
+            'new_tasks': new_tasks,
+            'overdue_tasks': overdue_tasks,
+        }
+        return render(request, 'projects/project.html', context)
 
 
-@require_POST
 @login_required
-def acceptinv(request):
-    project = Project.objects.get(id = request.POST['projid'])
-    # invite = InvitedUser.objects.get(id = request.POST['invid'])
-    # subscribe = SubscribedUser(project = project, user = user, group = invite.group)
-    # subscribe.save()
-    # invite.delete()
-    return redirect('projects:dashboard')
+def invitation(request, project_name):
+    """
+    Point of entry for a specific project.
+    Shows the important information for a project.
+    Shows form to invite an user.
+    Form to create a new top task.
+    Actions available here:
+    Invite: Owner
+    New Top Task: Owner Participant
+    Mark Done: Owner Participant
+    """
+    project = get_allowed_project(project_name, request.user)
+    if request.method == 'PUT':
+        return {
+            "project": project,
+            "method": 'PUT',
+            "answer": 'New project',
+        }
+    elif request.method == 'POST':
+        # Accept invitation
+
+        # invite = InvitedUser.objects.get(id = request.POST['invid'])
+        # subscribe = SubscribedUser(project = project, user = user, group = invite.group)
+        # subscribe.save()
+        # invite.delete()
+        return redirect('projects:dashboard')
+    elif request.method == 'DELETE':
+        return {
+            "project": project,
+            "method": 'DELETE',
+            "answer": 'Delete project',
+        }
+    elif request.method == 'GET':
+        pass
 
 
 @require_POST
@@ -186,50 +231,66 @@ def deletetask(request):
 
 @login_required
 def full_logs(request, project_name):
-    """Shows the logs for a project.
+    """
+    Shows the logs for a project.
     Actions available here:
-    None"""
-    project = get_object_or_404(Project, slug=project_name)  # Only subscribed
-    # access = get_access(project, request.user)
-    # log_list = Log.objects.filter(project=project)
-    log_list = project.log_set.all()
-    items, page = add_pager(log_list, request)
-    context = {
-        'project': project,
-        'logs': items,
-        'page': page,
-    }
+    None
+    """
+    project = get_allowed_project(project_name, request.user)
+    if request.method == 'PUT':
+        return {
+            "project": project,
+            "method": 'PUT',
+            "answer": 'New project',
+        }
+    elif request.method == 'POST':
+        return {
+            "project": project,
+            "method": 'POST',
+            "answer": 'Update project',
+        }
+    elif request.method == 'DELETE':
+        return {
+            "project": project,
+            "method": 'DELETE',
+            "answer": 'Delete project',
+        }
+    elif request.method == 'GET':
+        log_list = project.log_set.all()
+        items, page = add_pager(log_list, request)
+        context = {
+            'project': project,
+            'logs': items,
+            'page': page,
+        }
     return render(request, 'projects/logs.html', context)
 
 
 @login_required
 def project_settings(request, project_name):
     """Allows settings site sepcific settings."""
-    project = get_object_or_404(Project, slug=project_name)  # Only subscribed
-    # access = get_access(project, request.user)
+    project = get_allowed_project(project_name, request.user)
     # if not (access == 'Owner'):
     #     return HttpResponseForbidden('%s(%s) does not have enough rights' % (request.user.username, access))
-    context = {
-        'project': project,
-    }
-    return render(request, 'projects/settings.html', context)
-
-
-@require_POST
-def remove_settings(request):
     # username = request.POST['user']
     # sub = SubscribedUser.objects.get(project__shortname = project_name, user__username = username)
-    # sub.delete()
-    return redirect('projects:project', project_name="123")
-
-
-@require_POST
-def chgroup_settings(request):
-    # username = request.POST['user']
-    # sub = SubscribedUser.objects.get(project__shortname = project_name, user__username = username)
-    # sub.group = request.POST['group']
-    # sub.save()
-    return redirect('projects:project', project_name="123")
+    if request.method == 'PUT':
+        return {
+            "project": project,
+            "method": 'PUT',
+            "answer": 'New project',
+        }
+    elif request.method == 'POST':
+        # sub.group = request.POST['group']
+        # sub.save()
+        return redirect('projects:project', project_name="123")
+    elif request.method == 'DELETE':
+        # sub.delete()
+        return redirect('projects:project', project_name="123")
+    elif request.method == 'GET':
+        return render(request, 'projects/settings.html', {
+            'project': project,
+        })
 
 
 @login_required
@@ -240,26 +301,34 @@ def noticeboard(request, project_name):
     Actions available here:
     Add a notice: Owner Participant Viewer (All)
     """
-    project = get_object_or_404(Project, slug=project_name)  # Only subscribed
-    # access = get_access(project, request.user)
+    project = get_allowed_project(project_name, request.user)
     addnoticeform = AddNoticeForm()
-    notice_list = project.notice_set.all()
-    items, page = add_pager(notice_list, request)
-    context = {
-        'project': project,
-        'addnoticeform': addnoticeform,
-        'notices': items,
-        'page': page,
-    }
-    return render(request, 'projects/noticeboard.html', context)
-
-
-@require_POST
-def add_notice(request):
-    # addnoticeform = bforms.AddNoticeForm(project, request.user, request.POST)
-    # if addnoticeform.is_valid():
-    #     addnoticeform.save()
-    return redirect('projects:project', project_name="123")
+    if request.method == 'PUT':
+        # addnoticeform = bforms.AddNoticeForm(project, request.user, request.POST)
+        # if addnoticeform.is_valid():
+        #     addnoticeform.save()
+        return redirect('projects:project', project_name="123")
+    elif request.method == 'POST':
+        return {
+            "project": project,
+            "method": 'POST',
+            "answer": 'Update project',
+        }
+    elif request.method == 'DELETE':
+        return {
+            "project": project,
+            "method": 'DELETE',
+            "answer": 'Delete project',
+        }
+    elif request.method == 'GET':
+        notice_list = project.notice_set.all()
+        items, page = add_pager(notice_list, request)
+        return render(request, 'projects/noticeboard.html', {
+            'project': project,
+            'addnoticeform': addnoticeform,
+            'notices': items,
+            'page': page,
+        })
 
 
 @login_required
@@ -270,29 +339,37 @@ def todo(request, project_name):
     Add a todolist: Owner Participant
     Add a todoitem: Owner Participant
     """
-    project = get_object_or_404(Project, slug=project_name)  # Only subscribed
-    # access = get_access(project, request.user)
-    addlistform = AddTodoListForm()
-    # lists = TodoList.objects.all()
-    lists = project.todolist_set.all()
-    # if request.GET.get('includecomplete', 0):
-    #     lists = TodoList.objects.filter(user = request.user, project = project)
-    # else:
-    #     lists = TodoList.objects.filter(user = request.user, project = project, is_complete_attr = False)
-    context = {
-        'project': project,
-        'lists': lists,
-        'addlistform': addlistform,
-    }
-    return render(request, 'projects/todo.html', context)
-
-
-@require_POST
-def add_todo_list(request):
-    # addlistform = bforms.AddTodoListForm(project, request.user, request.POST)
-    # if addlistform.is_valid():
-    #     addlistform.save()
-    return redirect('projects:project', project_name="123")
+    project = get_allowed_project(project_name, request.user)
+    if request.method == 'PUT':
+        # addlistform = bforms.AddTodoListForm(project, request.user, request.POST)
+        # if addlistform.is_valid():
+        #     addlistform.save()
+        return redirect('projects:project', project_name="123")
+    elif request.method == 'POST':
+        return {
+            "project": project,
+            "method": 'POST',
+            "answer": 'Update project',
+        }
+    elif request.method == 'DELETE':
+        return {
+            "project": project,
+            "method": 'DELETE',
+            "answer": 'Delete project',
+        }
+    elif request.method == 'GET':
+        addlistform = AddTodoListForm()
+        # lists = TodoList.objects.all()
+        lists = project.todolist_set.all()
+        # if request.GET.get('includecomplete', 0):
+        #     lists = TodoList.objects.filter(user = request.user, project = project)
+        # else:
+        #     lists = TodoList.objects.filter(user = request.user, project = project, is_complete_attr = False)
+        return render(request, 'projects/todo.html', {
+            'project': project,
+            'lists': lists,
+            'addlistform': addlistform,
+        })
 
 
 @require_POST
@@ -329,7 +406,7 @@ def clone_from_git(request, project_name):
     """
     Clone from git
     """
-    project = get_object_or_404(Project, slug=project_name)  # Only subscribed
+    project = get_allowed_project(project_name, request.user)
 
     import logging
     logger = logging.getLogger('git')
@@ -345,7 +422,7 @@ def setup_py(request, project_name):
     """
     Generate setup.py
     """
-    project = get_object_or_404(Project, slug=project_name)  # Only subscribed
+    project = get_allowed_project(project_name, request.user)
     return render(
         request,
         'projectfiles/setup.py',

@@ -86,6 +86,19 @@ class Project(models.Model):
     def users(self):
         return [user.user for user in self.projectuser_set.all()]
 
+    def user_status(self, user):
+        user_status = self.projectuser_set.get(user=user)
+        return user_status.status
+
+    def allowed(self, user):
+        if user.is_admin:
+            return True
+        status = self.user_status(user)
+        return status in [
+            ProjectUser.STATUS_INVITED,
+            ProjectUser.STATUS_ACCEPTED,
+        ]
+
     def clone_from_git(self, cwd='sources/'):
         import subprocess
         return subprocess.Popen(
