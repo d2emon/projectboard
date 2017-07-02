@@ -5,10 +5,14 @@ from django.conf import settings
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.views.decorators.http import require_POST
 
-from rest_framework import viewsets
+from rest_framework import status, viewsets
+from rest_framework.views import APIView
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 from .forms import CreateProjectForm, InviteUserForm, AddNoticeForm, AddTodoListForm
 from .models import Project, ProjectUser, Log, Notice, TodoList
@@ -123,10 +127,6 @@ def project(request, project_name=None):
         new_tasks = project.get_new()
         overdue_tasks = project.get_overdue()
 
-        print(project)
-        print(project.active_users)
-        print(project.invited_users)
-
         context = {
             'project': project,
 
@@ -139,8 +139,9 @@ def project(request, project_name=None):
         return render(request, 'projects/project.html', context)
 
 
+@api_view(['GET', 'POST', 'PUT', 'DELETE'])
 @login_required
-def invitation(request, project_name):
+def invitation(request, project_name, username):
     """
     Point of entry for a specific project.
     Shows the important information for a project.
@@ -152,12 +153,15 @@ def invitation(request, project_name):
     Mark Done: Owner Participant
     """
     project = get_object_or_404(Project, slug=project_name)
-    user = project.user(request.user)
-    user_id = request.POST.get('user_id')
+    user = User.objects.get(username=username)
+
+    # user = project.user(request.user)
+    # user_id = request.data.get('user_id')
     invited_user = ProjectUser.objects.filter(
-        user=request.user,
+        # user=request.user,
+        user=user,
         project=project,
-        status=ProjectUser.STATUS_INVITED
+        # status=ProjectUser.STATUS_INVITED
     ).first()
     if request.method == 'PUT':
         # if not (access == 'Owner'):
@@ -183,18 +187,27 @@ def invitation(request, project_name):
             user_id=user_id,
             status=ProjectUser.STATUS_INVITED,
         )
+        serializer = ProjectUserSerializer(invited_user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     elif request.method == 'POST':
         if invited_user is None:
             raise Exception("User is not invited")
         invited_user.accept()
+        invited_user.save()
     elif request.method == 'DELETE':
         if invited_user is None:
             raise Exception("User is not invited")
         invited_user.decline()
+        invited_user.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
     elif request.method == 'GET':
-        pass
+        serializer = ProjectUserSerializer(invited_user, context={'request': request})
+        return Response(serializer.data)
 
-    return JsonResponse({
+    return Response({
         'user': invited_user.as_dict(),
         'invited': [invite.as_dict() for invite in project.invited_users],
         'active': [invite.as_dict() for invite in project.active_users],
@@ -562,3 +575,20 @@ class TodoListViewSet(viewsets.ModelViewSet):
     """
     queryset = TodoList.objects.all()
     serializer_class = TodoListSerializer
+
+
+class InviteList(APIView):
+    """
+    List all invites, or invite new user.
+    """
+    def get(self, request, project_name, format=None):
+        invites = ProjectUser.objects.all()
+        serializer = ProjectUserSerializer(invites, many=True, context={'request': request})
+        return Response(serializer.data)
+
+    def post(self, request, project_name, format=None):
+        serializer = ProjectUserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

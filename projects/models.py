@@ -105,7 +105,7 @@ class Project(models.Model):
         )
 
     def allowed(self, user):
-        if user.is_admin:
+        if user.is_superuser:
             return True
         status = self.user_status(user)
         return status in ProjectUser.ALLOWED_STATUSES

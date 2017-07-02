@@ -4,6 +4,7 @@ from .models import Project, ProjectUser, Log, Notice, TodoList
 
 
 class ProjectSerializer(serializers.HyperlinkedModelSerializer):
+    # owner = serializers.ReadOnlyField(source='owner.username')
     class Meta:
         model = Project
         fields = (
@@ -23,6 +24,8 @@ class ProjectSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class ProjectUserSerializer(serializers.HyperlinkedModelSerializer):
+    username = serializers.ReadOnlyField(source='user.username')
+    # avatar = serializers.ReadOnlyField(source='user.userprofile.avatar')
     class Meta:
         model = ProjectUser
         fields = (
@@ -30,6 +33,8 @@ class ProjectUserSerializer(serializers.HyperlinkedModelSerializer):
             'project',
             'user',
             'status',
+            'username',
+            # 'avatar',
         )
 
 
