@@ -14,67 +14,75 @@ block topmenu
       a(class="nav-link", href="{% url 'users:settings' %}") Settings
 
 block usermenu
-  - with request.user.userprofile as userdata
-    ul(class="nav navbar-nav ml-auto")
-      li(class="nav-item d-md-down-none")
-        a(class="nav-link", href="{% url 'users:notify' 'updates' %}#updates")
-          i.icon-bell
-          if userdata.notifications.updates
-            <span class="badge badge-pill badge-danger">#{userdata.notifications.updates}</span>
-      li(class="nav-item d-md-down-none")
-        a(class="nav-link", href="{% url 'users:projects' %}")
-          i.icon-list
-      li(class="nav-item d-md-down-none")
-        a(class="nav-link", href="{% url 'users:pins' %}")
-          i.icon-location-pin
-      li(class="nav-item dropdown")
-        a(class="nav-link dropdown-toggle nav-link", data-toggle="dropdown", href="#", role="button", aria-haspopup="true", aria-expanded="false")
-          img(src=userdata.avatar_url, class="img-avatar", alt=request.user.email)
-          span.d-md-down-none= request.user.username
-        div(class="dropdown-menu dropdown-menu-right")
-          div(class="dropdown-header text-center")
-            strong Account
-          a(class="dropdown-item", href="{% url 'users:notify' 'updates' %}#updates")
-            i(classs="fa fa-bell-o")
-            | Updates
-            - if userdata.notifications.updates
-              span(class="badge badge-info")= userdata.notifications.updates
-          a(class="dropdown-item", href="{% url 'users:notify' 'messages' %}#messages")
-            i(class="fa fa-envelope-o")
-            | Messages
-            - if userdata.notifications.messages
-              span(class="badge badge-success")= userdata.notifications.messages
-          a(class="dropdown-item", href="{% url 'users:notify' 'tasks' %}#tasks")
-            i(class="fa fa-tasks")
-            | Tasks
-            - if userdata.notifications.tasks
-              span(class="badge badge-danger")= userdata.notifications.tasks
-          a(class="dropdown-item", href="{% url 'users:notify' 'comments' %}#comments")
-            i(class="fa fa-comments")
-            | Comments
-            - if userdata.notifications.comments
-              span(class="badge badge-warning")= userdata.notifications.comments
+  | {% with request.user.userprofile as userdata %}
+  ul(class="nav navbar-nav ml-auto")
+    li(class="nav-item d-md-down-none")
+      a(class="nav-link", href="{% url 'users:notify' 'updates' %}#updates")
+        i.icon-bell
+        | {% if userdata.notifications.updates %}
+        span(class="badge badge-pill badge-danger") {{userdata.notifications.updates}}
+        | {% endif %}
+    li(class="nav-item d-md-down-none")
+      a(class="nav-link", href="{% url 'users:projects' %}")
+        i.icon-list
+    li(class="nav-item d-md-down-none")
+      a(class="nav-link", href="{% url 'users:pins' %}")
+        i.icon-location-pin
+    li(class="nav-item dropdown")
+      a(class="nav-link dropdown-toggle nav-link", data-toggle="dropdown", href="#", role="button", aria-haspopup="true", aria-expanded="false")
+        img(src="{{userdata.avatar_url}}", class="img-avatar", alt="{{request.user.email}}")
+        span.d-md-down-none {{request.user.username}}
+      div(class="dropdown-menu dropdown-menu-right")
+        div(class="dropdown-header text-center")
+          strong Account
+        a(class="dropdown-item", href="{% url 'users:notify' 'updates' %}#updates")
+          i(classs="fa fa-bell-o")
+          | Updates
+          | {% if userdata.notifications.updates %}
+          span(class="badge badge-info") {{ userdata.notifications.updates }}
+          | {% endif %}
+        a(class="dropdown-item", href="{% url 'users:notify' 'messages' %}#messages")
+          i(class="fa fa-envelope-o")
+          | Messages
+          | {% if userdata.notifications.messages %}
+          span(class="badge badge-success") {{ userdata.notifications.messages }}
+          | {% endif %}
+        a(class="dropdown-item", href="{% url 'users:notify' 'tasks' %}#tasks")
+          i(class="fa fa-tasks")
+          | Tasks
+          | {% if userdata.notifications.tasks %}
+          span(class="badge badge-danger") {{ userdata.notifications.tasks }}
+          | {% endif %}
+        a(class="dropdown-item", href="{% url 'users:notify' 'comments' %}#comments")
+          i(class="fa fa-comments")
+          | Comments
+          | {% if userdata.notifications.comments %}
+          span(class="badge badge-warning") {{ userdata.notifications.comments }}
+          | {% endif %}
 
-          div(class="dropdown-header text-center")
-            strong Settings
-          a(class="dropdown-item", href="{% url 'users:profile' %}") <i class="fa fa-user"></i> Profile
-          a(class="dropdown-item", href="{% url 'users:settings' %}") <i class="fa fa-wrench"></i> Settings
-          a(class="dropdown-item", href="{% url 'users:payments' %}")
-            i(class="fa fa-usd")
-            | Payments
-            if userdata.notifications.payments
-              span(class="badge badge-default")= userdata.notifications.payments
-          a(class="dropdown-item", href="{% url 'users:projects' %}")
-            i(class="fa fa-file")
-            | Projects
-            if userdata.notifications.projects
-              span(class="badge badge-primary")= userdata.notifications.projects
+        div(class="dropdown-header text-center")
+          strong Settings
+        a(class="dropdown-item", href="{% url 'users:profile' %}") <i class="fa fa-user"></i> Profile
+        a(class="dropdown-item", href="{% url 'users:settings' %}") <i class="fa fa-wrench"></i> Settings
+        a(class="dropdown-item", href="{% url 'users:payments' %}")
+          i(class="fa fa-usd")
+          | Payments
+          | {% if userdata.notifications.payments %}
+          span(class="badge badge-default") {{ userdata.notifications.payments }}
+          | {% endif %}
+        a(class="dropdown-item", href="{% url 'users:projects' %}")
+          i(class="fa fa-file")
+          | Projects
+          | {% if userdata.notifications.projects %}
+          span(class="badge badge-primary") {{ userdata.notifications.projects }}
+          | {% endif %}
 
-          div.divider
-          a(class="dropdown-item", href="{% url 'users:lock' %}") <i class="fa fa-shield"></i> Lock Account
-          a(class="dropdown-item", href="{% url 'users:logout' %}") <i class="fa fa-lock"></i> Logout
-      li(class="nav-item d-md-down-none")
-        a(class="nav-link navbar-toggler aside-menu-toggler", href="#") ☰
+        div.divider
+        a(class="dropdown-item", href="{% url 'users:lock' %}") <i class="fa fa-shield"></i> Lock Account
+        a(class="dropdown-item", href="{% url 'users:logout' %}") <i class="fa fa-lock"></i> Logout
+    li(class="nav-item d-md-down-none")
+      a(class="nav-link navbar-toggler aside-menu-toggler", href="#") ☰
+  | {% endwith %}
 
 block sidemenu
   .sidebar
@@ -291,3 +299,4 @@ block aside
         div(class="progress progress-xs")
           div(class="progress-bar bg-success", role="progressbar", style="width: 10%", aria-valuenow="10", aria-valuemin="0", aria-valuemax="100")
         small(class="text-muted") 25GB/256GB
+

@@ -1,104 +1,71 @@
-| {% extends '_logged.pug' %}
-| {% load static %}
-| {% load i18n %}
-
-| {% block feeds %}
-| {% endblock %}
+extends ../_logged.pug
 
 block title
-  | {% block title %}{{ project }}{% endblock %}
+  | {{ project }}
 
-| {% block navmenu %}
-ul.nav
-  li.nav-item
-    a(class="nav-link", href="{% url 'projects:dashboard' %}") <i class="icon-speedometer"></i> Dashboard
-  li.nav-item
-    a(class="nav-link", href="{{ project.get_absolute_url }}") <i class="fa fa-folder"></i> Details
-  li.nav-item
-    a(class="nav-link", href="{{ project.get_absolute_url }}todo/tasks") <i class="fa fa-tasks"></i> Tasks
-  li.nav-item
-    a(class="nav-link", href="{% url 'projects:todo' project.slug %}") <i class="fa fa-list"></i> Todo
-  li.nav-item
-    a(class="nav-link", href="{% url 'projects:noticeboard' project.slug %}") <i class="fa fa-comments"></i> Noticeboard
-  li.nav-item
-    a(class="nav-link", href="{{ project.get_absolute_url }}todo/calendar") <i class="fa fa-calendar"></i> Calendar
-  li.nav-item
-    a(class="nav-link", href="{{ project.get_absolute_url }}todo/wiki") <i class="fa fa-file-text"></i> Wiki
-  li.nav-item
-    a(class="nav-link", href="{{ project.get_absolute_url }}todo/files") <i class="fa fa-file"></i> Files
-  li.nav-item
-    a(class="nav-link", href="{{ project.get_absolute_url }}todo/metrics") <i class="fa fa-line-chart"></i> Metrics
-  li.nav-item
-    a(class="nav-link", href="{% url 'projects:logs' project.slug %}") <i class="fa fa-hourglass"></i> Logs
-| {% endblock %}
+block navmenu
+  ul.nav
+    li.nav-item
+      a(class="nav-link", href="{% url 'projects:dashboard' %}") <i class="icon-speedometer"></i> Dashboard
+    li.nav-item
+      a(class="nav-link", href="{{ project.get_absolute_url }}") <i class="fa fa-folder"></i> Details
+    li.nav-item
+      a(class="nav-link", href="{{ project.get_absolute_url }}todo/tasks") <i class="fa fa-tasks"></i> Tasks
+    li.nav-item
+      a(class="nav-link", href="{% url 'projects:todo' project.slug %}") <i class="fa fa-list"></i> Todo
+    li.nav-item
+      a(class="nav-link", href="{% url 'projects:noticeboard' project.slug %}") <i class="fa fa-comments"></i> Noticeboard
+    li.nav-item
+      a(class="nav-link", href="{{ project.get_absolute_url }}todo/calendar") <i class="fa fa-calendar"></i> Calendar
+    li.nav-item
+      a(class="nav-link", href="{{ project.get_absolute_url }}todo/wiki") <i class="fa fa-file-text"></i> Wiki
+    li.nav-item
+      a(class="nav-link", href="{{ project.get_absolute_url }}todo/files") <i class="fa fa-file"></i> Files
+    li.nav-item
+      a(class="nav-link", href="{{ project.get_absolute_url }}todo/metrics") <i class="fa fa-line-chart"></i> Metrics
+    li.nav-item
+      a(class="nav-link", href="{% url 'projects:logs' project.slug %}") <i class="fa fa-hourglass"></i> Logs
 
-| {%block breadcrumbs_block%}
-ol.breadcrumb
-  | {%block breadcrumbs%}
-  block breadcrumbs
-    li.breadcrumb-item Home
-    li.breadcrumb-item
-      a(href="{% url 'projects:dashboard' %}") Dashboard
-    li(class="breadcrumb-item active") {{ project }}
+block breadcrumbs_block
+  ol.breadcrumb
+    block breadcrumbs
+      li.breadcrumb-item Home
+      li.breadcrumb-item
+        a(href="{% url 'projects:dashboard' %}") Dashboard
+      li(class="breadcrumb-item active") {{ project }}
 
-  li(class="breadcrumb-menu d-md-down-none")
-    | {% block breadcrumb_menu %}
-    div(class="btn-group", role="group", aria-label="Button group with nested dropdown")
-      a(class="btn btn-secondary", href="{% url 'users:chat' %}") <i class="icon-speech"></i>
-      a(class="btn btn-secondary", href="{% url 'projects:dashboard' %}") <i class="icon-graph"></i> &nbsp;Dashboard
-      a(class="btn btn-secondary", href="{% url 'projects:settings' project.slug %}") <i class="icon-settings"></i> &nbsp;Settings
-    | {% endblock %}
-  | {% endblock %}
-  // You are subscribed to {{subs.count}} projects.
-| {% endblock %}
+    li(class="breadcrumb-menu d-md-down-none")
+      block breadcrumb_menu
+        div(class="btn-group", role="group", aria-label="Button group with nested dropdown")
+          a(class="btn btn-secondary", href="{% url 'users:chat' %}") <i class="icon-speech"></i>
+          a(class="btn btn-secondary", href="{% url 'projects:dashboard' %}") <i class="icon-graph"></i> &nbsp;Dashboard
+          a(class="btn btn-secondary", href="{% url 'projects:settings' project.slug %}") <i class="icon-settings"></i> &nbsp;Settings
+    // You are subscribed to {{subs.count}} projects.
 
-| {% block content %}
-div(class="animated fadeIn")
-  .row
-    .col-md-9
-      .card
-        .card-header {{ project }}
-        .card-block
-          block meta
-            | {% blocktrans with project=project.name tasks=project.task_set.all.count %}You are looking at details for project <strong>{{project}}</strong>.{% endblocktrans %}
-            | {% blocktrans count counter=3 %}This project has one task.{% plural %}This project has {{counter}}({project.task_set.all.count}) tasks.{% endblocktrans %}
-            ul
-              li
-                a(href="{{project.quicktasks_url}}") {% trans 'Tasks Quick Entry' %}
-              li
-                a(href="{{project.quicktaskitems_url}}") {% trans 'Task Items Quick Entry' %}
-              | {% ifequal access 'Owner' %}
-              li
-                a(href="{{project.settings_url}}") {% trans 'Settings' %}
-              | {% endifequal %}
+block content
+  div(class="animated fadeIn")
+    .row
+      .col-md-9
+        .card
+          .card-header {{ project }}
+          .card-block
+            block meta
+              | {% blocktrans with project=project.name tasks=project.task_set.all.count %}You are looking at details for project <strong>{{project}}</strong>.{% endblocktrans %}
+              | {% blocktrans count counter=3 %}This project has one task.{% plural %}This project has {{counter}}({project.task_set.all.count}) tasks.{% endblocktrans %}
+              ul
+                li
+                  a(href="{{project.quicktasks_url}}") {% trans 'Tasks Quick Entry' %}
+                li
+                  a(href="{{project.quicktaskitems_url}}") {% trans 'Task Items Quick Entry' %}
+                | {% ifequal access 'Owner' %}
+                li
+                  a(href="{{project.settings_url}}") {% trans 'Settings' %}
+                | {% endifequal %}
 
-          block content
-            | {% if new_tasks %}
-            table(class="table table-responsive table-hover table-striped")
-              thead
-                tr
-                  th.text-center {% trans 'Project Name' %}
-                  th.text-center {% trans 'Start Due' %}
-                  th.text-center {% trans 'End Due' %}
-                  th.text-center {% trans 'User Responsible' %}
-                  th.text-center {% trans 'Details' %}
-                  th.text-center {% trans 'Edit' %}
-                  th.text-center {% trans 'Mark Done' %}
-                  th.text-center {% trans 'Delete' %}
-              tbody
-                | {% for task in new_tasks %}
-                | {% include 'projects/taskline.html' %}
-                | {% endfor %}
-            | {% else %}
-            .card
-              .card-block
-                div {% trans 'No recent tasks' %}
-            | {% endif %}
-            h3 Overdue Tasks
-            | {% if overdue_tasks %}
-            .tablepad
-              table(class="table table-responsive table-hover table-outline mb-0")
-                thead.thead-default
+            block inner-content
+              | {% if new_tasks %}
+              table(class="table table-responsive table-hover table-striped")
+                thead
                   tr
                     th.text-center {% trans 'Project Name' %}
                     th.text-center {% trans 'Start Due' %}
@@ -109,72 +76,92 @@ div(class="animated fadeIn")
                     th.text-center {% trans 'Mark Done' %}
                     th.text-center {% trans 'Delete' %}
                 tbody
-                  | {% for task in overdue_tasks %}
+                  | {% for task in new_tasks %}
                   | {% include 'projects/taskline.html' %}
                   | {% endfor %}
-            | {% else %}
-            .card
-              .card-block
-                div {% trans 'No overdue tasks' %}
-            | {% endif %}
+              | {% else %}
+              .card
+                .card-block
+                  div {% trans 'No recent tasks' %}
+              | {% endif %}
+              h3 Overdue Tasks
+              | {% if overdue_tasks %}
+              .tablepad
+                table(class="table table-responsive table-hover table-outline mb-0")
+                  thead.thead-default
+                    tr
+                      th.text-center {% trans 'Project Name' %}
+                      th.text-center {% trans 'Start Due' %}
+                      th.text-center {% trans 'End Due' %}
+                      th.text-center {% trans 'User Responsible' %}
+                      th.text-center {% trans 'Details' %}
+                      th.text-center {% trans 'Edit' %}
+                      th.text-center {% trans 'Mark Done' %}
+                      th.text-center {% trans 'Delete' %}
+                  tbody
+                    | {% for task in overdue_tasks %}
+                    | {% include 'projects/taskline.html' %}
+                    | {% endfor %}
+              | {% else %}
+              .card
+                .card-block
+                  div {% trans 'No overdue tasks' %}
+              | {% endif %}
 
-    .col-md-3
-      block sideblock
-        .card
-          .card-header Git
-          .card-block
-            | {{ project.git }}
-          .card-footer
-            a(class="btn btn-sm btn-primary", href="{% url 'projects:from_git' project.slug %}") <i class="fa fa-dot-circle-o"></i> {% trans 'Clone' %}
-        .card
-          .card-header {% trans 'Invite a User' %}
-          .card-block
-            form(action="{% url 'projects:createproject' %}", method="post", class="form-horizontal")
-              | {% csrf_token %}
-              | {{ inviteform.as_div }}
-          .card-footer
-            button(type="submit", class="btn btn-sm btn-primary") <i class="fa fa-dot-circle-o"></i> {% trans 'Invite User' %}
-        .card
-          .card-header {% trans 'Add a Task' %}
-          .card-block
-            form(action="{% url 'projects:createproject' %}", method="post", class="form-horizontal")
-              | {% csrf_token %}
-              | {{ taskform.as_p }}
-          .card-footer
-            button(type="submit", class="btn btn-sm btn-primary") <i class="fa fa-dot-circle-o"></i> {% trans 'Add a Task' %}
-      block sidebar
-        .card
-          .card-header {% trans 'Actions' %}
-          .card-block
-            ul
-              li 
-                a(href="#", id="taskshow") {% trans 'Add a task' %}
-              li
-                a(href="#", id="inviteshow") {% trans 'Invite a user' %}
-        | {% if project.invited_users %}
-        .card
-          .card-header {% trans 'Pending users' %}
-          .card-block
-            ul
-              | {% for user in project.invited_users %}
-              li {{user.user.username}}
-              | {% endfor %}
-        | {% endif %}
-        .card
-          .card-header {% trans 'Users' %}
-          .card-block
-            ul
-              | {% for user in project.projectuser_set.all %}
-              li
-                | {% with user=user.user %}
-                include _user.pug
-                | {% endwith %}
-              | {% endfor %}
-| {% endblock %}
+      .col-md-3
+        block sideblock
+          .card
+            .card-header Git
+            .card-block
+              | {{ project.git }}
+            .card-footer
+              a(class="btn btn-sm btn-primary", href="{% url 'projects:from_git' project.slug %}") <i class="fa fa-dot-circle-o"></i> {% trans 'Clone' %}
+          .card
+            .card-header {% trans 'Invite a User' %}
+            .card-block
+              form(action="{% url 'projects:createproject' %}", method="post", class="form-horizontal")
+                | {% csrf_token %}
+                | {{ inviteform.as_div }}
+            .card-footer
+              button(type="submit", class="btn btn-sm btn-primary") <i class="fa fa-dot-circle-o"></i> {% trans 'Invite User' %}
+          .card
+            .card-header {% trans 'Add a Task' %}
+            .card-block
+              form(action="{% url 'projects:createproject' %}", method="post", class="form-horizontal")
+                | {% csrf_token %}
+                | {{ taskform.as_p }}
+            .card-footer
+              button(type="submit", class="btn btn-sm btn-primary") <i class="fa fa-dot-circle-o"></i> {% trans 'Add a Task' %}
+        block sidebar
+          .card
+            .card-header {% trans 'Actions' %}
+            .card-block
+              ul
+                li 
+                  a(href="#", id="taskshow") {% trans 'Add a task' %}
+                li
+                  a(href="#", id="inviteshow") {% trans 'Invite a user' %}
+          | {% if project.invited_users %}
+          .card
+            .card-header {% trans 'Pending users' %}
+            .card-block
+              ul
+                | {% for user in project.invited_users %}
+                li {{user.user.username}}
+                | {% endfor %}
+          | {% endif %}
+          .card
+            .card-header {% trans 'Users' %}
+            .card-block
+              ul
+                | {% for user in project.projectuser_set.all %}
+                li
+                  | {% with user=user.user %}
+                  include _user.pug
+                  | {% endwith %}
+                | {% endfor %}
 
-| {% block jsblock %}
-| {% load static %}
-// Plugins and scripts required by this views
-// Custom scripts required by this view
-// script src="{% static 'js/views/main.js' %}"></script
-| {% endblock %}
+block jsblock
+  // Plugins and scripts required by this views
+  // Custom scripts required by this view
+  // script src="{% static 'js/views/main.js' %}"></script

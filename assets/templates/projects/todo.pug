@@ -17,7 +17,7 @@ block meta
     li 
       a(href="./?includecomplete=1") {% trans 'Display completed lists' %}
 
-block content
+block inner-content
   | {% if lists %}
   | {% for list in lists %}
   .card

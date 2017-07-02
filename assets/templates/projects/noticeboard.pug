@@ -18,7 +18,7 @@ block meta
   | {% blocktrans with user=notices.0.user.username date=notices.0.created_on|date %}The latest notice was put by <strong>{{user}}</strong> on {{date}}.{% endblocktrans %}
   | {% endif %}
 
-block content
+block inner-content
   form(action=".", method="post")
     .card
       .card-header {% trans 'Add a notice' %}

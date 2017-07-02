@@ -15,7 +15,7 @@ block meta
   p {% blocktrans with project=project.name %}You are viewing logs for <strong>{{project}}</strong>.{% endblocktrans %}
   p {% blocktrans %}These are also aviable as <a href="#">RSS feeds</a>.{% endblocktrans %}
 
-block content
+block inner-content
   | {% for log in logs %}
   .message
     div

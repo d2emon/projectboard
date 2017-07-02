@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'techs',
     'projects',
     'django.contrib.admindocs',
-    'pypugjs',
 ]
 
 MIDDLEWARE = [
@@ -77,7 +76,6 @@ TEMPLATES = [
                     'django.template.loaders.app_directories.Loader',
                 ))
             ],
-            'builtins': ['pypugjs.ext.django.templatetags', ],
         },
     },
 ]
