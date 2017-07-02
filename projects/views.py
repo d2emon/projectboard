@@ -1,16 +1,18 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 # from django.urls import reverse
+from django.conf import settings
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.views.decorators.http import require_POST
-from django.conf import settings
+
+from rest_framework import viewsets
 
 from .forms import CreateProjectForm, InviteUserForm, AddNoticeForm, AddTodoListForm
-from .models import Project, ProjectUser
-
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from .models import Project, ProjectUser, Log, Notice, TodoList
+from .serializers import ProjectSerializer, ProjectUserSerializer, LogSerializer, NoticeSerializer, TodoListSerializer
 
 import users.views
 
@@ -520,3 +522,43 @@ def todo_csv(request):
     #         writer.writerow(item.as_csv())
     # return response
     return redirect('projects:project', project_name="123")
+
+
+class ProjectViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows projects to be viewed or edited
+    """
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
+
+
+class ProjectUserViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows project users to be viewed or edited
+    """
+    queryset = ProjectUser.objects.all()
+    serializer_class = ProjectUserSerializer
+
+
+class LogViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows logs to be viewed or edited
+    """
+    queryset = Log.objects.all()
+    serializer_class = LogSerializer
+
+
+class NoticeViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows notices to be viewed or edited
+    """
+    queryset = Notice.objects.all()
+    serializer_class = NoticeSerializer
+
+
+class TodoListViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows todo lists to be viewed or edited
+    """
+    queryset = TodoList.objects.all()
+    serializer_class = TodoListSerializer

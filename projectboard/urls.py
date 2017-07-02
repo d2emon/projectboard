@@ -23,12 +23,18 @@ from django.contrib import admin
 from rest_framework import routers
 
 
-from users import views
+from users import views as users_views
+from projects import views as projects_views
 
 
 router = routers.DefaultRouter()
-router.register(r'users', views.UserViewSet)
-router.register(r'groups', views.GroupViewSet)
+router.register(r'users', users_views.UserViewSet)
+router.register(r'groups', users_views.GroupViewSet)
+router.register(r'projects', projects_views.ProjectViewSet)
+router.register(r'project_users', projects_views.ProjectUserViewSet)
+router.register(r'logs', projects_views.LogViewSet)
+router.register(r'notices', projects_views.NoticeViewSet)
+router.register(r'todo_lists', projects_views.TodoListViewSet)
 
 
 urlpatterns = i18n_patterns(
