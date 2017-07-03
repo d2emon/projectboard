@@ -155,10 +155,14 @@ class ProjectUser(models.Model):
     )
 
     user = models.ForeignKey(User)
-    project = models.ForeignKey(Project)
+    project = models.ForeignKey(
+        Project,
+        related_name="users",
+    )
     status = models.IntegerField(
         null=True,
         choices=STATUSES,
+        default=STATUS_INVITED,
     )
 
     @receiver(post_save, sender=Project)
@@ -190,6 +194,9 @@ class ProjectUser(models.Model):
             'user_avatar': self.user.userprofile.avatar_url,
             'status': self.status,
         }
+
+    class Meta:
+        unique_together = ('project', 'user')
 
 
 class Log(models.Model):

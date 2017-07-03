@@ -15,7 +15,7 @@ from rest_framework.response import Response
 
 from .forms import CreateProjectForm, InviteUserForm, AddNoticeForm, AddTodoListForm
 from .models import Project, ProjectUser, Log, Notice, TodoList
-from .serializers import ProjectSerializer, ProjectUserSerializer, LogSerializer, NoticeSerializer, TodoListSerializer
+from .serializers import ProjectSerializer, ProjectUserSerializer, LogSerializer, NoticeSerializer, TodoListSerializer, InviteUserSerializer
 
 import users.views
 
@@ -580,20 +580,23 @@ class InviteList(APIView):
     """
     List all project users, or invite new user.
     """
+    serializer_class = InviteUserSerializer
+
     def get(self, request, project_name, format=None):
         project = get_object_or_404(Project, slug=project_name)
-        project_users = ProjectUser.objects.filter(project=project).all()
+        # project_users = ProjectUser.objects.filter(project=project).all()
         serializer = ProjectUserSerializer(
-            project_users,
-            many=True,
+            project,
+            # many=True,
             context={'request': request}
         )
         return Response(serializer.data)
 
     def post(self, request, project_name, format=None):
-        project = get_object_or_404(Project, slug=project_name)
-        serializer = ProjectUserSerializer(data=request.data)
-        serializer.project = project
+        serializer = InviteUserSerializer(
+            data=request.data,
+            context={'request': request}
+        )
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
