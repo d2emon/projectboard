@@ -2,6 +2,8 @@ from rest_framework import serializers
 
 from .models import Project, ProjectUser, Log, Notice, TodoList
 
+from users.serializers import UserSerializer
+
 
 class ProjectSerializer(serializers.HyperlinkedModelSerializer):
     # owner = serializers.ReadOnlyField(source='owner.username')
@@ -24,8 +26,17 @@ class ProjectSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class ProjectUserSerializer(serializers.HyperlinkedModelSerializer):
-    username = serializers.ReadOnlyField(source='user.username')
-    # avatar = serializers.ReadOnlyField(source='user.userprofile.avatar')
+    user = serializers.SerializerMethodField()
+    project = serializers.SerializerMethodField()
+
+    def get_user(self, obj):
+        serializer = UserSerializer(obj.user, context=self.context)
+        return serializer.data
+
+    def get_project(self, obj):
+        serializer = ProjectSerializer(obj.project, context=self.context)
+        return serializer.data
+
     class Meta:
         model = ProjectUser
         fields = (
@@ -33,8 +44,6 @@ class ProjectUserSerializer(serializers.HyperlinkedModelSerializer):
             'project',
             'user',
             'status',
-            'username',
-            # 'avatar',
         )
 
 

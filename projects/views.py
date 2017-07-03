@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import JsonResponse
 # from django.urls import reverse
 from django.conf import settings
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
@@ -174,7 +173,7 @@ def invitation(request, project_name, username):
 
         if ProjectUser.objects.filter(
             project=project,
-            user_id=user_id,
+            user_id=user.id,
             status__in=[
                 ProjectUser.STATUS_INVITED,
                 ProjectUser.STATUS_ACCEPTED,
@@ -184,7 +183,7 @@ def invitation(request, project_name, username):
 
         project_user = ProjectUser(
             project=project,
-            user_id=user_id,
+            user_id=user.id,
             status=ProjectUser.STATUS_INVITED,
         )
         serializer = ProjectUserSerializer(invited_user, data=request.data)
@@ -579,15 +578,22 @@ class TodoListViewSet(viewsets.ModelViewSet):
 
 class InviteList(APIView):
     """
-    List all invites, or invite new user.
+    List all project users, or invite new user.
     """
     def get(self, request, project_name, format=None):
-        invites = ProjectUser.objects.all()
-        serializer = ProjectUserSerializer(invites, many=True, context={'request': request})
+        project = get_object_or_404(Project, slug=project_name)
+        project_users = ProjectUser.objects.filter(project=project).all()
+        serializer = ProjectUserSerializer(
+            project_users,
+            many=True,
+            context={'request': request}
+        )
         return Response(serializer.data)
 
     def post(self, request, project_name, format=None):
+        project = get_object_or_404(Project, slug=project_name)
         serializer = ProjectUserSerializer(data=request.data)
+        serializer.project = project
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
