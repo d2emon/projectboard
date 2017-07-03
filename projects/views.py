@@ -584,6 +584,7 @@ class InviteList(APIView):
 
     def get(self, request, project_name, format=None):
         project = get_object_or_404(Project, slug=project_name)
+        print(project)
         # project_users = ProjectUser.objects.filter(project=project).all()
         serializer = ProjectUserSerializer(
             project,

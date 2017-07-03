@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'users',
     'techs',
     'projects',
+    'api',
     'django.contrib.admindocs',
     'rest_framework',
 ]

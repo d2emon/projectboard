@@ -27,16 +27,6 @@ from users import views as users_views
 from projects import views as projects_views
 
 
-router = routers.DefaultRouter()
-router.register(r'users', users_views.UserViewSet)
-router.register(r'groups', users_views.GroupViewSet)
-router.register(r'projects', projects_views.ProjectViewSet)
-router.register(r'project_users', projects_views.ProjectUserViewSet)
-router.register(r'logs', projects_views.LogViewSet)
-router.register(r'notices', projects_views.NoticeViewSet)
-router.register(r'todo_lists', projects_views.TodoListViewSet)
-
-
 urlpatterns = i18n_patterns(
     url(r'^user/', include('users.urls', namespace='users')),
     url(r'^techs/', include('techs.urls', namespace='techs')),
@@ -47,6 +37,7 @@ urlpatterns = i18n_patterns(
 
     url(r'^accounts/', include('registration.backends.default.urls')),
 
-    url(r'^api/', include(router.urls)),
+    # url(r'^api/', include(router.urls)),
+    url(r'^api/', include('api.urls', namespace='api')),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
