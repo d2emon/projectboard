@@ -19,13 +19,7 @@ from django.conf.urls.i18n import i18n_patterns
 from django.conf.urls.static import static
 from django.contrib import admin
 
-
-from rest_framework import routers
-
-
-from users import views as users_views
-from projects import views as projects_views
-
+from api.urls import router
 
 urlpatterns = i18n_patterns(
     url(r'^user/', include('users.urls', namespace='users')),
@@ -37,7 +31,7 @@ urlpatterns = i18n_patterns(
 
     url(r'^accounts/', include('registration.backends.default.urls')),
 
-    # url(r'^api/', include(router.urls)),
-    url(r'^api/', include('api.urls', namespace='api')),
+    url(r'^api/', include(router.urls)),
+    # url(r'^api/', include('api.urls', namespace='api')),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

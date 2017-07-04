@@ -28,7 +28,9 @@ class Command(BaseCommand):
                 "Selecting project %d of %d - %s" % (i + 1, count, project),
                 self.style.SUCCESS
             )
-            users = UserProfile.objects.exclude(user__in=project.users).order_by('?').all()[:invitations]
+            project_users = [user.user_id for user in project.users.all()]
+            users = UserProfile.objects.exclude(user_id__in=project_users).order_by('?').all()[:invitations]
+
             for j, user in enumerate(users):
                 self.stdout.write(
                     "Inviting user %d of %d to project %d of %d - %s" % (

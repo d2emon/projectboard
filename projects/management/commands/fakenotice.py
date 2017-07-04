@@ -38,7 +38,7 @@ class Command(BaseCommand):
                     ),
                     self.style.SUCCESS
                 )
-                user = project.projectuser_set.order_by('?').first()
+                user = project.users.order_by('?').first()
 
                 notice = Notice()
                 notice.project = project
