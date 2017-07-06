@@ -17,6 +17,7 @@ router.register(r'invites', views.InviteList, 'invites')
 
 
 urlpatterns = [
-    url(r'^invites1234$', views.InviteList.as_view(), name='invite_list'),
-    url(r'^', include(router.urls), name='api'),
+    url(r'^', include(router.urls)),
+    url(r'^project-users$', views.InviteList.as_view(), name='invite-1ist'),
+    # url(r'^invites1234$', views.InviteModel.as_view(), name='invite-list'),
 ]
