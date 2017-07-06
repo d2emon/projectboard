@@ -1,13 +1,15 @@
 from django.shortcuts import get_object_or_404
+from django.core.exceptions import PermissionDenied
 from django.contrib.auth.models import User, Group
 
 from rest_framework import viewsets, status
 from rest_framework.views import APIView
+from rest_framework.decorators import list_route
 from rest_framework.response import Response
 
 from users.serializers import UserSerializer, GroupSerializer
 from projects.models import Project, ProjectUser, Log, Notice, TodoList
-from projects.serializers import ProjectSerializer, UserStatusSerializer, LogSerializer, NoticeSerializer, TodoListSerializer, InviteUserSerializer, ProjectUserSerializer
+from projects.serializers import ProjectSerializer, LogSerializer, NoticeSerializer, TodoListSerializer, InviteUserSerializer, ProjectUserSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -16,6 +18,7 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
+    # lookup_field = 'username'
 
 
 class GroupViewSet(viewsets.ModelViewSet):
@@ -30,6 +33,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows projects to be viewed or edited
     """
+    lookup_field = 'slug'
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
 
@@ -38,8 +42,34 @@ class ProjectUserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows project users to be viewed or edited
     """
-    queryset = ProjectUser.objects.all()
-    serializer_class = UserStatusSerializer
+    # queryset = ProjectUser.objects.all()
+    serializer_class = InviteUserSerializer
+
+    def get_queryset(self):
+        projectname = self.request.GET.get('projectname')
+        if projectname is None:
+            projectname = self.request.data.get('projectname')
+
+        if projectname:
+            project = get_object_or_404(Project, slug=projectname)
+            return ProjectUser.objects.filter(project=project).all()
+        return ProjectUser.objects.all()
+
+    @list_route()
+    def list_invites(self, request, format=None):
+        projectname = request.GET.get('projectname')
+        print("Project name", projectname)
+        if projectname is None:
+            project_users = ProjectUser.objects.all()
+            serializer = self.get_serializer(project_users, many=True)
+            return Response(serializer.data)
+
+        project = get_object_or_404(Project, slug=projectname)
+        serializer = ProjectUserSerializer(
+            project,
+            context={'request': request}
+        )
+        return Response(serializer.data)
 
 
 class LogViewSet(viewsets.ModelViewSet):
@@ -96,27 +126,108 @@ class InviteList(APIView):
 
 class InviteModel(APIView):
     """
-    List all project users, or invite new user.
+    Aceept or decline invitations, get user status.
     """
     serializer_class = InviteUserSerializer
 
-    def get(self, request, project_name=None, format=None):
-        project_name = request.GET.get('project_name')
-        project = get_object_or_404(Project, slug=project_name)
-        # project_users = ProjectUser.objects.filter(project=project).all()
+    def put(self, request, projectname=None, username=None, format=None):
+        projectname = request.data.get('projectname')
+        project = get_object_or_404(Project, slug=projectname)
+
+        username = request.data.get('username')
+        user = User.objects.get(username=username)
+
+        invited_user = ProjectUser.objects.filter(
+            project=project,
+            user=user,
+            status=ProjectUser.STATUS_INVITED
+        ).first()
+
+        # if not (access == 'Owner'):
+        #     return HttpResponseForbidden('%s(%s) does not have enough rights' % (request.user.username, access))
+        # inviteform = bforms.InviteUserForm(project, request.POST)
+        # if inviteform.is_valid():
+        #     inviteform.save()
+        if not project.allowed(request.user):
+            raise PermissionDenied
+
+        if ProjectUser.objects.filter(
+            project=project,
+            user_id=user.id,
+            status__in=[
+                ProjectUser.STATUS_INVITED,
+                ProjectUser.STATUS_ACCEPTED,
+            ],
+        ).count():
+            raise Exception("user allready invited")
+
+        project_user = ProjectUser(
+            project=project,
+            user=user,
+            status=ProjectUser.STATUS_INVITED,
+        )
+
+        serializer = ProjectUserSerializer(invited_user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request, projectname=None, username=None, format=None):
+        projectname = request.GET.get('projectname')
+        project = get_object_or_404(Project, slug=projectname)
+
+        username = request.GET.get('username')
+        user = User.objects.get(username=username)
+
+        project_user = ProjectUser.objects.filter(
+            project=project,
+            user=user,
+        ).first()
+        serializer = ProjectUserSerializer(project_user, context={'request': request})
+        return Response(serializer.data)
+
+    def post(self, request, projectname=None, username=None, format=None):
+        projectname = request.data.get('projectname')
+        project = get_object_or_404(Project, slug=projectname)
+
+        username = request.data.get('username')
+        user = User.objects.get(username=username)
+
+        invited_user = ProjectUser.objects.filter(
+            project=project,
+            user=user,
+            status=ProjectUser.STATUS_INVITED
+        ).first()
+
+        if invited_user is None:
+            raise Exception("User is not invited")
+
+        invited_user.accept()
+        invited_user.save()
         serializer = ProjectUserSerializer(
-            project,
+            invited_user,
             # many=True,
             context={'request': request}
         )
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    def post(self, request, project_name=None, format=None):
-        serializer = InviteUserSerializer(
-            data=request.data,
-            context={'request': request}
-        )
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def delete(self, request, projectname=None, username=None, format=None):
+        projectname = request.data.get('projectname')
+        project = get_object_or_404(Project, slug=projectname)
+
+        username = request.data.get('username')
+        user = User.objects.get(username=username)
+
+        invited_user = ProjectUser.objects.filter(
+            project=project,
+            user=user,
+            status=ProjectUser.STATUS_INVITED
+        ).first()
+
+        if invited_user is None:
+            raise Exception("User is not invited")
+
+        invited_user.decline()
+        invited_user.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)

@@ -8,6 +8,11 @@ from users.serializers import UserSerializer
 
 
 class ProjectSerializer(serializers.HyperlinkedModelSerializer):
+    url = serializers.HyperlinkedIdentityField(
+        view_name='project-detail',
+        lookup_field='slug',
+        read_only=True
+    )
     owner = UserSerializer()
 
     # owner = serializers.ReadOnlyField(source='owner.username')
