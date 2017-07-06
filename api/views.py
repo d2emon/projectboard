@@ -1,10 +1,13 @@
+from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User, Group
 
-from rest_framework import viewsets
+from rest_framework import viewsets, status
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 from users.serializers import UserSerializer, GroupSerializer
 from projects.models import Project, ProjectUser, Log, Notice, TodoList
-from projects.serializers import ProjectSerializer, UserStatusSerializer, LogSerializer, NoticeSerializer, TodoListSerializer
+from projects.serializers import ProjectSerializer, UserStatusSerializer, LogSerializer, NoticeSerializer, TodoListSerializer, InviteUserSerializer, ProjectUserSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -61,3 +64,31 @@ class TodoListViewSet(viewsets.ModelViewSet):
     """
     queryset = TodoList.objects.all()
     serializer_class = TodoListSerializer
+
+
+class InviteList(APIView):
+    """
+    List all project users, or invite new user.
+    """
+    serializer_class = InviteUserSerializer
+
+    def get(self, request, project_name=None, format=None):
+        project_name = request.GET.get('project_name')
+        project = get_object_or_404(Project, slug=project_name)
+        # project_users = ProjectUser.objects.filter(project=project).all()
+        serializer = ProjectUserSerializer(
+            project,
+            # many=True,
+            context={'request': request}
+        )
+        return Response(serializer.data)
+
+    def post(self, request, project_name=None, format=None):
+        serializer = InviteUserSerializer(
+            data=request.data,
+            context={'request': request}
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

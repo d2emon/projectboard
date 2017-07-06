@@ -9,13 +9,12 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.views.decorators.http import require_POST
 
 from rest_framework import status
-from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from .forms import CreateProjectForm, InviteUserForm, AddNoticeForm, AddTodoListForm
 from .models import Project, ProjectUser
-from .serializers import ProjectUserSerializer, InviteUserSerializer
+from .serializers import ProjectUserSerializer
 
 import users.views
 
@@ -534,31 +533,3 @@ def todo_csv(request):
     #         writer.writerow(item.as_csv())
     # return response
     return redirect('projects:project', project_name="123")
-
-
-class InviteList(APIView):
-    """
-    List all project users, or invite new user.
-    """
-    serializer_class = InviteUserSerializer
-
-    def get(self, request, project_name, format=None):
-        project = get_object_or_404(Project, slug=project_name)
-        print(project)
-        # project_users = ProjectUser.objects.filter(project=project).all()
-        serializer = ProjectUserSerializer(
-            project,
-            # many=True,
-            context={'request': request}
-        )
-        return Response(serializer.data)
-
-    def post(self, request, project_name, format=None):
-        serializer = InviteUserSerializer(
-            data=request.data,
-            context={'request': request}
-        )
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

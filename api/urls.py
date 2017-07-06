@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.conf.urls import url, include
 
 from rest_framework import routers
@@ -14,8 +13,10 @@ router.register(r'project_users', views.ProjectUserViewSet)
 router.register(r'logs', views.LogViewSet)
 router.register(r'notices', views.NoticeViewSet)
 router.register(r'todo_lists', views.TodoListViewSet)
+router.register(r'invites', views.InviteList, 'invites')
 
 
 urlpatterns = [
+    url(r'^invites1234$', views.InviteList.as_view(), name='invite_list'),
     url(r'^', include(router.urls), name='api'),
 ]
