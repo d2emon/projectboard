@@ -24,6 +24,7 @@ urlpatterns += patterns('',
     (r'^feeds2/(?P<url>.*)/$', 'project.rss.proj_feed', {'feed_dict': feeds}),
     )
 
+Main project urls
 urlpatterns += patterns('project.main',
     (r'^$', 'index'),
     (r'^foo/$', TemplateView.as_view(template_name='project/dummy.html')),
