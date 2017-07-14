@@ -61,30 +61,22 @@ class ProjectUserViewSet(
             return ProjectUser.objects.filter(project=project).all()
         return ProjectUser.objects.all()
 
-    @list_route()
-    def list_invites(self, request, format=None):
-        projectname = request.GET.get('projectname')
-        if projectname is None:
-            project_users = ProjectUser.objects.all()
-            serializer = self.get_serializer(project_users, many=True)
-            return Response(serializer.data)
-
-        project = get_object_or_404(Project, slug=projectname)
-        serializer = ProjectUserSerializer(
-            project,
-            context={'request': request}
-        )
-        return Response(serializer.data)
-
-    @detail_route(methods=['put', ])
+    # @detail_route(methods=['put', ])
+    @list_route(methods=['get', 'post', ])
     def accept(self, request, pk=None, format=None):
+        print("ACCEPT")
         projectname = self.request.data.get('projectname')
+        print(self.request.data)
+        print(self.request.POST)
+        print(projectname)
         project = get_object_or_404(Project, slug=projectname)
+        print(project)
         username = self.request.data.get('username')
         user = get_object_or_404(User, username=username)
+        print(user)
         project_user = ProjectUser.objects.filter(project=project, user=user).first()
         if project_user is None:
-            project_user = get_object_or_404(ProjectUser, pk)
+            Response({"errors": 1})
 
         serializer = InviteUserSerializer(
             project_user,

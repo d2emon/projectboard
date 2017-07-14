@@ -50,9 +50,9 @@ class InviteUserSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(
         view_name='invites-detail',
     )
-    accept = serializers.HyperlinkedIdentityField(
-        view_name='invites-accept',
-    )
+    # accept = serializers.HyperlinkedIdentityField(
+    #     view_name='invites-accept',
+    # )
     decline = serializers.HyperlinkedIdentityField(
         view_name='invites-decline',
     )
@@ -69,13 +69,14 @@ class InviteUserSerializer(serializers.HyperlinkedModelSerializer):
         model = ProjectUser
         fields = (
             'url',
-            'accept',
+            # 'accept',
             'decline',
             'project',
             'user',
             'status',
         )
         depth = 1
+        lookup_field = 'username'
 
 
 class ProjectUserSerializer(serializers.HyperlinkedModelSerializer):
