@@ -3,6 +3,9 @@ from users.models import UserProfile
 from projects.models import Project, ProgrammingLanguage
 from faker import Factory
 
+import sys
+import codecs
+
 
 import random
 
@@ -43,6 +46,10 @@ class Command(BaseCommand):
             project.programming_language = random.choice(languages)
             project.save()
 
+            print(project.name)
+            self.stdout.write(
+                "Project %s added" % (project.name, )
+            )
             self.stdout.write(
                 "Project %s added" % (project.name, ),
                 self.style.SUCCESS

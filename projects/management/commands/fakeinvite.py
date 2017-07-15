@@ -20,7 +20,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         count = options.get('count', 1)
-        invitations = options.get('invitations', 5)
+        max_invitations = options.get('invitations', 15)
         # fake = Factory.create('ru_RU')
         projects = Project.objects.order_by('?')[:count]
         for i, project in enumerate(projects):
@@ -29,6 +29,7 @@ class Command(BaseCommand):
                 self.style.SUCCESS
             )
             project_users = [user.user_id for user in project.users.all()]
+            invitations = random.randint(1, max_invitations)
             users = UserProfile.objects.exclude(user_id__in=project_users).order_by('?').all()[:invitations]
 
             for j, user in enumerate(users):
