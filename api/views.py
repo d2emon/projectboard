@@ -2,9 +2,9 @@ from django.shortcuts import get_object_or_404
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.models import User, Group
 
-from rest_framework import viewsets, status
+from rest_framework import viewsets, mixins, status
 from rest_framework.views import APIView
-from rest_framework.decorators import list_route
+from rest_framework.decorators import list_route, detail_route
 from rest_framework.response import Response
 
 from users.serializers import UserSerializer, GroupSerializer
@@ -38,7 +38,13 @@ class ProjectViewSet(viewsets.ModelViewSet):
     serializer_class = ProjectSerializer
 
 
-class ProjectUserViewSet(viewsets.ModelViewSet):
+class ProjectUserViewSet(
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet
+):
     """
     API endpoint that allows project users to be viewed or edited
     """
@@ -55,18 +61,41 @@ class ProjectUserViewSet(viewsets.ModelViewSet):
             return ProjectUser.objects.filter(project=project).all()
         return ProjectUser.objects.all()
 
-    @list_route()
-    def list_invites(self, request, format=None):
-        projectname = request.GET.get('projectname')
-        print("Project name", projectname)
-        if projectname is None:
-            project_users = ProjectUser.objects.all()
-            serializer = self.get_serializer(project_users, many=True)
-            return Response(serializer.data)
-
+    # @detail_route(methods=['put', ])
+    @list_route(methods=['get', 'post', ])
+    def accept(self, request, pk=None, format=None):
+        print("ACCEPT")
+        projectname = self.request.data.get('projectname')
+        print(self.request.data)
+        print(self.request.POST)
+        print(projectname)
         project = get_object_or_404(Project, slug=projectname)
-        serializer = ProjectUserSerializer(
-            project,
+        print(project)
+        username = self.request.data.get('username')
+        user = get_object_or_404(User, username=username)
+        print(user)
+        project_user = ProjectUser.objects.filter(project=project, user=user).first()
+        if project_user is None:
+            Response({"errors": 1})
+
+        serializer = InviteUserSerializer(
+            project_user,
+            context={'request': request}
+        )
+        return Response(serializer.data)
+
+    @detail_route(methods=['delete', ])
+    def decline(self, request, pk=None, format=None):
+        projectname = self.request.data.get('projectname')
+        project = get_object_or_404(Project, slug=projectname)
+        username = self.request.data.get('username')
+        user = get_object_or_404(User, username=username)
+        project_user = ProjectUser.objects.filter(project=project, user=user).first()
+        if project_user is None:
+            project_user = get_object_or_404(ProjectUser, pk)
+
+        serializer = InviteUserSerializer(
+            project_user,
             context={'request': request}
         )
         return Response(serializer.data)

@@ -46,7 +46,16 @@ class UserStatusSerializer(serializers.HyperlinkedModelSerializer):
         )
 
 
-class InviteUserSerializer(serializers.ModelSerializer):
+class InviteUserSerializer(serializers.HyperlinkedModelSerializer):
+    url = serializers.HyperlinkedIdentityField(
+        view_name='invites-detail',
+    )
+    # accept = serializers.HyperlinkedIdentityField(
+    #     view_name='invites-accept',
+    # )
+    decline = serializers.HyperlinkedIdentityField(
+        view_name='invites-decline',
+    )
     project = serializers.SlugRelatedField(
         queryset=Project.objects.all(),
         slug_field='slug',
@@ -59,11 +68,15 @@ class InviteUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectUser
         fields = (
+            'url',
+            # 'accept',
+            'decline',
             'project',
             'user',
             'status',
         )
         depth = 1
+        lookup_field = 'username'
 
 
 class ProjectUserSerializer(serializers.HyperlinkedModelSerializer):

@@ -94,13 +94,13 @@ class Project(models.Model):
 
     @property
     def invited_users(self):
-        return self.projectuser_set.filter(
+        return self.users.filter(
             status=ProjectUser.STATUS_INVITED,
         )
 
     @property
     def active_users(self):
-        return self.projectuser_set.filter(
+        return self.users.filter(
             status__in=ProjectUser.ACTIVE_STATUSES
         )
 
@@ -164,6 +164,10 @@ class ProjectUser(models.Model):
         choices=STATUSES,
         default=STATUS_INVITED,
     )
+
+    @property
+    def username(self):
+        return self.user.username
 
     @receiver(post_save, sender=Project)
     def create_log(sender, instance, created, **kwargs):

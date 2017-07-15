@@ -80,8 +80,8 @@ block content
         input(type="hidden", name="projid", value="{{invite.project.id}}")
         input(type="hidden", name="invid", value="{{invite.id}}")
         p
-          button(href="submit()", class="btn btn-sm btn-success") <i class="fa fa-check"></i> {% trans 'Accept' %}
-          button(type="button", data-dismiss="alert", class="btn btn-sm btn-danger") <i class="fa fa-remove"></i> {% trans 'Decline' %}
+          button(type="button", data-dismiss="alert", class="btn btn-sm btn-success accept-invite", data-project="{{invite.project.slug}}", data-user="{{invite.user.username}}") <i class="fa fa-check"></i> {% trans 'Accept' %}
+          button(type="button", data-dismiss="alert", class="btn btn-sm btn-danger decline-invite", data-project="{{invite.project.slug}}", data-user="{{invite.user.username}}") <i class="fa fa-remove"></i> {% trans 'Decline' %}
     | {% endfor %}
     .row
       .col-md-8
