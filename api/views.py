@@ -64,17 +64,21 @@ class ProjectUserViewSet(
     # @detail_route(methods=['put', ])
     @list_route(methods=['get', 'post', ])
     def accept(self, request, pk=None, format=None):
-        print("ACCEPT")
         projectname = self.request.data.get('projectname')
-        print(self.request.data)
-        print(self.request.POST)
-        print(projectname)
-        project = get_object_or_404(Project, slug=projectname)
-        print(project)
         username = self.request.data.get('username')
-        user = get_object_or_404(User, username=username)
-        print(user)
-        project_user = ProjectUser.objects.filter(project=project, user=user).first()
+        # project = get_object_or_404(Project, slug=projectname)
+        # user = get_object_or_404(User, username=username)
+        project = Project.objects.filter(slug=projectname).first()
+        user = User.objects.filter(username=username).first()
+        if project is None or user is None:
+            project_user = ProjectUser(
+                project=project,
+                user=user,
+                status=0
+            )
+        else:
+            print(user)
+            project_user = ProjectUser.objects.filter(project=project, user=user).first()
         if project_user is None:
             Response({"errors": 1})
 
