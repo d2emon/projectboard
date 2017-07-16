@@ -72,17 +72,18 @@ block breadcrumbs_block
 
 block content
   div(class="animated fadeIn")
-    | {% for invite in invites %}
-    div(class="alert alert-info alert-dismissible")
-      form(action=invite, method="post", class="form-horizontal")
-        | {% csrf_token %}
-        p {% blocktrans with project=invite.project url=invite.project.get_absolute_url %}You are invited to project <strong><a href="{{url}}">"{{project}}"</a></strong>{% endblocktrans %}
-        input(type="hidden", name="projid", value="{{invite.project.id}}")
-        input(type="hidden", name="invid", value="{{invite.id}}")
-        p
-          button(type="button", data-dismiss="alert", class="btn btn-sm btn-success accept-invite", data-project="{{invite.project.slug}}", data-user="{{invite.user.username}}") <i class="fa fa-check"></i> {% trans 'Accept' %}
-          button(type="button", data-dismiss="alert", class="btn btn-sm btn-danger decline-invite", data-project="{{invite.project.slug}}", data-user="{{invite.user.username}}") <i class="fa fa-remove"></i> {% trans 'Decline' %}
-    | {% endfor %}
+    div(id="invite-alerts")
+      | {% for invite in invites %}
+      div(class="alert alert-info alert-dismissible")
+        form(action=invite, method="post", class="form-horizontal")
+          | {% csrf_token %}
+          p {% blocktrans with project=invite.project url=invite.project.get_absolute_url %}You are invited to project <strong><a href="{{url}}">"{{project}}"</a></strong>{% endblocktrans %}
+          input(type="hidden", name="projid", value="{{invite.project.id}}")
+          input(type="hidden", name="invid", value="{{invite.id}}")
+          p
+            button(type="button", data-dismiss="alert", class="btn btn-sm btn-success accept-invite", data-project="{{invite.project.slug}}", data-user="{{invite.user.username}}") <i class="fa fa-check"></i> {% trans 'Accept' %}
+            button(type="button", data-dismiss="alert", class="btn btn-sm btn-danger decline-invite", data-project="{{invite.project.slug}}", data-user="{{invite.user.username}}") <i class="fa fa-remove"></i> {% trans 'Decline' %}
+      | {% endfor %}
     .row
       .col-md-8
         .card
@@ -100,7 +101,7 @@ block content
           .card-header {% trans 'Projects' %}
           .card-block
             | {% if subs %}
-            table(class="table table-responsive table-hover table-striped")
+            table(class="table table-responsive table-hover table-striped", id="projectlist")
               thead
                 tr
                   th(class="text-center") {% trans 'Project Name' %}
@@ -121,7 +122,7 @@ block content
                     | {% endwith %}
                   td(style="vertical-align:middle; text-align:center")
                     | &nbsp;
-                | {% for task in sub.project.get_overdue %}
+                | {% for task in sub.project.overdue %}
                 tr
                   td(class="projectname")
                     a(href="{{sub.project.get_absolute_url}}") {{ sub.project.name }}

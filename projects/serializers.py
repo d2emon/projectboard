@@ -31,6 +31,7 @@ class ProjectSerializer(serializers.HyperlinkedModelSerializer):
             'git',
             'uri',
             # 'programming_language'
+            # 'overdue',
         )
 
 
@@ -53,13 +54,14 @@ class InviteUserSerializer(serializers.HyperlinkedModelSerializer):
     # accept = serializers.HyperlinkedIdentityField(
     #     view_name='invites-accept',
     # )
-    decline = serializers.HyperlinkedIdentityField(
-        view_name='invites-decline',
-    )
-    project = serializers.SlugRelatedField(
-        queryset=Project.objects.all(),
-        slug_field='slug',
-    )
+    # decline = serializers.HyperlinkedIdentityField(
+    #     view_name='invites-decline',
+    # )
+    project = ProjectSerializer()
+    # project = serializers.SlugRelatedField(
+    #     queryset=Project.objects.all(),
+    #     slug_field='slug',
+    # )
     user = serializers.SlugRelatedField(
         queryset=User.objects.all(),
         slug_field='username',
@@ -70,7 +72,7 @@ class InviteUserSerializer(serializers.HyperlinkedModelSerializer):
         fields = (
             'url',
             # 'accept',
-            'decline',
+            # 'decline',
             'project',
             'user',
             'status',

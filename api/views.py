@@ -60,10 +60,8 @@ class ProjectUserViewSet(
             project = get_object_or_404(Project, slug=projectname)
             return ProjectUser.objects.filter(project=project).all()
         return ProjectUser.objects.all()
-
-    # @detail_route(methods=['put', ])
-    @list_route(methods=['get', 'post', ])
-    def accept(self, request, pk=None, format=None):
+    
+    def get_project_user(self):
         projectname = self.request.data.get('projectname')
         username = self.request.data.get('username')
         # project = get_object_or_404(Project, slug=projectname)
@@ -71,33 +69,40 @@ class ProjectUserViewSet(
         project = Project.objects.filter(slug=projectname).first()
         user = User.objects.filter(username=username).first()
         if project is None or user is None:
-            project_user = ProjectUser(
-                project=project,
-                user=user,
-                status=0
-            )
+            project_user = None
+            # ProjectUser(
+            #     project=project,
+            #     user=user,
+            #     status=0
+            # )
         else:
-            print(user)
             project_user = ProjectUser.objects.filter(project=project, user=user).first()
-        if project_user is None:
-            Response({"errors": 1})
+        return project_user
 
+    # @detail_route(methods=['put', ])
+    @list_route(methods=['get', 'post', ])
+    def accept(self, request, pk=None, format=None):
+        project_user = self.get_project_user()
+        if project_user is None:
+            return Response({"errors": 1})
+
+        project_user.status = ProjectUser.STATUS_ACCEPTED
+        project_user.save()
         serializer = InviteUserSerializer(
             project_user,
             context={'request': request}
         )
         return Response(serializer.data)
 
-    @detail_route(methods=['delete', ])
+    # @detail_route(methods=['delete', ])
+    @list_route(methods=['get', 'post', ])
     def decline(self, request, pk=None, format=None):
-        projectname = self.request.data.get('projectname')
-        project = get_object_or_404(Project, slug=projectname)
-        username = self.request.data.get('username')
-        user = get_object_or_404(User, username=username)
-        project_user = ProjectUser.objects.filter(project=project, user=user).first()
+        project_user = self.get_project_user()
         if project_user is None:
-            project_user = get_object_or_404(ProjectUser, pk)
+            return Response({"errors": 1})
 
+        project_user.status = ProjectUser.STATUS_DECLINED
+        project_user.save()
         serializer = InviteUserSerializer(
             project_user,
             context={'request': request}

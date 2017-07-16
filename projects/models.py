@@ -42,7 +42,8 @@ class Project(models.Model):
     def get_absolute_url(self):
         return reverse('projects:project', kwargs={'project_name': self.slug})
 
-    def get_overdue(self):
+    @property
+    def overdue(self):
         return [
             {
                 'id': 1,
