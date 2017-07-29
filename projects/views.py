@@ -123,7 +123,7 @@ def project(request, project_name=None):
 
         # Tasks
         new_tasks = project.get_new()
-        overdue_tasks = project.get_overdue()
+        overdue_tasks = project.overdue
 
         context = {
             'project': project,

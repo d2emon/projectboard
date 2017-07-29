@@ -81,7 +81,7 @@ class Project(models.Model):
         ]
 
     def get_new(self):
-        return self.get_overdue()
+        return self.overdue
 
     @property
     def users(self):
