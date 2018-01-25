@@ -110,3 +110,5 @@ assets/bower_components
 node_modules/
 /.project
 /.pydevproject
+
+yarn.lock
