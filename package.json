@@ -6,9 +6,9 @@
   "scripts": {
     "preinstall": "git pull && pip install -r requirements.txt",
     "install": "bower install",
-    "prestart": "python manage.py migrate && python manage.py compilemessages && gulp",
-    "start": "python manage.py runserver",
-    "test": "python manage.py test"
+    "prestart": "python src/manage.py migrate && python src/manage.py compilemessages && gulp",
+    "start": "python src/manage.py runserver",
+    "test": "python src/manage.py test"
   },
   "repository": {
     "type": "git",

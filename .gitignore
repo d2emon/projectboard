@@ -105,6 +105,7 @@ ENV/
 /db/
 /temp/
 /templates/
+/src/templates/
 static/
 assets/bower_components
 node_modules/

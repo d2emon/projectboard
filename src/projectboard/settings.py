@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'projectboard.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db', 'db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, '..', 'db', 'db.sqlite3'),
     }
 }
 
@@ -148,11 +148,11 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, "..", "static"),
 ]
 
-STATIC_ROOT = os.path.join(BASE_DIR, "static1")
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+STATIC_ROOT = os.path.join(BASE_DIR, "..", "static1")
+MEDIA_ROOT = os.path.join(BASE_DIR, "..", "media")
 
 ACCOUNT_ACTIVATION_DAYS = 7
 
@@ -162,7 +162,7 @@ EMAIL_PORT = 1025
 PERSISTENT_SESSION_KEY = 'persistant'
 LOGIN_REDIRECT_URL = '/projects/dashboard/'
 
-PROJECTS_DIR = os.path.join(BASE_DIR, 'sources')
+PROJECTS_DIR = os.path.join(BASE_DIR, "..", 'sources')
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
