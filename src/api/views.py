@@ -12,6 +12,98 @@ from projects.models import Project, ProjectUser, Log, Notice, TodoList
 from projects.serializers import ProjectSerializer, LogSerializer, NoticeSerializer, TodoListSerializer, InviteUserSerializer, ProjectUserSerializer
 
 
+class MainView(APIView):
+    """
+    The point of entry for a logged in user.
+    Shows the available active projects for the user, and allows him to create one.
+    Shows the pending invites to other projects.
+    Shows very critical information about available projects.
+    """
+    serializer_class = InviteUserSerializer
+
+    def get(self, request, project_name=None, format=None):
+        # if request.user.is_authenticated():
+        #   return HttpResponseRedirect('/dashboard/')
+        # if request.method == 'POST':
+        #   return login(request)
+        # register_form = bforms.UserCreationForm(prefix='register')
+        # login_form = bforms.LoginForm()
+        # request.session.set_test_cookie()
+
+        subs = [
+            {'name': "Project1", 'overdue': [
+                {'name': "Task1", 'expected_end_date': ''},
+                {'name': "Task2", 'expected_end_date': ''},
+                {'name': "Task3", 'expected_end_date': ''}
+            ]},
+            {'name': "Project2", 'overdue': [
+                {'name': "Task1", 'expected_end_date': ''},
+                {'name': "Task2", 'expected_end_date': ''},
+                {'name': "Task3", 'expected_end_date': ''}
+            ]},
+            {'name': "Project3", 'overdue': [
+                {'name': "Task1", 'expected_end_date': ''},
+                {'name': "Task2", 'expected_end_date': ''},
+                {'name': "Task3", 'expected_end_date': ''}
+            ]},
+            {'name': "Project4", 'overdue': [
+                {'name': "Task1", 'expected_end_date': ''},
+                {'name': "Task2", 'expected_end_date': ''},
+                {'name': "Task3", 'expected_end_date': ''}
+            ]},
+            {'name': "Project5", 'overdue': [
+                {'name': "Task1", 'expected_end_date': ''},
+                {'name': "Task2", 'expected_end_date': ''},
+                {'name': "Task3", 'expected_end_date': ''}
+            ]},
+        ]
+        invites = []
+        # ----
+        # user = request.user
+        # if request.GET.get('includeinactive', 0):
+        #     subs = user.subscribeduser_set.all()
+        # else:
+        #     subs = user.subscribeduser_set.filter(project__is_active = True)
+        # invites = user.inviteduser_set.filter(rejected = False)
+        # createform = bforms.CreateProjectForm()
+
+        # if request.method == 'POST':
+        #     if request.POST.has_key('createproject'):
+        #         createform = bforms.CreateProjectForm(user, request.POST)
+        #         if createform.is_valid():
+        #             createform.save()
+        #             return HttpResponseRedirect('.')
+        #     elif request.POST.has_key('acceptinv'):
+        #         project = Project.objects.get(id = request.POST['projid'])
+        #         invite = InvitedUser.objects.get(id = request.POST['invid'])
+        #         subscribe = SubscribedUser(project = project, user = user, group = invite.group)
+        #         subscribe.save()
+        #         invite.delete()
+        #         return HttpResponseRedirect('.')
+        #     elif request.POST.has_key('activestatus'):
+        #         projid = request.POST['projectid']
+        #         project = Project.objects.get(id = projid)
+        #         if request.POST['activestatus'] == 'true':
+        #             project.is_active = False
+        #         elif request.POST['activestatus'] == 'false':
+        #             project.is_active = True
+        #         project.save()
+        #         return HttpResponseRedirect('.')
+        #     elif request.POST.has_key('markdone'):
+        #         print request.POST
+        #         handle_task_status(request)
+
+        # elif request.method == 'GET':
+        createform = "bforms.CreateProjectForm()"
+
+        return Response({
+          'subs': subs,
+          'createform':createform,
+          'invites':invites,
+          'template': "project/dashboard.html",
+        })
+
+
 class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited
@@ -60,7 +152,7 @@ class ProjectUserViewSet(
             project = get_object_or_404(Project, slug=projectname)
             return ProjectUser.objects.filter(project=project).all()
         return ProjectUser.objects.all()
-    
+
     def get_project_user(self):
         projectname = self.request.data.get('projectname')
         username = self.request.data.get('username')
