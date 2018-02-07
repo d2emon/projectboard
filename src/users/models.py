@@ -7,6 +7,9 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 
 
+from projectboard import signals
+
+
 class UserProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     avatar = models.ImageField(blank=True, upload_to="avatars/")

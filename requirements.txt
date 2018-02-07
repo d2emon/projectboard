@@ -1,0 +1,16 @@
+Django==1.11.1
+django-cors-headers==2.1.0
+django-registration==2.2
+djangorestframework==3.6.3
+docutils==0.13.1
+fake-factory==9999.9.9
+Faker==0.7.17
+Jinja2==2.9.6
+MarkupSafe==1.0
+olefile==0.44
+Pillow==4.1.1
+pkg-resources==0.0.0
+python-dateutil==2.6.0
+pytz==2017.2
+six==1.10.0
+tornado==4.5.1

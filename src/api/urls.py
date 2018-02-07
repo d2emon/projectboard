@@ -1,6 +1,7 @@
 from django.conf.urls import url, include
 
 from rest_framework import routers
+from rest_framework.authtoken import views as auth_views
 
 from api import views
 
@@ -16,10 +17,12 @@ router.register(r'notices', views.NoticeViewSet)
 router.register(r'todo_lists', views.TodoListViewSet)
 # router.register(r'invites', views.InviteModel.as_view(), 'projectuser-detail')
 
+print(auth_views)
 
 urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'^main$', views.MainView.as_view(), name='api-main'),
+    url(r'^api-token-auth/', auth_views.obtain_auth_token),
     url(r'^invites1234$', views.InviteModel.as_view(), name='projectuser-detail'),
     url(r'^project-users$', views.InviteList.as_view(), name='invite-1ist'),
 ]
