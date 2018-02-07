@@ -11,6 +11,7 @@ from users.serializers import UserSerializer, GroupSerializer
 from projects.models import Project, ProjectUser, Log, Notice, TodoList
 from projects.serializers import ProjectSerializer, LogSerializer, NoticeSerializer, TodoListSerializer, InviteUserSerializer, ProjectUserSerializer
 
+import random
 
 class MainView(APIView):
     """
@@ -30,33 +31,95 @@ class MainView(APIView):
         # login_form = bforms.LoginForm()
         # request.session.set_test_cookie()
 
-        subs = [
-            {'name': "Project1", 'overdue': [
-                {'name': "Task1", 'expected_end_date': ''},
-                {'name': "Task2", 'expected_end_date': ''},
-                {'name': "Task3", 'expected_end_date': ''}
-            ]},
-            {'name': "Project2", 'overdue': [
-                {'name': "Task1", 'expected_end_date': ''},
-                {'name': "Task2", 'expected_end_date': ''},
-                {'name': "Task3", 'expected_end_date': ''}
-            ]},
-            {'name': "Project3", 'overdue': [
-                {'name': "Task1", 'expected_end_date': ''},
-                {'name': "Task2", 'expected_end_date': ''},
-                {'name': "Task3", 'expected_end_date': ''}
-            ]},
-            {'name': "Project4", 'overdue': [
-                {'name': "Task1", 'expected_end_date': ''},
-                {'name': "Task2", 'expected_end_date': ''},
-                {'name': "Task3", 'expected_end_date': ''}
-            ]},
-            {'name': "Project5", 'overdue': [
-                {'name': "Task1", 'expected_end_date': ''},
-                {'name': "Task2", 'expected_end_date': ''},
-                {'name': "Task3", 'expected_end_date': ''}
-            ]},
+        usernames = [
+            'Yiorgos Avraamu',
+            'Avram Tarasios',
+            'Quintin Ed',
+            'Enéas Kwadwo',
+            'Agapetus Tadeáš',
+            'Friderik Dávid',
         ]
+        dates = [
+            '',
+            'Jan 1, 2015',
+            '10 sec ago',
+            '5 minutes ago',
+            '1 hour ago',
+            'Last month',
+            'Last week',
+        ]
+        statuses = [
+            '',
+            'success',
+            'danger',
+            'warning',
+        ]
+        countries = [
+            { 'name': 'Russia', 'flag': 'ru' },
+            { 'name': 'USA', 'flag': 'us' },
+            { 'name': 'Brazil', 'flag': 'br' },
+            { 'name': 'India', 'flag': 'in' },
+            { 'name': 'France', 'flag': 'fr' },
+            { 'name': 'Spain', 'flag': 'es' },
+            { 'name': 'Poland', 'flag': 'pl' },
+        ]
+
+        users = [{
+            'name': random.choice(usernames),
+            'new': random.randint(0, 1) > 0,
+            'registered': random.choice(dates),
+            'avatar': 'static/img/avatars/' + str(random.randint(1, 6)) + '.jpg',
+            'status': random.choice(statuses),
+            'country': random.choice(countries),
+        } for i in range(10)]
+
+        tasks = [{
+            'id': i + 1,
+            'name': 'Task' + str(i + 1),
+            'url': '/project/task',
+            'url_edit': '/project/task/edit',
+            'url_del': '/project/task/delete',
+            'expected_start_date': random.choice(dates),
+            'expected_end_date': random.choice(dates),
+            'actual_start_date': random.choice(dates),
+            'actual_end_date': random.choice(dates),
+            'user': random.choice(users),
+            'project': None,
+            'is_complete': random.randint(0, 1) > 0,
+        } for i in range(25)]
+
+        projects = []
+        invites = []
+        for i in range(10):
+            project = {
+                'shortname': 'project-' + str(i + 1),
+                'name': 'Project ' + str(i + 1),
+                'start_date': random.choice(dates),
+                'end_date': random.choice(dates),
+                'url': '/project',
+                'is_active': random.randint(0, 1) > 0,
+                'tasks': [],
+                'overdue_tasks': [],
+                'invites': [],
+                'users': users
+            }
+            for i in range(5):
+                user = random.choice(users)
+                project['invites'].append(user)
+                invites.append({
+                    'id': i + 1,
+                    'project': project,
+                    'user': user
+                })
+            projects.append(project)
+
+        for task in tasks:
+            project = random.choice(projects)
+            # task['project'] = project
+            project['tasks'].append(task)
+            project['overdue_tasks'].append(task)
+
+        subs = projects
         invites = []
         # ----
         # user = request.user

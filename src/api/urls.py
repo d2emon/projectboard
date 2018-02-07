@@ -17,8 +17,6 @@ router.register(r'notices', views.NoticeViewSet)
 router.register(r'todo_lists', views.TodoListViewSet)
 # router.register(r'invites', views.InviteModel.as_view(), 'projectuser-detail')
 
-print(auth_views)
-
 urlpatterns = [
     url(r'^', include(router.urls)),
     url(r'^main$', views.MainView.as_view(), name='api-main'),
