@@ -120,7 +120,7 @@ class MainView(APIView):
             project['overdue_tasks'].append(task)
 
         subs = projects
-        invites = []
+        invites = invites
         # ----
         # user = request.user
         # if request.GET.get('includeinactive', 0):
