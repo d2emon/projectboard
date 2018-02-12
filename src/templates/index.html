@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+{% load render_bundle from webpack_loader %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>CoreUI - Open Source Bootstrap Admin Template</title>
+</head>
+<body class="app header-fixed sidebar-fixed aside-menu-fixed aside-menu-hidden">
+  <div id="app"></div>
+  <!-- div id="app">
+      <demo></demo>
+  </div -->
+  {% render_bundle 'manifest' %}
+  {% render_bundle 'vendor' %}
+  {% render_bundle 'app' %}
+</body>
+</html>

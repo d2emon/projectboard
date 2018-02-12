@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
+    'webpack_loader',
 ]
 
 MIDDLEWARE = [
@@ -144,6 +145,8 @@ USE_THOUSAND_SEPARATOR = True
 # except locale.Error:
 #     locale.setlocale(locale.LC_ALL, 'ru_RU.utf8')
 
+FRONTEND_DIR = os.path.join(BASE_DIR, "..", "..", "projectboard-front")
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
@@ -152,6 +155,7 @@ MEDIA_URL = '/media/'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "..", "static"),
+    os.path.join(FRONTEND_DIR, "dist", "static"),
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, "..", "static1")
@@ -173,7 +177,6 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 PAGE_SIZE = 10
 
-
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
@@ -184,4 +187,11 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ],
     'PAGE_SIZE': PAGE_SIZE,
+}
+
+WEBPACK_LOADER = {
+  'DEFAULT': {
+    'BUNDLE_DIR_NAME': FRONTEND_DIR, # 'dist/static',
+    'STATS_FILE': os.path.join(FRONTEND_DIR, 'webpack-stats.json')
+  }
 }
