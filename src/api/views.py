@@ -1,6 +1,8 @@
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.models import User, Group
+from django.core import serializers
+# from django.forms.models import model_to_dict
 
 from rest_framework import viewsets, mixins, status
 from rest_framework.views import APIView
@@ -86,40 +88,70 @@ class MainView(APIView):
             'user': random.choice(users),
             'project': None,
             'is_complete': random.randint(0, 1) > 0,
+            'progress': random.randrange(100),
         } for i in range(25)]
 
-        projects = []
-        invites = []
-        for i in range(10):
-            project = {
-                'shortname': 'project-' + str(i + 1),
-                'name': 'Project ' + str(i + 1),
-                'start_date': random.choice(dates),
-                'end_date': random.choice(dates),
+        projects = request.user.projectuser_set.order_by('-project__start_date')
+        subs = []
+        for p in projects:
+            project = p.project
+            subs.append({
+                'shortname': project.slug,
+                'name': project.name,
+                'start_date': project.start_date,
+                'end_date': project.end_date,
                 'url': '/project',
-                'is_active': random.randint(0, 1) > 0,
+                'is_active': project.is_active,
                 'tasks': [],
                 'overdue_tasks': [],
                 'invites': [],
-                'users': users
-            }
+                'users': [{
+                    'name': random.choice(usernames),
+                    'new': random.randint(0, 1) > 0,
+                    'registered': random.choice(dates),
+                    'avatar': 'static/img/avatars/' + str(random.randint(1, 6)) + '.jpg',
+                    'status': random.choice(statuses),
+                    'country': random.choice(countries),
+                } for i in range(random.randint(1, 10))],
+
+                'description': project.description,
+                'created_on': project.created_on,
+                'git': project.git,
+                'uri': project.uri,
+                'owner': {
+                  'username': project.owner.username,
+                  'email': project.owner.email,
+                  # 'groups': project.owner.groups,
+                  # 'profile': project.owner.profile,
+                },
+            })
+        #    #    "owner": {
+        #    #        "url": "http://localhost:8000/api/users/11/",
+        #    #        "username": "ljudmila02",
+        #    #        "email": "jakovblinov@rambler.ru",
+        #    #        "groups": [],
+        #    #        "profile": {
+        #    #            "avatar": "http://localhost:8000/media/avatars/4.jpg"
+        #    #        }
+        #    #    }
+
+        invites = []
+        for i in range(10):
             for i in range(5):
                 user = random.choice(users)
-                project['invites'].append(user)
+                # project['invites'].append(user)
                 invites.append({
                     'id': i + 1,
-                    'project': project,
+                    'project': random.choice(subs),
                     'user': user
                 })
-            projects.append(project)
+            # projects.append(project)
 
         for task in tasks:
-            project = random.choice(projects)
+            project = random.choice(subs)
             # task['project'] = project
             project['tasks'].append(task)
             project['overdue_tasks'].append(task)
-
-        subs = projects
         invites = invites
         # ----
         # user = request.user
@@ -164,6 +196,7 @@ class MainView(APIView):
           'createform':createform,
           'invites':invites,
           'template': "project/dashboard.html",
+          'tasks': tasks,
         })
 
 
@@ -173,7 +206,7 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
-    # lookup_field = 'username'
+    # lookup_fsield = 'username'
 
 
 class GroupViewSet(viewsets.ModelViewSet):
