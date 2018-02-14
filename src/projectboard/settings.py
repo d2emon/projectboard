@@ -177,6 +177,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 PAGE_SIZE = 10
 
+REST_SESSION_LOGIN = False
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
@@ -184,7 +185,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.BasicAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
     ],
     'PAGE_SIZE': PAGE_SIZE,
 }

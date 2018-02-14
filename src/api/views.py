@@ -70,7 +70,7 @@ class MainView(APIView):
             'name': random.choice(usernames),
             'new': random.randint(0, 1) > 0,
             'registered': random.choice(dates),
-            'avatar': 'static/img/avatars/' + str(random.randint(1, 6)) + '.jpg',
+            'avatar': '/media/avatars/' + str(random.randint(1, 6)) + '.jpg',
             'status': random.choice(statuses),
             'country': random.choice(countries),
         } for i in range(10)]
