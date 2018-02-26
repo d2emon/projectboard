@@ -4,7 +4,7 @@ from django.contrib.auth.models import User, Group
 from django.core import serializers
 # from django.forms.models import model_to_dict
 
-from rest_framework import viewsets, mixins, status
+from rest_framework import generics, viewsets, mixins, status
 from rest_framework.views import APIView
 from rest_framework.decorators import list_route, detail_route
 from rest_framework.response import Response
@@ -14,6 +14,12 @@ from projects.models import Project, ProjectUser, Log, Notice, TodoList
 from projects.serializers import ProjectSerializer, LogSerializer, NoticeSerializer, TodoListSerializer, InviteUserSerializer, ProjectUserSerializer
 
 import random
+
+def getParam(request, param):
+    value = request.GET.get(param)
+    if value is None:
+        value = request.data.get(param)
+    return value
 
 class MainView(APIView):
     """
@@ -216,14 +222,35 @@ class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
 
+class ProjectList(generics.ListAPIView):
+    serializer_class = ProjectSerializer
 
-class ProjectViewSet(viewsets.ModelViewSet):
+    def get_queryset(self):
+        """
+        This view should return a list of all the purchases
+        for the currently authenticated user.
+        """
+        user = self.request.user
+        return Project.objects.filter(owner=user)
+
+class ProjectViewSet(
+    # mixins.ListModelMixin,
+    viewsets.ModelViewSet
+):
     """
     API endpoint that allows projects to be viewed or edited
     """
     lookup_field = 'slug'
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
+
+    def get_queryset(self):
+        username = getParam(self.request, 'user')
+
+        if username:
+            user = get_object_or_404(User, username=username)
+            return Project.objects.filter(owner=user).all()
+        return Project.objects.all()
 
 
 class ProjectUserViewSet(
@@ -240,14 +267,28 @@ class ProjectUserViewSet(
     serializer_class = InviteUserSerializer
 
     def get_queryset(self):
-        projectname = self.request.GET.get('projectname')
-        if projectname is None:
-            projectname = self.request.data.get('projectname')
+        projects = ProjectUser.objects
+
+        projectname = getParam(self.request, 'projectname')
+        username = getParam(self.request, 'user')
+        status = getParam(self.request, 'status')
+        all = getParam(self.request, 'all')
 
         if projectname:
             project = get_object_or_404(Project, slug=projectname)
-            return ProjectUser.objects.filter(project=project).all()
-        return ProjectUser.objects.all()
+            projects = projects.filter(project=project)
+
+        if username:
+            user = get_object_or_404(User, username=username)
+            projects = projects.filter(user=user)
+
+        if status:
+            projects = projects.filter(status=status)
+        else:
+            if not all:
+                projects = projects.exclude(status=1)
+
+        return projects.all()
 
     def get_project_user(self):
         projectname = self.request.data.get('projectname')

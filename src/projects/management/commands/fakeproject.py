@@ -40,7 +40,7 @@ class Command(BaseCommand):
             project.owner = random.choice(users).user
             project.start_date = fake.date()
             project.end_date = fake.future_date()
-            project.is_active = random.randint(0, 100) > 20
+            project.is_active = random.randint(0, 100) > 50
             # git = models.CharField(max_length=100, blank=True, null=True)
             project.uri = fake.url()
             project.programming_language = random.choice(languages)
