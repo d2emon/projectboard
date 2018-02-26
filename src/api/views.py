@@ -76,10 +76,15 @@ class MainView(APIView):
             'name': random.choice(usernames),
             'new': random.randint(0, 1) > 0,
             'registered': random.choice(dates),
-            'avatar': '/media/avatars/' + str(random.randint(1, 6)) + '.jpg',
             'status': random.choice(statuses),
             'country': random.choice(countries),
+            'email': ''.join(random.choices('ABCDEF0123456789', k=8)) + '@localhost',
         } for i in range(10)]
+
+        for u in users:
+            if random.randint(0, 1) > 0:
+                u['avatar'] = '/media/avatars/' + str(random.randint(1, 6)) + '.jpg'
+            pass
 
         tasks = [{
             'id': i + 1,
